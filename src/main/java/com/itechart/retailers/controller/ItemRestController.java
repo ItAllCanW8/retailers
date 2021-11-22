@@ -1,6 +1,6 @@
-package com.example.demo.controller;
+package com.itechart.retailers.controller;
 
-import com.example.demo.model.Item;
+import com.itechart.retailers.model.Item;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

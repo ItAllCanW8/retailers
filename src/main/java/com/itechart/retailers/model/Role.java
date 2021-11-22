@@ -1,15 +1,13 @@
-package com.example.demo.model;
+package com.itechart.retailers.model;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.demo.model.Permission.*;
-
 public enum Role {
-    SYSTEM_ADMIN(Set.of(READ, WRITE)),
-    RETAIL_ADMIN(Set.of(READ));
+    SYSTEM_ADMIN(Set.of(Permission.READ, Permission.WRITE)),
+    RETAIL_ADMIN(Set.of(Permission.READ));
 
 
     private final Set<Permission> permissions;

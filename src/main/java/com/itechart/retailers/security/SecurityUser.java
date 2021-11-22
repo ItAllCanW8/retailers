@@ -1,6 +1,7 @@
-package com.example.demo.security;
+package com.itechart.retailers.security;
 
-import com.example.demo.model.User;
+import com.itechart.retailers.model.User;
+import com.itechart.retailers.model.Status;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
-import static com.example.demo.model.Status.ACTIVE;
 
 @Data
 public class SecurityUser implements UserDetails {
@@ -64,10 +63,10 @@ public class SecurityUser implements UserDetails {
     public static UserDetails fromUser(User user) {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(),
-                user.getStatus().equals(ACTIVE),
-                user.getStatus().equals(ACTIVE),
-                user.getStatus().equals(ACTIVE),
-                user.getStatus().equals(ACTIVE),
+                user.getStatus().equals(Status.ACTIVE),
+                user.getStatus().equals(Status.ACTIVE),
+                user.getStatus().equals(Status.ACTIVE),
+                user.getStatus().equals(Status.ACTIVE),
                 user.getRole().getAuthorities()
         );
     }

@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.itechart.retailers.repository;
 
-import com.example.demo.model.User;
+import com.itechart.retailers.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

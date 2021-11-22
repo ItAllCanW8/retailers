@@ -1,7 +1,7 @@
-package com.example.demo.security;
+package com.itechart.retailers.security;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
+import com.itechart.retailers.model.User;
+import com.itechart.retailers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

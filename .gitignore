@@ -55,4 +55,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # Project exclude paths
-/retailers-react-front/node_modules/
+/react-front/node_modules/

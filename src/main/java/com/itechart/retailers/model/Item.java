@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.itechart.retailers.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
