@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Button, ButtonGroup, Container, Table} from 'reactstrap';
 import AppNavbar from './AppNavbar';
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
+import axios from "axios";
 
 class Items extends Component {
 
@@ -11,7 +12,7 @@ class Items extends Component {
     }
 
     componentDidMount() {
-        fetch('/items')
+        fetch('http://localhost:8080/items')
             .then(response => response.json())
             .then(data => this.setState({items: data}));
     }

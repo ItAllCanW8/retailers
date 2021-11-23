@@ -2,6 +2,7 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.Status;
 import com.itechart.retailers.model.User;
+import com.itechart.retailers.model.UserAuthDetails;
 import com.itechart.retailers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,13 +23,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("NOT EXISTS"));
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getRole().getAuthorities()
+        return new UserAuthDetails(
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole().getAuthorities(),
+                user.getStatus().equals(Status.ACTIVE)
         );
     }
 }
