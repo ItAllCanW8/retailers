@@ -1,36 +1,41 @@
 package com.itechart.retailers.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
-@Data
+
 @Entity
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "user")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "name")
+public class User extends Identity {
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "birthday", nullable = false)
+    private LocalDate birthday;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "login", nullable = false)
+    private String login;
+
+    @Column(name = "active", nullable = false)
+    private boolean isActive;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
-    private Status status;
-
-    @Column(name = "password")
-    private String password;
-
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "address_id", referencedColumnName = "id")
+//    private Address address;
 }
