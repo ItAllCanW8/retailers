@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {useParams} from "react-router-dom";
 import axios from "axios";
 
 class SingleItem extends Component {

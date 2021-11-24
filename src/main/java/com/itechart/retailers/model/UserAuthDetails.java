@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class UserAuthDetails implements UserDetails {
     private String username;
     private String email;
     private String password;
-    private Collection<SimpleGrantedAuthority> authorities;
+    private List<SimpleGrantedAuthority> authorities;
     private final boolean isActive;
 
     @Override

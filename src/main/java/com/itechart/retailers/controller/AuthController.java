@@ -19,19 +19,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UsedRequestDto requestDto) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword());
         Authentication authentication;
 
         try {
-            authentication = authenticationManager.authenticate(authenticationToken);
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
         } catch (AuthenticationException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -44,7 +43,7 @@ public class AuthController {
                 .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
                 .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .withClaim("email", authenticatedUser.getEmail())
-                //.withClaim("roles", authenticatedUser.getAuthorities())
+                .withClaim("role", authenticatedUser.getAuthorities().stream().map(s->s.getAuthority()).toList())
                 .sign(Algorithm.HMAC256("secret"));
 
         return ResponseEntity.ok(new UserAuthenticationResponse(accessToken));

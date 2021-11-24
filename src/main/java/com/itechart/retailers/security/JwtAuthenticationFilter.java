@@ -17,10 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -41,10 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String username = decodedJWT.getSubject();
                 String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+                List<SimpleGrantedAuthority> authorities = stream(roles)
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } catch (Exception exception) {
