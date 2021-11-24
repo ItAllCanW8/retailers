@@ -1,28 +1,22 @@
 package com.itechart.retailers.model;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public enum Role {
-    SYSTEM_ADMIN(Set.of(Permission.READ, Permission.WRITE)),
-    RETAIL_ADMIN(Set.of(Permission.READ));
+@Entity
+@Getter @Setter @NoArgsConstructor
+@Table(name = "role")
+public class Role {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Byte id;
 
-
-    private final Set<Permission> permissions;
-
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        return getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.name()))
-                .collect(Collectors.toSet());
-    }
+    @Column(name = "role", nullable = false, length = 30)
+    private String role;
 }
