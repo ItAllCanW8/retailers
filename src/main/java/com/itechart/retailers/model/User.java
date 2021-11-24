@@ -28,6 +28,9 @@ public class User extends Identity {
     @Column(name = "login", nullable = false)
     private String login;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "active", nullable = false)
     private boolean isActive;
 
@@ -35,7 +38,7 @@ public class User extends Identity {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-//    @OneToOne(cascade = CascadeType.ALL)
+//    @OneToOne
 //    @JoinColumn(name = "address_id", referencedColumnName = "id")
 //    private Address address;
 }
