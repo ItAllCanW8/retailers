@@ -6,7 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter @Setter
+@Getter
+@Setter
 @MappedSuperclass
 public class Identity implements Serializable {
     @Id

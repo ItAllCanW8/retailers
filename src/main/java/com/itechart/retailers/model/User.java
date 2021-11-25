@@ -8,9 +8,11 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "user")
 public class User extends Identity {
     @Column(name = "name", nullable = false)
@@ -22,7 +24,7 @@ public class User extends Identity {
     @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "login", nullable = false)
@@ -34,11 +36,15 @@ public class User extends Identity {
     @Column(name = "active", nullable = false)
     private boolean isActive;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-//    @OneToOne
-//    @JoinColumn(name = "address_id", referencedColumnName = "id")
-//    private Address address;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 }
