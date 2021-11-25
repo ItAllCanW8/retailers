@@ -39,7 +39,7 @@ public class AuthController {
         UserAuthDetails authenticatedUser = (UserAuthDetails)authentication.getPrincipal();
 
         String accessToken = JWT.create()
-                .withSubject(authenticatedUser.getUsername())
+                .withSubject(authenticatedUser.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
                 .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .withClaim("email", authenticatedUser.getEmail())

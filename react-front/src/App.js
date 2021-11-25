@@ -5,6 +5,7 @@ import Login from "./component/Login";
 import SingleItem from "./component/SingleItem";
 import Home from "./component/Home";
 import Profile from "./component/Profile";
+import BoardAdmin from "./component/BoardAdmin";
 
 class App extends Component {
   render() {
@@ -29,6 +30,7 @@ class App extends Component {
           <Route exact path="/profile" component={Profile} />
           <Route path='/items' exact={true} component={Items}/>
           <Route path='/items/:id' component={SingleItem}/>
+          <Route path="/admin" component={BoardAdmin} />
         </Switch>
       </Router>
     );
