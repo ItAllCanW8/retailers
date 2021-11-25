@@ -1,6 +1,7 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.Item;
+import com.itechart.retailers.service.ItemService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,35 +11,34 @@ import java.util.List;
 @RequestMapping("/items")
 @CrossOrigin("*")
 public class ItemRestController {
-    private List<Item> items = List.of(
-            new Item(1L, "Manka"),
-            new Item(2L, "Grechka"),
-            new Item(3L, "Perlovka")
-    );
 
-    @GetMapping
-    public List<Item> getAll() {
-        return items;
-    }
+	private final ItemService itemService;
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('item:read')")
-    public Item getById(@PathVariable Long id) {
-        return items.stream().filter(item -> item.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
+	public ItemRestController(ItemService itemService) {
+		this.itemService = itemService;
+	}
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('item:write')")
-    public Item create(@RequestBody Item item) {
-        this.items.add(item);
-        return item;
-    }
+	@GetMapping
+	public List<Item> getAll() {
+		return itemService.findAll();
+	}
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('item:write')")
-    public void deleteById(@PathVariable Long id) {
-        this.items.removeIf(item -> item.getId().equals(id));
-    }
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('item:read')")
+	public Item getById(@PathVariable Long id) {
+		return itemService.getById(id);
+	}
+
+	@PostMapping
+	@PreAuthorize("hasAuthority('item:write')")
+	public Item create(@RequestBody Item item) {
+		itemService.save(item);
+		return item;
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('item:write')")
+	public void deleteById(@PathVariable Long id) {
+		itemService.deleteById(id);
+	}
 }
