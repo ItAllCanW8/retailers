@@ -1,17 +1,16 @@
 package com.itechart.retailers.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "user")
 public class User extends Identity {
@@ -24,6 +23,7 @@ public class User extends Identity {
     @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
 
+    @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -40,11 +40,11 @@ public class User extends Identity {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 }
