@@ -5,11 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.itechart.retailers.model.*;
 import com.itechart.retailers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -61,10 +59,10 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-        User user = User.builder()
+        User_TEST user = User_TEST.builder()
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())
-                .role(Role.valueOf(signUpRequest.getRole()))
+                .role(Role_TEST.valueOf(signUpRequest.getRole()))
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .build();
         userRepository.save(user);

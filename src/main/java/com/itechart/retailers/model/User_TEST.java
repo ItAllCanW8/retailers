@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "user")
-public class User {
+public class User_TEST {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
-    private Role role;
+    private Role_TEST role;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
