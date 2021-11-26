@@ -3,6 +3,7 @@ package com.itechart.retailers.service;
 import com.itechart.retailers.model.Status;
 import com.itechart.retailers.model.User_TEST;
 import com.itechart.retailers.model.UserAuthDetails;
+import com.itechart.retailers.model.User;
 import com.itechart.retailers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
