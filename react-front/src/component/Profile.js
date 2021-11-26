@@ -9,23 +9,23 @@ export default class Profile extends Component {
     this.state = {
       redirect: null,
       userReady: false,
-      currentUser: { username: "" }
+      currentUser: {username: ""}
     };
   }
 
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
 
-    if (!currentUser) this.setState({ redirect: "/home" });
-    this.setState({ currentUser: currentUser, userReady: true })
+    if (!currentUser) this.setState({redirect: "/home"});
+    this.setState({currentUser: currentUser, userReady: true})
   }
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Redirect to={this.state.redirect}/>
     }
 
-    const { currentUser } = this.state;
+    const {currentUser} = this.state;
 
     return (
       <div className="container">
@@ -49,7 +49,7 @@ export default class Profile extends Component {
               {currentUser.role &&
               currentUser.role.map((role, index) => <li key={index}>{role}</li>)}
             </ul>
-          </div>: null}
+          </div> : null}
       </div>
     );
   }

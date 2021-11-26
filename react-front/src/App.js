@@ -1,12 +1,11 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Items from "./component/Items";
-import Login from "./component/Login";
-import SingleItem from "./component/SingleItem";
+import LogIn from "./component/LogIn";
 import Home from "./component/Home";
 import Profile from "./component/Profile";
 import BoardAdmin from "./component/BoardAdmin";
-import Register from "./component/Register";
+import SignUp from "./component/SignUp";
 
 class App extends Component {
   constructor(props) {
@@ -53,12 +52,11 @@ class App extends Component {
         </div>
         <Switch>
           <Route path='/home' exact={true} component={Home}/>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/profile" component={Profile} />
+          <Route exact path="/login" component={LogIn}/>
+          <Route exact path="/register" component={SignUp}/>
+          <Route exact path="/profile" component={Profile}/>
           <Route path='/items' exact={true} component={Items}/>
-          <Route path='/items/:id' component={SingleItem}/>
-          <Route path="/admin" component={BoardAdmin} />
+          <Route path="/admin" component={BoardAdmin}/>
         </Switch>
       </Router>
     );

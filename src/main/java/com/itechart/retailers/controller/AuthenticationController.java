@@ -7,30 +7,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api")
+public class AuthenticationController {
+
     @GetMapping("/all")
     public String allAccess() {
-        final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return "Public Content.";
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('MODERATOR') or hasAuthority('ADMIN')")
     public String userAccess() {
         return "User Content.";
     }
 
     @GetMapping("/mod")
     @PreAuthorize("hasRole('MODERATOR')")
-    public String moderatorAccess() {
+    public String hasAuthority() {
         return "Moderator Board.";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'READ', 'WRITE') or hasAnyAuthority('SYSTEM_ADMIN', 'READ', 'WRITE')")
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     public String adminAccess() {
         return "Admin Board.";
     }

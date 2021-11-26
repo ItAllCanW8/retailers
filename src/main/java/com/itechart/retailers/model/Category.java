@@ -1,22 +1,23 @@
 package com.itechart.retailers.model;
 
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "category")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "name", nullable = false, length = 45)
-	private String name;
-
-
+    @Column(name = "name", nullable = false, length = 45)
+    private String name;
 }

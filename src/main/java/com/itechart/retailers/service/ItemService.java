@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface ItemService {
 
-	List<Item> findAll();
+    List<Item> findAll();
 
-	void save(Item item);
+    void save(Item item);
 
-	Item getById(Long itemId);
+    Item getById(Long itemId);
 
-	void delete(Item item);
+    void delete(Item item);
 
-	void deleteById(Long id);
+    void deleteById(Long id);
 
 }

@@ -2,16 +2,16 @@ import React, {Component} from 'react';
 import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = "http://localhost:8080/api/";
 
-class Register extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: "",
       email: "",
       password: "",
-      role: "RETAIL_ADMIN"
+      role: "SYSTEM_ADMIN"
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -50,6 +50,7 @@ class Register extends Component {
             <Input type="select" name="role" id="role" value={this.state.role || ''}
                    onChange={this.handleChange}>
               <option>RETAIL_ADMIN</option>
+              <option>SYSTEM_ADMIN</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -66,4 +67,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default SignUp;

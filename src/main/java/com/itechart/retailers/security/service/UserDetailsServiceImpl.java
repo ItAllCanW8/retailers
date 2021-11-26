@@ -1,17 +1,15 @@
-package com.itechart.retailers.service;
+package com.itechart.retailers.security.service;
 
-import com.itechart.retailers.model.Status;
-import com.itechart.retailers.model.User_TEST;
-import com.itechart.retailers.model.UserAuthDetails;
 import com.itechart.retailers.model.User;
 import com.itechart.retailers.repository.UserRepository;
+import com.itechart.retailers.security.model.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service("userDetailsServiceImpl")
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -23,13 +21,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User_TEST user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("NOT EXISTS"));
-        return new UserAuthDetails(
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("NOT EXISTS"));
+        return new UserDetailsImpl(
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getRole().getAuthorities(),
-                user.getStatus().equals(Status.ACTIVE)
+                user.getAuthorities(),
+                user.isActive()
         );
     }
 }
