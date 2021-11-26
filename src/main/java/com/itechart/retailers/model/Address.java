@@ -16,15 +16,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "address")
 public class Address extends Identity {
-    @Column(name = "state_code", length = 2, nullable = false)
+    @Column(name = "state_code", length = 2)
     private String stateCode;
 
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "first_line", nullable = false)
+    @Column(name = "first_line")
     private String firstLine;
 
-    @Column(name = "second_line", nullable = false)
+    @Column(name = "second_line")
     private String secondLine;
 }

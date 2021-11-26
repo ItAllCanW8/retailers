@@ -14,26 +14,26 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "user")
 public class User extends Identity {
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname")
     private String surname;
 
-    @Column(name = "birthday", nullable = false)
+    @Column(name = "birthday")
     private LocalDate birthday;
 
     @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "login")
     private String login;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "active", nullable = false)
+    @Column(name = "active")
     private boolean isActive;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,7 +41,7 @@ public class User extends Identity {
     private Role role;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @ManyToOne(fetch = FetchType.EAGER)

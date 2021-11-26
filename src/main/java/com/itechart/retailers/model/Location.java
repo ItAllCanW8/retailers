@@ -12,19 +12,19 @@ import javax.persistence.*;
 @Entity
 @Table(name = "location")
 public class Location extends Identity {
-    @Column(name = "identifier", nullable = false)
+    @Column(name = "identifier")
     private String identifier;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type")
     private String type;
 
-    @Column(name = "total_capacity", nullable = false)
+    @Column(name = "total_capacity")
     private Integer totalCapacity;
 
-    @Column(name = "available_capacity", nullable = false)
+    @Column(name = "available_capacity")
     private Integer availableCapacity;
 
     @OneToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "address_id")
     private Address address;
 }
