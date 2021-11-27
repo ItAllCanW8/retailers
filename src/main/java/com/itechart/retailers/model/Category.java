@@ -12,12 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Category extends Identity {
     @Column(name = "name", nullable = false, length = 45)
     private String name;
 }

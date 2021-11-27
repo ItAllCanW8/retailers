@@ -11,23 +11,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Item {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "upc", nullable = false, unique = true, length = 20)
+public class Item extends Identity {
+    @Column(name = "upc", length = 20)
     private String upc;
 
-    @Column(name = "label", nullable = false, length = 45)
+    @Column(name = "label", length = 45)
     private String label;
 
     @Column(name = "units")
-    private int units;
+    private Integer units;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
 }
