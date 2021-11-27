@@ -27,13 +27,13 @@ class LogIn extends Component {
   async handleLogin(event) {
     event.preventDefault();
     axios
-      .post(API_URL + "login", this.state)
-      .then(response => {
-        if (response.data.jwt) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-        }
-        return response.data;
-      }).then(
+    .post(API_URL + "login", this.state)
+    .then(response => {
+      if (response.data.jwt) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
+    }).then(
       () => {
         this.props.history.push("/profile");
         window.location.reload();
@@ -60,12 +60,12 @@ class LogIn extends Component {
         <FormGroup>
           <Label for="email">Email</Label>
           <Input type="text" name="email" id="email" value={this.state.email || ''}
-                 onChange={this.handleChange} autoComplete="email"/>
+                 onChange={this.handleChange} autoComplete="off"/>
         </FormGroup>
         <FormGroup>
           <Label for="password">Password</Label>
-          <Input type="text" name="password" id="password" value={this.state.password || ''}
-                 onChange={this.handleChange} autoComplete="password"/>
+          <Input type="password" name="password" id="password" value={this.state.password || ''} autoComplete="off"
+                 onChange={this.handleChange}/>
         </FormGroup>
         <FormGroup>
           <Button color="primary" type="submit">Save</Button>

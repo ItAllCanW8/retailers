@@ -32,7 +32,8 @@ class AuthService {
   }
 
   getCurrentUser() {
-    return jwtDecode(localStorage.getItem('user'));
+    let user = localStorage.getItem('user');
+    if (user) return jwtDecode(user);
   }
 }
 

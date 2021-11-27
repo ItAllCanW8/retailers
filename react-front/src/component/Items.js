@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Container, Table} from 'reactstrap';
-import AppNavbar from './AppNavbar';
+import NavbarApp from './NavbarApp';
 
 class Items extends Component {
 
@@ -27,7 +27,7 @@ class Items extends Component {
 
     return (
       <div>
-        <AppNavbar/>
+        <NavbarApp/>
         <Container fluid>
           <h3>Clients</h3>
           <Table className="mt-4">

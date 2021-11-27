@@ -38,12 +38,12 @@ class SignUp extends Component {
           <FormGroup>
             <Label for="name">Name</Label>
             <Input type="text" name="name" id="name" value={this.state.name || ''}
-                   onChange={this.handleChange} autoComplete="name"/>
+                   onChange={this.handleChange} autoComplete="off"/>
           </FormGroup>
           <FormGroup>
             <Label for="email">Email</Label>
             <Input type="text" name="email" id="email" value={this.state.email || ''}
-                   onChange={this.handleChange} autoComplete="email"/>
+                   onChange={this.handleChange} autoComplete="off"/>
           </FormGroup>
           <FormGroup>
             <Label for="role">Role</Label>
@@ -55,8 +55,8 @@ class SignUp extends Component {
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
-            <Input type="text" name="password" id="password" value={this.state.password || ''}
-                   onChange={this.handleChange} autoComplete="password"/>
+            <Input type="password" name="password" id="password" value={this.state.password || ''} autoComplete="off"
+                   onChange={this.handleChange}/>
           </FormGroup>
           <FormGroup>
             <Button color="primary" type="submit">Save</Button>

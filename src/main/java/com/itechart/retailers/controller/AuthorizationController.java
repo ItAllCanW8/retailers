@@ -57,6 +57,7 @@ public class AuthorizationController {
                 .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .withClaim("email", authenticatedUser.getEmail())
                 .withClaim("role", authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
+                .withClaim("name", authenticatedUser.getUsername())
                 .sign(Algorithm.HMAC256("secret"));
 
         return ResponseEntity.ok(new UserAuthenticationResponse(accessToken));
