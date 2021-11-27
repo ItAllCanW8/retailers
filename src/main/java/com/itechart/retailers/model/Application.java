@@ -1,9 +1,6 @@
 package com.itechart.retailers.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +9,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-//@Builder
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "application")
 public class Application extends Identity{
