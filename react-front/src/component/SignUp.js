@@ -28,7 +28,6 @@ class SignUp extends Component {
     event.preventDefault();
     axios.post(API_URL + "signup", this.state);
 
-    console.log(localStorage.getItem("user"));
   }
 
   render() {
