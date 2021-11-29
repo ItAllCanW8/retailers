@@ -47,7 +47,7 @@ export default class NavbarApp extends Component {
   render() {
     const {currentUser, showModeratorBoard, showAdminBoard, collapse} = this.state;
 
-    return <nav className="navbar navbar-expand-sm navbar-light bg-light">
+    return <nav className="navbar navbar-expand-sm navbar-light bg-light mb-2">
       <div className="container">
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" onClick={this.toggle}
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"

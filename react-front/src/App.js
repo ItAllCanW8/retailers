@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Items from "./component/Items";
 import LogIn from "./component/LogIn";
 import Home from "./component/Home";
@@ -34,7 +34,6 @@ class App extends Component {
     return (
 
       <Router>
-
         <NavbarApp/>
         <Switch>
           <div className="container">
