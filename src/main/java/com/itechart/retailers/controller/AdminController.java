@@ -30,11 +30,13 @@ public class AdminController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('item:read')")
+	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
 	public List<User> getAll() {
 		String adminRoleName = "admin";
 		Role role = roleRepository.findByRole(adminRoleName);
 		return userRepository.findUserByRole(role);
 	}
+
+
 
 }
