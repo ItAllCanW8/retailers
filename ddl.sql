@@ -195,12 +195,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`application_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`application_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `amount` INT NULL DEFAULT NULL,
   `cost` FLOAT NULL DEFAULT NULL,
-  `application_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `application_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  PRIMARY KEY (`application_id`, `item_id`),
   INDEX `fk_items_idx` (`item_id` ASC) VISIBLE,
   INDEX `fk_application_item_application_idx` (`application_id` ASC) VISIBLE,
   CONSTRAINT `fk_application_item_application`
@@ -223,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`bill` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `number` VARCHAR(45) NULL DEFAULT NULL,
   `total_amount` BIGINT NULL DEFAULT NULL,
-  `total_sum` FLOAT NULL DEFAULT NULL,
+  `total_units` BIGINT NULL DEFAULT NULL,
   `date_time` DATETIME NULL DEFAULT NULL,
   `location_id` BIGINT NULL DEFAULT NULL,
   `shop_manager` BIGINT NULL DEFAULT NULL,
@@ -248,13 +247,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`bill_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`bill_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `amount` INT NULL DEFAULT NULL,
   `price` FLOAT NULL DEFAULT NULL,
-  `bill_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `bill_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  PRIMARY KEY (`bill_id`, `item_id`),
   INDEX `fk_bills_idx` (`bill_id` ASC) VISIBLE,
   INDEX `fk_items_idx` (`item_id` ASC) VISIBLE,
   CONSTRAINT `fk_bill_item_bill`
@@ -296,12 +293,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`customer_category` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`customer_category` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `category_tax` FLOAT NULL DEFAULT '0',
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  `category_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `customer_id` BIGINT NOT NULL,
+  `category_id` BIGINT NOT NULL,
+  PRIMARY KEY (`customer_id`, `category_id`),
   INDEX `fk_customer_category_customer_idx` (`customer_id` ASC) VISIBLE,
   INDEX `fk_customer_category_category_idx` (`category_id` ASC) VISIBLE,
   CONSTRAINT `fk_customer_category_category`
@@ -321,11 +316,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`customer_employee` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`customer_employee` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  `employee_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `customer_id` BIGINT NOT NULL,
+  `employee_id` BIGINT NOT NULL,
+  PRIMARY KEY (`customer_id`, `employee_id`),
   INDEX `fk_customer_employee_customer_idx` (`customer_id` ASC) VISIBLE,
   INDEX `fk_customer_employee_user_idx` (`employee_id` ASC) VISIBLE,
   CONSTRAINT `fk_customer_employee_customer`
@@ -345,11 +338,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`customer_location` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`customer_location` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `customer_id` BIGINT NOT NULL,
+  `location_id` BIGINT NOT NULL,
+  PRIMARY KEY (`customer_id`, `location_id`),
   INDEX `fk_customer_location_customer_idx` (`customer_id` ASC) VISIBLE,
   INDEX `fk_customer_location_location_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `fk_customer_location_customer`
@@ -364,21 +355,21 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `retailers`.`customer_location_item`
+-- Table `retailers`.`location_item`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `retailers`.`customer_location_item` ;
+DROP TABLE IF EXISTS `retailers`.`location_item` ;
 
-CREATE TABLE IF NOT EXISTS `retailers`.`customer_location_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `customer_location` BIGINT NULL DEFAULT NULL,
-  `item` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_customer_location_item_customer_location_idx` (`customer_location` ASC) VISIBLE,
-  INDEX `fk_customer_location_item_item` (`item` ASC) VISIBLE,
-  CONSTRAINT `fk_customer_location_item_item`
-    FOREIGN KEY (`item`)
-    REFERENCES `retailers`.`item` (`id`))
+CREATE TABLE IF NOT EXISTS `retailers`.`location_item` (
+  `location_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  PRIMARY KEY (`location_id`, `item_id`),
+  INDEX `fk_location_item_item` (`item_id` ASC) VISIBLE,
+  CONSTRAINT `fk_location_item_item`
+    FOREIGN KEY (`item_id`)
+    REFERENCES `retailers`.`item` (`id`),
+  CONSTRAINT `fk_location_item_location`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `retailers`.`location` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -444,11 +435,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`supplier_warehouse` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`supplier_warehouse` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `supplier_id` BIGINT NULL DEFAULT NULL,
-  `warehouse_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `supplier_id` BIGINT NOT NULL,
+  `warehouse_id` BIGINT NOT NULL,
+  PRIMARY KEY (`supplier_id`, `warehouse_id`),
   INDEX `fk_supplier_warehouse_supplier_idx` (`supplier_id` ASC) VISIBLE,
   INDEX `fk_supplier_warehouse_warehouse_idx` (`warehouse_id` ASC) VISIBLE,
   CONSTRAINT `fk_supplier_warehouse_supplier`
@@ -491,12 +480,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `retailers`.`write_off_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`write_off_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `amount` INT NULL DEFAULT NULL,
   `reason` VARCHAR(45) NULL DEFAULT NULL,
-  `write_off_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  `write_off_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  PRIMARY KEY (`write_off_id`, `item_id`),
   INDEX `fk_item_idx` (`item_id` ASC) VISIBLE,
   INDEX `fk_write_off_item_write_off_idx` (`write_off_id` ASC) VISIBLE,
   CONSTRAINT `fk_write_off_item_item`

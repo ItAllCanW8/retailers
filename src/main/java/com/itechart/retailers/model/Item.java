@@ -3,6 +3,7 @@ package com.itechart.retailers.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "item")
@@ -24,4 +25,7 @@ public class Item extends Identity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private Set<ApplicationItem> applicationAssoc;
 }
