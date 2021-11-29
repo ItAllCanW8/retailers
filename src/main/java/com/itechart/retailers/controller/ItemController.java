@@ -2,6 +2,7 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.Item;
 import com.itechart.retailers.service.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }

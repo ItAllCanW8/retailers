@@ -1,7 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.Application;
-import org.springframework.stereotype.Service;
+import com.itechart.retailers.model.dto.ApplicationDto;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
 public interface ApplicationService {
     List<Application> findAll();
 
-    void save(Application application);
+    void save(ApplicationDto applicationDto);
 
     Application getById(Long id);
 

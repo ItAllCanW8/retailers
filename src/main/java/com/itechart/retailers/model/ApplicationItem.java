@@ -1,9 +1,15 @@
 package com.itechart.retailers.model;
 
 import com.itechart.retailers.model.util.ApplicationItemId;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "application_item")
 public class ApplicationItem{
