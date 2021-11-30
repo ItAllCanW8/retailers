@@ -1,6 +1,5 @@
 package com.itechart.retailers.model;
 
-import com.itechart.retailers.model.util.ApplicationItemId;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,16 +11,13 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "application_item")
-public class ApplicationItem{
-    @EmbeddedId
-    ApplicationItemId id = new ApplicationItemId();
-
+public class ApplicationItem extends Identity{
     @ManyToOne
-    @MapsId("applicationId")
+    @JoinColumn(name = "application_id")
     private Application application;
 
     @ManyToOne
-    @MapsId("itemId")
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @Column(name = "amount")
