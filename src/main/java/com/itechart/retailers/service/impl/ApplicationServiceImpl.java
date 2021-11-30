@@ -1,9 +1,9 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.*;
 import com.itechart.retailers.model.dto.ApplicationDto;
 import com.itechart.retailers.model.dto.ItemDto;
 import com.itechart.retailers.model.dto.UserDto;
+import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.repository.ApplicationRepository;
 import com.itechart.retailers.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .build());
         }
 
-        application.setItemAssoc(applicationItems);
+        application.setItemsAssoc(applicationItems);
 
         return application;
     }

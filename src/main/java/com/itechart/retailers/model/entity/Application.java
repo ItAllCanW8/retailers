@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
@@ -49,5 +49,5 @@ public class Application extends Identity{
     private User lastUpdBy;
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
-    private Set<ApplicationItem> itemAssoc;
+    private Set<ApplicationItem> itemsAssoc;
 }

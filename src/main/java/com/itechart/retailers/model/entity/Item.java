@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
@@ -27,5 +27,5 @@ public class Item extends Identity {
     private Category category;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private Set<ApplicationItem> applicationAssoc;
+    private Set<ApplicationItem> applicationsAssoc;
 }

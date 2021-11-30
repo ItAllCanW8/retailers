@@ -1,9 +1,10 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,4 +26,7 @@ public class Customer extends Identity{
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private User admin;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    private Set<CustomerLocation> locationsAssoc;
 }
