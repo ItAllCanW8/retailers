@@ -24,54 +24,78 @@ class LogIn extends Component {
     });
   }
 
-  async handleLogin(event) {
+  handleLogin(event) {
     event.preventDefault();
-    axios
-    .post(API_URL + "login", this.state)
-    .then(response => {
-      if (response.data.jwt) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      return response.data;
-    }).then(
-      () => {
-        this.props.history.push("/profile");
-        window.location.reload();
-      },
-      error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+    event.stopPropagation();
+    if (event.target.checkValidity()) {
+      this.state.isFormValidated = true;
+      axios
+        .post(API_URL + "login", this.state)
+        .then(response => {
+          if (response.data.jwt) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+          }
+          return response.data;
+        }).then(
+        () => {
+          this.props.history.push("/profile");
+          window.location.reload();
+        },
+        error => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
-        this.setState({
-          loading: false,
-          message: resMessage
-        });
-      }
-    );
+          this.setState({
+            loading: false,
+            message: resMessage
+          });
+        }
+      );
+    } else {
+      this.setState({isFormValidated: false});
+    }
   }
 
   render() {
-    return <Container>
-      <Form onSubmit={this.handleLogin}>
-        <FormGroup>
-          <Label for="email">Email</Label>
-          <Input type="text" name="email" id="email" value={this.state.email || ''}
-                 onChange={this.handleChange} autoComplete="off"/>
-        </FormGroup>
-        <FormGroup>
-          <Label for="password">Password</Label>
-          <Input type="password" name="password" id="password" value={this.state.password || ''} autoComplete="off"
-                 onChange={this.handleChange}/>
-        </FormGroup>
-        <FormGroup>
-          <Button color="primary" type="submit">Save</Button>
-        </FormGroup>
-      </Form>
-    </Container>
+    let isFormValidated = this.state.isFormValidated;
+    return (<div className="container mt-4">
+        <form className={isFormValidated || isFormValidated === undefined ? "needs-validation" : "needs-validation was-validated"}
+              noValidate onSubmit={this.handleLogin}>
+          <div className="row mb-3 justify-content-center">
+            <label htmlFor="validationCustom01" className="form-label col-sm-2 col-form-label">Email</label>
+            <div className="col-sm-4">
+              <input type="email" name="email" className="form-control" id="validationCustom01" required
+                     value={this.state.email || ''} onChange={this.handleChange} autoComplete="off"/>
+                <div className="invalid-feedback">
+                  Please, enter your email
+                </div>
+            </div>
+          </div>
+          <div className="row mb-3 justify-content-center">
+            <label htmlFor="validationCustom02" className="form-label col-sm-2 col-form-label">Password</label>
+            <div className="col-sm-4">
+              <div className="input-group has-validation">
+                <input type="password" name="password" className="form-control" id="validationCustom02" required
+                       value={this.state.password || ''} onChange={this.handleChange} autoComplete="off"/>
+                  <div className="invalid-feedback">
+                    Please, enter your password
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div className="row mb-3 justify-content-center">
+            <div className="col-sm-6">
+              <button type="submit" className="col-sm-2 btn btn-primary">
+                Login
+              </button>
+            </div>
+          </div>
+        </form>
+    </div>);
   }
 }
 
