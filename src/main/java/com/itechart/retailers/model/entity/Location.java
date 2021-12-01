@@ -5,13 +5,13 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
-@Table(name = "location")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name = "location")
 public class Location extends Identity {
 
     @Column(name = "identifier")
