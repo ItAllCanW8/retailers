@@ -10,6 +10,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "location")
 public class Location extends Identity {
@@ -31,5 +32,6 @@ public class Location extends Identity {
     private Address address;
 
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
-    private Set<CustomerLocation> customersAssoc;
+    @ToString.Exclude
+    private Set<CustomerLocation> customerAssoc;
 }

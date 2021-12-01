@@ -81,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .build());
         }
 
-        application.setItemsAssoc(applicationItems);
+        application.setItemAssoc(applicationItems);
 
         return application;
     }

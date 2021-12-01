@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category")
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
