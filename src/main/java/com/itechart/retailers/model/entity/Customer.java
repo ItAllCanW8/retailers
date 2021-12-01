@@ -1,6 +1,7 @@
 package com.itechart.retailers.model.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,22 +15,23 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "customer")
-public class Customer extends Identity{
-    @Column(name = "name")
-    private String name;
+@DynamicUpdate
+public class Customer extends Identity {
+	@Column(name = "name")
+	private String name;
 
-    @Column(name = "registration_date")
-    private LocalDate regDate;
+	@Column(name = "registration_date")
+	private LocalDate regDate;
 
-    @Column(name = "active")
-    private boolean isActive;
+	@Column(name = "active")
+	private boolean isActive;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    @ToString.Exclude
-    private User admin;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "admin_id")
+	@ToString.Exclude
+	private User admin;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Set<CustomerLocation> locationAssoc;
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+	@ToString.Exclude
+	private Set<CustomerLocation> locationAssoc;
 }
