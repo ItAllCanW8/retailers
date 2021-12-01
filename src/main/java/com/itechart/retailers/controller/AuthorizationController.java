@@ -12,7 +12,6 @@ import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.security.model.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +45,7 @@ public class AuthorizationController {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
         } catch (AuthenticationException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.badRequest().body(new MessageResponse("Incorrect email or password!"));
         }
 
         UserDetailsImpl authenticatedUser = (UserDetailsImpl) authentication.getPrincipal();
@@ -66,9 +65,7 @@ public class AuthorizationController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Email is already taken!"));
         }
         Role role = roleRepository.save(Role.builder()
                 .role(signUpRequest.getRole())
@@ -81,6 +78,6 @@ public class AuthorizationController {
                 .isActive(true)
                 .build();
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Success! Now you can log in to the system"));
     }
 }

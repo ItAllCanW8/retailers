@@ -22,7 +22,7 @@ class BoardAdmin extends Component {
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser || !currentUser.role.includes("SYSTEM_ADMIN")) {
       this.setState({redirect: "/"});
       return;
     }
