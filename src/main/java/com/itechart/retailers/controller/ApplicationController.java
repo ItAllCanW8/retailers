@@ -1,6 +1,6 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.Application;
+import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.dto.ApplicationDto;
 import com.itechart.retailers.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;

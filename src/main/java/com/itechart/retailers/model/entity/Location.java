@@ -1,16 +1,18 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
-@Entity
-@Table(name = "location")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "location")
 public class Location extends Identity {
 
     @Column(name = "identifier")
@@ -28,4 +30,8 @@ public class Location extends Identity {
     @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<CustomerLocation> customerAssoc;
 }

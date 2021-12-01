@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,13 +8,15 @@ import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
-@Table(name = "user")
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "user")
 public class User extends Identity {
 
     @Column(name = "name")

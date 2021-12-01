@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 
 import lombok.*;
@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category")
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
