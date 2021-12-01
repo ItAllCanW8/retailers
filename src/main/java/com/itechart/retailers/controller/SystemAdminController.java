@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/system_admin")
+@RequestMapping("/api/system-admin")
 @RequiredArgsConstructor
 public class SystemAdminController {
 
