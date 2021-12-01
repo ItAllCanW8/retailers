@@ -9,7 +9,7 @@ public interface ItemService {
 
     List<Item> findAll();
 
-    void save(Item item);
+    Item save(Item item);
 
     Item getById(Long itemId);
 
