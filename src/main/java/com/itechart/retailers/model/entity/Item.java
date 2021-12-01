@@ -5,13 +5,15 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
-@Table(name = "item")
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "item")
 public class Item extends Identity {
     @Column(name = "upc", length = 20)
     private String upc;
@@ -24,8 +26,10 @@ public class Item extends Identity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private Category category;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private Set<ApplicationItem> applicationsAssoc;
+    @ToString.Exclude
+    private Set<ApplicationItem> applicationAssoc;
 }

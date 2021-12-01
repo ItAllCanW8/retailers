@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -42,12 +43,14 @@ public class Application extends Identity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
+    @ToString.Exclude
     private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "last_upd_by")
+    @ToString.Exclude
     private User lastUpdBy;
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
-    private Set<ApplicationItem> itemsAssoc;
+    private Set<ApplicationItem> itemAssoc;
 }
