@@ -6,6 +6,8 @@ import com.itechart.retailers.model.payload.request.SignUpRequest;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
+import com.itechart.retailers.service.RoleService;
+import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,19 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SystemAdminController {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UserService userService;
+    private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-        Role role = roleRepository.save(Role.builder()
+        Role role = roleService.save(Role.builder()
                 .role("RETAIL_ADMIN")
                 .build());
         User user = User.builder()
@@ -42,7 +44,7 @@ public class SystemAdminController {
                 .password(passwordEncoder.encode("1111"))
                 .isActive(true)
                 .build();
-        userRepository.save(user);
+        userService.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

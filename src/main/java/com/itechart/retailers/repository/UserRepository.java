@@ -1,10 +1,11 @@
 package com.itechart.retailers.repository;
 
-import com.itechart.retailers.model.Role;
-import com.itechart.retailers.model.User;
+import com.itechart.retailers.model.entity.Role;
+import com.itechart.retailers.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
