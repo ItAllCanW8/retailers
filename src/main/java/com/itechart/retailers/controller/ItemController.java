@@ -1,6 +1,6 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.Item;
+import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

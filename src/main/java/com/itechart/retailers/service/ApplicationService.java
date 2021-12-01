@@ -1,6 +1,6 @@
 package com.itechart.retailers.service;
 
-import com.itechart.retailers.model.Application;
+import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.dto.ApplicationDto;
 
 import java.util.List;

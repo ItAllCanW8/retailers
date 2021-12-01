@@ -1,7 +1,6 @@
 package com.itechart.retailers.service;
 
-import com.itechart.retailers.model.Item;
-import org.springframework.stereotype.Service;
+import com.itechart.retailers.model.entity.Item;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ public interface ItemService {
 
     List<Item> findAll();
 
-    void save(Item item);
+    Item save(Item item);
 
     Item getById(Long itemId);
 

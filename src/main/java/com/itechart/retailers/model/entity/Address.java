@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
@@ -6,13 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "address")
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "address")
 public class Address extends Identity {
 
     @Column(name = "state_code", length = 2)

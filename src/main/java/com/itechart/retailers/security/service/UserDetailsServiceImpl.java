@@ -1,6 +1,6 @@
 package com.itechart.retailers.security.service;
 
-import com.itechart.retailers.model.User;
+import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.security.model.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,48 +1,40 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.Role;
-import com.itechart.retailers.model.User;
-import com.itechart.retailers.model.payload.request.SignUpRequest;
-import com.itechart.retailers.model.payload.response.MessageResponse;
-import com.itechart.retailers.repository.RoleRepository;
-import com.itechart.retailers.repository.UserRepository;
+import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.service.AdminService;
+import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@RequestMapping("/api/admin")
 public class AdminController {
+    private final AdminService adminService;
+    private final UserService userService;
+    private final String authorities = "hasAuthority('ADMIN')";
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+    @GetMapping("/locations")
+    @PreAuthorize(authorities)
+    public List<Location> getLocations(Authentication authentication) {
+        String adminEmail = authentication.getName();
 
-    @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-        Role role = roleRepository.save(Role.builder()
-                .role("RETAIL_ADMIN")
-                .build());
-        User user = User.builder()
-                .name(signUpRequest.getName())
-                .email(signUpRequest.getEmail())
-                .role(role)
-                .password(passwordEncoder.encode("1111"))
-                .isActive(true)
-                .build();
-        userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        if (principal instanceof UserDetails) {
+//            String email = ((UserDetails)principal).getUsername();
+//        } else {
+//            String username = principal.toString();
+//        }
+
+        return adminService.findLocations(adminEmail);
     }
 }

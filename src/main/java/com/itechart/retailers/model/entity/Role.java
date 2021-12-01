@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.entity;
 
 import lombok.*;
 
@@ -7,13 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "role")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "role")
 public class Role extends Identity {
 
     @NotNull

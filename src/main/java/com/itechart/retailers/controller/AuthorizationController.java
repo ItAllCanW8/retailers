@@ -2,8 +2,8 @@ package com.itechart.retailers.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.itechart.retailers.model.Role;
-import com.itechart.retailers.model.User;
+import com.itechart.retailers.model.entity.Role;
+import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.request.LogInRequest;
 import com.itechart.retailers.model.payload.request.SignUpRequest;
 import com.itechart.retailers.model.payload.response.MessageResponse;

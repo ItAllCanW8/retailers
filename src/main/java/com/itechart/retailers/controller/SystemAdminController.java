@@ -1,30 +1,48 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.Customer;
-import com.itechart.retailers.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.itechart.retailers.model.entity.Role;
+import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.request.SignUpRequest;
+import com.itechart.retailers.model.payload.response.MessageResponse;
+import com.itechart.retailers.repository.RoleRepository;
+import com.itechart.retailers.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("systemcontrol")
+@RequestMapping("/api/system-admin")
+@RequiredArgsConstructor
 public class SystemAdminController {
 
-	private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	public SystemAdminController(CustomerRepository customerRepository) {
-		this.customerRepository = customerRepository;
-	}
-
-	@GetMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public List<Customer> getAll() {
-		return customerRepository.findAll();
-	}
-
+    @PostMapping
+    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+        Role role = roleRepository.save(Role.builder()
+                .role("RETAIL_ADMIN")
+                .build());
+        User user = User.builder()
+                .name(signUpRequest.getName())
+                .email(signUpRequest.getEmail())
+                .role(role)
+                .password(passwordEncoder.encode("1111"))
+                .isActive(true)
+                .build();
+        userRepository.save(user);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
 }
