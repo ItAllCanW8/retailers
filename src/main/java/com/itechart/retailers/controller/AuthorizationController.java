@@ -2,15 +2,14 @@ package com.itechart.retailers.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.request.LogInRequest;
 import com.itechart.retailers.model.payload.request.SignUpRequest;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.model.payload.response.UserAuthenticationResponse;
-import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.security.model.UserDetailsImpl;
+import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +32,7 @@ import java.util.Date;
 public class AuthorizationController {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
@@ -52,7 +51,8 @@ public class AuthorizationController {
 
         String accessToken = JWT.create()
                 .withSubject(authenticatedUser.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(Long.MAX_VALUE))
+//                .withExpiresAt(new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000))
                 .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .withClaim("email", authenticatedUser.getEmail())
                 .withClaim("role", authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
@@ -67,13 +67,10 @@ public class AuthorizationController {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
         }
-        Role role = roleRepository.getByRole(signUpRequest.getRole()).orElseGet(() ->
-            roleRepository.save(Role.builder().role(signUpRequest.getRole()).build())
-        );
         User user = User.builder()
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())
-                .role(role)
+                .role(roleService.save(signUpRequest.getRole()))
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .isActive(true)
                 .build();

@@ -6,7 +6,7 @@ import com.itechart.retailers.model.dto.UserDto;
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.repository.ApplicationRepository;
 import com.itechart.retailers.service.ApplicationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,13 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
-    private final ApplicationRepository applicationRepository;
 
-    @Autowired
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository) {
-        this.applicationRepository = applicationRepository;
-    }
+    private final ApplicationRepository applicationRepository;
 
     @Override
     public List<Application> findAll() {

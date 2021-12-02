@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {BrowserRouter, BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Items from "./component/Items";
 import LogIn from "./component/LogIn";
 import Home from "./component/Home";
@@ -8,7 +8,6 @@ import BoardAdmin from "./component/BoardAdmin";
 import SignUp from "./component/SignUp";
 import NavbarApp from "./component/NavbarApp";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AuthService from "./service/AuthService";
 
 class App extends Component {
   constructor(props) {

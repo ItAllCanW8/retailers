@@ -17,21 +17,22 @@ import java.util.Set;
 @Table(name = "customer")
 @DynamicUpdate
 public class Customer extends Identity {
-	@Column(name = "name")
-	private String name;
 
-	@Column(name = "registration_date")
-	private LocalDate regDate;
+    @Column(name = "name")
+    private String name;
 
-	@Column(name = "active")
-	private boolean isActive;
+    @Column(name = "registration_date")
+    private LocalDate regDate;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "admin_id")
-	@ToString.Exclude
-	private User admin;
+    @Column(name = "active")
+    private boolean isActive;
 
-	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-	@ToString.Exclude
-	private Set<CustomerLocation> locationAssoc;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id")
+    @ToString.Exclude
+    private User admin;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<CustomerLocation> locationAssoc;
 }

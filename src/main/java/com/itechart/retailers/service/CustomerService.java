@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface CustomerService {
 
-	Customer save(Customer customer);
+    Customer save(Customer customer);
 
-	List<Customer> findAll();
+    List<Customer> findAll();
 
-	Customer getById(Long id);
+    Customer getById(Long id);
 
 }

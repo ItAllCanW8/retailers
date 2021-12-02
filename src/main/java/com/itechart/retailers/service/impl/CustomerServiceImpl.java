@@ -12,20 +12,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-	private final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-	@Override
-	public Customer save(Customer customer) {
-		return customerRepository.save(customer);
-	}
+    @Override
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
 
-	@Override
-	public List<Customer> findAll() {
-		return customerRepository.findAll();
-	}
+    @Override
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
+    }
 
-	@Override
-	public Customer getById(Long id) {
-		return customerRepository.getById(id);
-	}
+    @Override
+    public Customer getById(Long id) {
+        return customerRepository.getById(id);
+    }
 }

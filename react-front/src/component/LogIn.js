@@ -9,8 +9,7 @@ const API_URL = "http://localhost:8080/api/";
 class LogIn extends Component {
   constructor(props) {
     super(props);
-    this.toastRefError = React.createRef();
-    this.toastRefSuccess = React.createRef();
+    this.toastRef = React.createRef();
     this.state = {
       email: '',
       password: '',
@@ -26,7 +25,7 @@ class LogIn extends Component {
   componentDidMount() {
     if (this.props.location.state && this.props.location.state.message) {
       this.setState({message: this.props.location.state.message})
-      new bootstrap.Toast(this.toastRefSuccess.current).show();
+      new bootstrap.Toast(this.toastRef.current).show();
     }
   }
 
@@ -56,11 +55,11 @@ class LogIn extends Component {
         },
         error => {
           this.setState({
-            loading: false,
+            toastType: "error",
             message: error.response.data.message,
             isSpinnerShown: false
           });
-          new bootstrap.Toast(this.toastRefError.current).show();
+          new bootstrap.Toast(this.toastRef.current).show();
         }
       );
     } else {
@@ -77,8 +76,7 @@ class LogIn extends Component {
       <div className="row mb-4 justify-content-center text-center">
         <h3 className="col">Login</h3>
       </div>
-      <Toast toastType="success" message={this.state.message} ref={this.toastRefSuccess}/>
-      <Toast toastType="error" message={this.state.message} ref={this.toastRefError}/>
+      <Toast toastType={this.state.toastType} message={this.state.message} ref={this.toastRef}/>
       <form
         className={isFormValidated || isFormValidated === undefined ? "needs-validation" : "needs-validation was-validated"}
         noValidate onSubmit={this.handleLogin}>
@@ -113,7 +111,8 @@ class LogIn extends Component {
                 </button>
               </div>
               <div className="col-auto">
-                <div className="spinner-border" role="status" style={this.state.isSpinnerShown ? {} : {display: 'none'}}>
+                <div className="spinner-border" role="status"
+                     style={this.state.isSpinnerShown ? {} : {display: 'none'}}>
                   <span className="visually-hidden">Loading...</span>
                 </div>
               </div>

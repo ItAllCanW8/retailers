@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/items")
-@CrossOrigin("*")
 public class ItemController {
 
     private final ItemService itemService;

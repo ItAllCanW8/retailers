@@ -6,6 +6,7 @@ import {Redirect} from "react-router-dom";
 import AuthService from "../service/AuthService";
 import * as bootstrap from "bootstrap";
 import Toast from "./Toast";
+import Customers from "./Customers";
 
 const API_URL = "http://localhost:8080/api/";
 
@@ -36,6 +37,7 @@ class BoardAdmin extends Component {
         this.setState({
           content: response.data
         });
+        console.log(this.state);
       },
       error => {
         this.setState({
@@ -67,10 +69,18 @@ class BoardAdmin extends Component {
     if (event.target.checkValidity()) {
       document.getElementById('customerModal').click();
       axios.post(API_URL + "system-admin", this.state)
-        .then(() => {},
+        .then((response) => {
+            this.setState({
+              email: "",
+              toastType: "success",
+              message: response.data.message
+            });
+            new bootstrap.Toast(this.toastRef.current).show();
+          },
           error => {
             this.setState({
               email: "",
+              toastType: "error",
               message: error.response.data.message
             });
             new bootstrap.Toast(this.toastRef.current).show();
@@ -91,10 +101,10 @@ class BoardAdmin extends Component {
     let isFormValidated = this.state.isFormValidated;
     return (
       <div>
-        <button type="button" className="btn btn-primary" onClick={this.openModal}>
-          Launch demo modal
+        <button type="button" className="btn btn-primary mb-3" onClick={this.openModal}>
+          Add customer
         </button>
-        <Toast toastType="error" message={this.state.message} ref={this.toastRef}/>
+        <Toast toastType={this.state.toastType} message={this.state.message} ref={this.toastRef}/>
         <div className="modal fade" id="customerModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true" ref={this.modalRef}>
           <div className="modal-dialog">
@@ -136,7 +146,7 @@ class BoardAdmin extends Component {
             </form>
           </div>
         </div>
-
+        <Customers content={this.state.content}/>
       </div>
     );
   }

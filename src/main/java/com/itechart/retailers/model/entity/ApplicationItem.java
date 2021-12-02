@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "application_item")
-public class ApplicationItem extends Identity{
+public class ApplicationItem extends Identity {
+
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;

@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "customer_location")
-public class CustomerLocation extends Identity{
+public class CustomerLocation extends Identity {
+
     @Column(name = "rental_tax_rate")
     private Float rentalTaxRate;
 

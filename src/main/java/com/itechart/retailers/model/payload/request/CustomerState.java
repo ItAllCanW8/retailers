@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class CustomerState {
 
-	private Long customerId;
-	private boolean isActive;
+    private Long customerId;
+    private boolean isActive;
 
 }

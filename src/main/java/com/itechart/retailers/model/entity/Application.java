@@ -14,7 +14,8 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "application")
-public class Application extends Identity{
+public class Application extends Identity {
+
     @Column(name = "application_number")
     private String applicationNumber;
 

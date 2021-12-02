@@ -1,90 +1,78 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.entity.Role;
+import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.request.CustomerState;
 import com.itechart.retailers.model.payload.request.SignUpRequest;
+import com.itechart.retailers.model.payload.response.CustomerWithMail;
 import com.itechart.retailers.model.payload.response.MessageResponse;
-import com.itechart.retailers.repository.RoleRepository;
-import com.itechart.retailers.repository.UserRepository;
+import com.itechart.retailers.service.CustomerService;
+import com.itechart.retailers.service.MailService;
+import com.itechart.retailers.service.RoleService;
+import com.itechart.retailers.service.UserService;
+import com.itechart.retailers.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/system-admin")
 @RequiredArgsConstructor
 public class SystemAdminController {
 
-	private final UserService userService;
-	private final RoleService roleService;
-	private final CustomerService customerService;
-	private final MailService emailService;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final CustomerService customerService;
+    private final MailService emailService;
 
-	private final AuthenticationManager authenticationManager;
-	private final PasswordGenerator passwordGenerator;
-	private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordGenerator passwordGenerator;
+    private final PasswordEncoder passwordEncoder;
 
-	@PostMapping
-	public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-		if (userService.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already taken!"));
-		}
-        Role role = roleRepository.getByRole("RETAIL_ADMIN").orElseGet(() ->
-                roleRepository.save(Role.builder().role("RETAIL_ADMIN").build())
-        );
-		Role role = roleService.save(Role.builder()
-				.role("RETAIL_ADMIN")
-				.build());
+    @PostMapping
+    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
+        }
 
-		User admin = User.builder()
-				.name(signUpRequest.getName())
-				.email(signUpRequest.getEmail())
-				.role(role)
-				.password(passwordEncoder.encode("1111"))
-				.isActive(true)
-				.build();
+        User admin = userService.save(User.builder()
+                .name(signUpRequest.getName())
+                .email(signUpRequest.getEmail())
+                .role(roleService.save("ADMIN"))
+                .password(passwordEncoder.encode("1111"))
+                .isActive(true)
+                .build());
 
-		admin = userService.save(admin);
+        Customer customer = customerService.save(Customer.builder()
+                .name(signUpRequest.getName())
+                .regDate(LocalDate.now())
+                .isActive(true)
+                .admin(admin)
+                .build());
 
-		Customer customer = Customer.builder()
-				.name(signUpRequest.getName())
-				.regDate(LocalDate.now())
-				.isActive(true)
-				.admin(admin)
-				.build();
-		customerService.save(customer);
-		return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
-	}
+        return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
+    }
 
-	@PostMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public void changeActivateUser(@RequestBody CustomerState customerState) {
-		Customer customer = customerService.getById(customerState.getCustomerId());
-		customer.setActive(customerState.isActive());
-	}
+    @PostMapping("/{id}")
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    public void changeActivateUser(@RequestBody CustomerState customerState, @PathVariable String id) {
+        Customer customer = customerService.getById(customerState.getCustomerId());
+        customer.setActive(customerState.isActive());
+    }
 
-	@GetMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	@ResponseBody
-	public List<CustomerWithMail> getCustomers() {
-		List<Customer> customers = customerService.findAll();
-		List<CustomerWithMail> customerWithMailList = new ArrayList<>();
-		for (Customer customer : customers) {
-			CustomerWithMail customerWithMail = new CustomerWithMail();
-			customerWithMail.setCustomer(customer);
-			customerWithMail.setMail(userService.getById(customer.getAdmin().getId())
-					.getEmail());
-			customerWithMailList.add(customerWithMail);
-		}
-		return customerWithMailList;
-	}
+    @GetMapping
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    public List<CustomerWithMail> getCustomers() {
+        return customerService.findAll().stream()
+                .map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
+                .toList();
+    }
 /*
 	@PostMapping
 	public ResponseEntity<?> createCustomer(@RequestBody SignUpRequest signUpRequest) {

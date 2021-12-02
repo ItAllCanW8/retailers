@@ -36,11 +36,16 @@ class SignUp extends Component {
       this.setState({isSpinnerShown: true})
       axios.post(API_URL + "signup", this.state)
         .then((response) => {
-            this.setState({message: response.data.message, redirect: "/login"});
+            this.setState({
+              toastType: "success",
+              message: response.data.message,
+              redirect: "/login"
+            });
           },
           error => {
             this.setState({
               email: "",
+              toastType: "error",
               message: error.response.data.message,
               isSpinnerShown: false
             });
@@ -62,7 +67,7 @@ class SignUp extends Component {
         <div className="row mb-4 justify-content-center text-center">
           <h3 className="col">Sign Up</h3>
         </div>
-        <Toast toastType="error" message={this.state.message} ref={this.toastRef}/>
+        <Toast toastType={this.state.toastType} message={this.state.message} ref={this.toastRef}/>
         <form noValidate onSubmit={this.handleSignUp}
               className={isFormValidated || isFormValidated === undefined ? "needs-validation" : "needs-validation was-validated"}>
           <div className="row mb-3 justify-content-center">
@@ -91,7 +96,7 @@ class SignUp extends Component {
               <select className="form-select" aria-label="Default select example" id="role" name="role"
                       value={this.state.role || ''} onChange={this.handleChange}>>
                 <option value="SYSTEM_ADMIN">SYSTEM_ADMIN</option>
-                <option value="ADMIN">ADMIN</option>
+                <option value="DIRECTOR">DIRECTOR</option>
               </select>
             </div>
           </div>
