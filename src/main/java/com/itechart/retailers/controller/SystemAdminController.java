@@ -1,28 +1,19 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
-import com.itechart.retailers.model.payload.request.CustomerState;
 import com.itechart.retailers.model.payload.request.SignUpRequest;
-import com.itechart.retailers.model.payload.response.CustomerWithMail;
 import com.itechart.retailers.model.payload.response.MessageResponse;
-import com.itechart.retailers.service.CustomerService;
-import com.itechart.retailers.service.MailService;
-import com.itechart.retailers.service.RoleService;
-import com.itechart.retailers.service.UserService;
-import com.itechart.retailers.util.PasswordGenerator;
+import com.itechart.retailers.repository.RoleRepository;
+import com.itechart.retailers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/system-admin")
@@ -43,8 +34,11 @@ public class SystemAdminController {
 		if (userService.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+					.body(new MessageResponse("Error: Email is already taken!"));
 		}
+        Role role = roleRepository.getByRole("RETAIL_ADMIN").orElseGet(() ->
+                roleRepository.save(Role.builder().role("RETAIL_ADMIN").build())
+        );
 		Role role = roleService.save(Role.builder()
 				.role("RETAIL_ADMIN")
 				.build());
@@ -66,7 +60,7 @@ public class SystemAdminController {
 				.admin(admin)
 				.build();
 		customerService.save(customer);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
 	}
 
 	@PostMapping

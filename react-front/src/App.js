@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Items from "./component/Items";
 import LogIn from "./component/LogIn";
 import Home from "./component/Home";
@@ -8,6 +8,7 @@ import BoardAdmin from "./component/BoardAdmin";
 import SignUp from "./component/SignUp";
 import NavbarApp from "./component/NavbarApp";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AuthService from "./service/AuthService";
 
 class App extends Component {
   constructor(props) {
@@ -37,12 +38,12 @@ class App extends Component {
         <NavbarApp/>
         <Switch>
           <div className="container">
-            <Route path='/home' exact={true} component={Home}/>
+            <Route exact path='/' component={Home}/>
             <Route exact path="/login" component={LogIn}/>
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/profile" component={Profile}/>
-            <Route path='/items' exact={true} component={Items}/>
-            <Route path="/admin" component={BoardAdmin}/>
+            <Route exact path='/items' component={Items}/>
+            <Route exact path="/admin" component={BoardAdmin}/>
           </div>
         </Switch>
       </Router>
