@@ -30,11 +30,11 @@ public class SystemAdminController {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new MessageResponse("Error: Email is already taken!"));
         }
-        Role role = roleRepository.save(Role.builder()
-                .role("RETAIL_ADMIN")
-                .build());
+        Role role = roleRepository.getByRole("RETAIL_ADMIN").orElseGet(() ->
+                roleRepository.save(Role.builder().role("RETAIL_ADMIN").build())
+        );
         User user = User.builder()
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())
@@ -43,6 +43,6 @@ public class SystemAdminController {
                 .isActive(true)
                 .build();
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
     }
 }

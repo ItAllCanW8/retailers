@@ -1,20 +1,22 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import * as bootstrap from "bootstrap";
+import Toast from "./Toast";
+
 const API_URL = "http://localhost:8080/api/";
 
 class SignUp extends Component {
   constructor(props) {
     super(props);
-    this.toastRef = React.createRef();
+    this.toastRef = createRef();
     this.state = {
       name: "",
       email: "",
       password: "",
       role: "SYSTEM_ADMIN",
       isSpinnerShown: false,
-      message: ''
+      message: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
@@ -60,17 +62,7 @@ class SignUp extends Component {
         <div className="row mb-4 justify-content-center text-center">
           <h3 className="col">Sign Up</h3>
         </div>
-        <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 11}}>
-          <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true"
-               ref={this.toastRef} style={{backgroundColor: "#f8d7da", color: "#8a2029"}}>
-            <div className="d-flex">
-              <div className="toast-body fs-6 fw-bold">
-                {this.state.message}
-              </div>
-              <button type="button" className="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"/>
-            </div>
-          </div>
-        </div>
+        <Toast toastType="error" message={this.state.message} ref={this.toastRef}/>
         <form noValidate onSubmit={this.handleSignUp}
               className={isFormValidated || isFormValidated === undefined ? "needs-validation" : "needs-validation was-validated"}>
           <div className="row mb-3 justify-content-center">

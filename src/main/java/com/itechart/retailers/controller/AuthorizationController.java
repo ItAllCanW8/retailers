@@ -65,11 +65,11 @@ public class AuthorizationController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Email is already taken!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
         }
-        Role role = roleRepository.save(Role.builder()
-                .role(signUpRequest.getRole())
-                .build());
+        Role role = roleRepository.getByRole(signUpRequest.getRole()).orElseGet(() ->
+            roleRepository.save(Role.builder().role(signUpRequest.getRole()).build())
+        );
         User user = User.builder()
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())

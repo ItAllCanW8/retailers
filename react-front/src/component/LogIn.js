@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import axios from "axios";
-
-import {Button, Toast} from "reactstrap";
 import {Redirect} from "react-router-dom";
 import * as bootstrap from "bootstrap";
+import Toast from "./Toast";
 
 const API_URL = "http://localhost:8080/api/";
 
@@ -78,28 +77,8 @@ class LogIn extends Component {
       <div className="row mb-4 justify-content-center text-center">
         <h3 className="col">Login</h3>
       </div>
-      <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 11}}>
-        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true"
-             ref={this.toastRefSuccess} style={{backgroundColor: "#d1e7dd", color: "#0f5132"}}>
-          <div className="d-flex">
-            <div className="toast-body fs-6 fw-bold">
-              {this.state.message}
-            </div>
-            <button type="button" className="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"/>
-          </div>
-        </div>
-      </div>
-      <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 11}}>
-        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true"
-             ref={this.toastRefError} style={{backgroundColor: "#f8d7da", color: "#8a2029"}}>
-          <div className="d-flex">
-            <div className="toast-body fs-6 fw-bold">
-              {this.state.message}
-            </div>
-            <button type="button" className="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"/>
-          </div>
-        </div>
-      </div>
+      <Toast toastType="success" message={this.state.message} ref={this.toastRefSuccess}/>
+      <Toast toastType="error" message={this.state.message} ref={this.toastRefError}/>
       <form
         className={isFormValidated || isFormValidated === undefined ? "needs-validation" : "needs-validation was-validated"}
         noValidate onSubmit={this.handleLogin}>

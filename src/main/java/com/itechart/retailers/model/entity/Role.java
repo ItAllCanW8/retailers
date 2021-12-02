@@ -18,6 +18,6 @@ import javax.validation.constraints.NotNull;
 public class Role extends Identity {
 
     @NotNull
-    @Column(name = "role", nullable = false, length = 30)
+    @Column(name = "role", nullable = false, unique = true, length = 30)
     private String role;
 }

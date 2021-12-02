@@ -4,12 +4,16 @@ import EventBus from "../common/EventBus";
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import AuthService from "../service/AuthService";
+import * as bootstrap from "bootstrap";
+import Toast from "./Toast";
 
 const API_URL = "http://localhost:8080/api/";
 
 class BoardAdmin extends Component {
   constructor(props) {
     super(props);
+    this.modalRef = createRef();
+    this.toastRef = createRef();
     this.state = {
       name: "",
       email: "",
@@ -17,6 +21,7 @@ class BoardAdmin extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.openModal = this.openModal.bind(this);
   }
 
   componentDidMount() {
@@ -60,11 +65,23 @@ class BoardAdmin extends Component {
     event.preventDefault();
     event.stopPropagation();
     if (event.target.checkValidity()) {
-      this.state.isFormValidated = true;
-      axios.post(API_URL + "admin", this.state);
+      document.getElementById('customerModal').click();
+      axios.post(API_URL + "system-admin", this.state)
+        .then(() => {},
+          error => {
+            this.setState({
+              email: "",
+              message: error.response.data.message
+            });
+            new bootstrap.Toast(this.toastRef.current).show();
+          });
     } else {
       this.setState({isFormValidated: false});
     }
+  }
+
+  openModal() {
+    new bootstrap.Modal(document.getElementById('customerModal')).show();
   }
 
   render() {
@@ -74,15 +91,16 @@ class BoardAdmin extends Component {
     let isFormValidated = this.state.isFormValidated;
     return (
       <div>
-        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">
-          Add customer
+        <button type="button" className="btn btn-primary" onClick={this.openModal}>
+          Launch demo modal
         </button>
-        <form className={isFormValidated || isFormValidated === undefined ? "row g-3 needs-validation" : "row g-3 needs-validation was-validated"}
-              noValidate onSubmit={this.handleSubmit}>
-
-          <div className="modal fade" id="customerModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
-               aria-hidden="true">
-            <div className="modal-dialog">
+        <Toast toastType="error" message={this.state.message} ref={this.toastRef}/>
+        <div className="modal fade" id="customerModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true" ref={this.modalRef}>
+          <div className="modal-dialog">
+            <form className={isFormValidated || isFormValidated === undefined
+              ? "row g-3 needs-validation" : "row g-3 needs-validation was-validated"}
+                  noValidate onSubmit={this.handleSubmit}>
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">Add customer</h5>
@@ -115,9 +133,10 @@ class BoardAdmin extends Component {
                   <button type="submit" className="btn btn-primary">Add</button>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
+
       </div>
     );
   }
