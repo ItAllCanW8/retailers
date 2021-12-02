@@ -1,6 +1,6 @@
 package com.itechart.retailers.service;
 
-public interface EmailService {
+public interface MailService {
 
 	void sendPassword(String email, String password);
 

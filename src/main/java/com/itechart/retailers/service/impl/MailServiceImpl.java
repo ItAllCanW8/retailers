@@ -1,6 +1,6 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.service.EmailService;
+import com.itechart.retailers.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService {
+public class MailServiceImpl implements MailService {
 
 	private final JavaMailSender javaMailSender;
 
