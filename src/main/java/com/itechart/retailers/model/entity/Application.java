@@ -52,6 +52,7 @@ public class Application extends Identity {
     @ToString.Exclude
     private User lastUpdBy;
 
-    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<ApplicationItem> itemAssoc;
 }
