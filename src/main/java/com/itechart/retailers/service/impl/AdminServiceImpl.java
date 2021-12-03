@@ -20,8 +20,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Location> findLocations(String adminEmail) {
-        Long adminId = userRepo.findByEmail(adminEmail).get().getId();
-        Long customerId = customerRepo.findByAdminId(adminId).get().getId();
+
+        Long customerId = customerRepo.findByAdminEmail(adminEmail).get().getId();
 
         return locationRepo.findLocationsByCustomerAssocCustomerId(customerId);
     }
