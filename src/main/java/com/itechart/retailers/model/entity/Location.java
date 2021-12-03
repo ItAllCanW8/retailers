@@ -1,6 +1,7 @@
 package com.itechart.retailers.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,17 +29,13 @@ public class Location extends Identity {
     @Column(name = "available_capacity")
     private Integer availableCapacity;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     @ToString.Exclude
     private Address address;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<CustomerLocation> customerAssoc;
-
-    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Set<User> employees;
 }
