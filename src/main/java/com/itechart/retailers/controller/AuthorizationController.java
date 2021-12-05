@@ -43,7 +43,6 @@ public class AuthorizationController {
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
         } catch (AuthenticationException e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse("Incorrect email or password!"));
         }
 

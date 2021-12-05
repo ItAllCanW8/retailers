@@ -42,7 +42,7 @@ class App extends Component {
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/profile" component={Profile}/>
             <Route exact path='/items' component={Items}/>
-            <Route exact path="/admin" component={BoardAdmin}/>
+            <Route exact path="/system-admin" component={BoardAdmin}/>
           </div>
         </Switch>
       </Router>

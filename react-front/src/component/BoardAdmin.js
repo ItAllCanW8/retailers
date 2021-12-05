@@ -1,6 +1,5 @@
 import React, {Component, createRef} from 'react';
 import UserService from "../service/UserService";
-import EventBus from "../common/EventBus";
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import AuthService from "../service/AuthService";
@@ -18,7 +17,8 @@ class BoardAdmin extends Component {
     this.state = {
       name: "",
       email: "",
-      redirect: null
+      redirect: null,
+      isFetching: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,26 +32,21 @@ class BoardAdmin extends Component {
       this.setState({redirect: "/"});
       return;
     }
+    this.setState({...this.state, isFetching: true});
     UserService.getAdminBoard().then(
       response => {
         this.setState({
-          content: response.data
+          ...this.state,
+          content: response.data,
+          isFetching: false
         });
-        console.log(this.state);
       },
       error => {
         this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
+          ...this.state,
+          content: error.response.data.message,
+          isFetching: false
         });
-
-        if (error.response && error.response.status === 401) {
-          EventBus.dispatch("logout");
-        }
       }
     );
   }
@@ -146,7 +141,7 @@ class BoardAdmin extends Component {
             </form>
           </div>
         </div>
-        <Customers content={this.state.content}/>
+        {!this.state.isFetching && <Customers content={this.state.content}/>}
       </div>
     );
   }

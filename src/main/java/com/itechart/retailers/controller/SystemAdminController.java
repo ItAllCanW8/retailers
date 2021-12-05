@@ -59,11 +59,11 @@ public class SystemAdminController {
         return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("{id}")
     @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-    public void changeActivateUser(@RequestBody CustomerState customerState, @PathVariable String id) {
-        Customer customer = customerService.getById(customerState.getCustomerId());
-        customer.setActive(customerState.isActive());
+    public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
+        Customer customer = customerService.getById(id);
+        customer.setActive(state.isActive());
     }
 
     @GetMapping
@@ -107,7 +107,7 @@ public class SystemAdminController {
 				.isActive(true)
 				.admin(admin)
 				.build();
-		customerService.save(customer);
+ 		customerService.save(customer);
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}*/
