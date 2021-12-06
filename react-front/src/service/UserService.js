@@ -16,8 +16,8 @@ class UserService {
     return axios.get(API_URL + 'mod', {headers: authHeader()});
   }
 
-  getAdminBoard() {
-    return axios.get(API_URL + 'system-admin', {headers: authHeader()});
+  getAdminBoard(params) {
+    return axios.get(API_URL + 'system-admin', {headers: authHeader(), params: params});
   }
 }
 

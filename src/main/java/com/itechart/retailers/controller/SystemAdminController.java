@@ -26,59 +26,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SystemAdminController {
 
-	private final UserService userService;
-	private final RoleService roleService;
-	private final CustomerService customerService;
-	private final MailService emailService;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final CustomerService customerService;
+    private final MailService emailService;
 
-	private final AuthenticationManager authenticationManager;
-	private final PasswordGenerator passwordGenerator;
-	private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordGenerator passwordGenerator;
+    private final PasswordEncoder passwordEncoder;
 
-	@PostMapping
-	public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-		if (userService.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
-		}
+    @PostMapping
+    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
+        }
 
-		User admin = userService.save(User.builder()
-				.name(signUpRequest.getName())
-				.email(signUpRequest.getEmail())
-				.role(roleService.save("ADMIN"))
-				.password(passwordEncoder.encode("1111"))
-				.isActive(true)
-				.build());
+        User admin = userService.save(User.builder()
+                .name(signUpRequest.getName())
+                .email(signUpRequest.getEmail())
+                .role(roleService.save("ADMIN"))
+                .password(passwordEncoder.encode("1111"))
+                .isActive(true)
+                .build());
 
-		Customer customer = customerService.save(Customer.builder()
-				.name(signUpRequest.getName())
-				.regDate(LocalDate.now())
-				.isActive(true)
-				.admin(admin)
-				.build());
+        Customer customer = customerService.save(Customer.builder()
+                .name(signUpRequest.getName())
+                .regDate(LocalDate.now())
+                .isActive(true)
+                .admin(admin)
+                .build());
 
-		return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
-	}
+        return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
+    }
 
-	@PostMapping("{id}")
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
-		Customer customer = customerService.getById(id);
-		customer.setActive(state.isActive());
+    @PostMapping("{id}")
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
+        Customer customer = customerService.getById(id);
+        customer.setActive(state.isActive());
+    }
 
-		if (!state.isActive()) {
-			List<User> customerUsers = userService.findUsersByLocationCustomerAssocCustomerId(id);
-			customerUsers.forEach(user -> user.setActive(state.isActive()));
-			customerUsers.forEach(userService::save);
-		}
-	}
-
-	@GetMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public List<CustomerWithMail> getCustomers() {
-		return customerService.findAll().stream()
-				.map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
-				.toList();
-	}
+    @GetMapping
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    public List<CustomerWithMail> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
+        return customerService.findByParams(isOnlyActive).stream()
+                .map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
+                .toList();
+    }
 /*
 	@PostMapping
 	public ResponseEntity<?> createCustomer(@RequestBody SignUpRequest signUpRequest) {

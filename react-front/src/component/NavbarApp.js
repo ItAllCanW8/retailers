@@ -25,7 +25,7 @@ export default class NavbarApp extends Component {
       user = jwtDecode(user);
       this.setState({
         currentUser: user,
-        showModeratorBoard: user.role.includes("RETAIL_ADMIN"),
+        showModeratorBoard: user.role.includes("ADMIN"),
         showAdminBoard: user.role.includes("SYSTEM_ADMIN"),
       });
     }
@@ -45,9 +45,9 @@ export default class NavbarApp extends Component {
   }
 
   render() {
-    const {currentUser, showModeratorBoard, showAdminBoard, collapse} = this.state;
+    const {currentUser, showAdminBoard} = this.state;
 
-    return <nav className="navbar navbar-expand-sm navbar-light bg-light mb-2">
+    return <nav className="navbar navbar-expand-sm navbar-light bg-light mb-3">
       <div className="container">
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" onClick={this.toggle}
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -61,7 +61,7 @@ export default class NavbarApp extends Component {
             </li>
             {showAdminBoard && (
               <li className="nav-item">
-                <Link to={"/admin"} className="nav-link" tabIndex="-1">Admin</Link>
+                <Link to={"/system-admin"} className="nav-link" tabIndex="-1">Admin</Link>
               </li>
             )}
           </ul>

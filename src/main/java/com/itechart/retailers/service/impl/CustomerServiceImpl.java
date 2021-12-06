@@ -20,8 +20,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> findAll() {
-        return customerRepository.findAll();
+    public List<Customer> findByParams(Boolean isOnlyActive) {
+        if (isOnlyActive == null) {
+            return customerRepository.findByOrderByIdDesc();
+        } else {
+            return customerRepository.findByIsActiveOrderByIdDesc(isOnlyActive);
+        }
     }
 
     @Override
