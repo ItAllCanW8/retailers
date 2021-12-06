@@ -49,6 +49,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.prettierrc
 
 *.log
 npm-debug.log*
@@ -56,4 +57,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # Project exclude paths
-/react-front/node_modules/
+/react-front/node_modules/!/react-front/.prettierrc

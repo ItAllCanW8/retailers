@@ -1,12 +1,11 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Items from "./component/Items";
-import LogIn from "./component/LogIn";
+import LogIn from "./component/auth/LogIn";
 import Home from "./component/Home";
-import Profile from "./component/Profile";
-import BoardAdmin from "./component/BoardAdmin";
-import SignUp from "./component/SignUp";
-import NavbarApp from "./component/NavbarApp";
+import Profile from "./component/auth/Profile";
+import SystemAdmin from "./component/system-admin/SystemAdmin";
+import SignUp from "./component/auth/SignUp";
+import Navbar from "./component/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
@@ -34,15 +33,14 @@ class App extends Component {
     return (
 
       <Router>
-        <NavbarApp/>
+        <Navbar/>
         <Switch>
           <div className="container">
             <Route exact path='/' component={Home}/>
             <Route exact path="/login" component={LogIn}/>
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/profile" component={Profile}/>
-            <Route exact path='/items' component={Items}/>
-            <Route exact path="/system-admin" component={BoardAdmin}/>
+            <Route exact path="/system-admin" component={SystemAdmin}/>
           </div>
         </Switch>
       </Router>
