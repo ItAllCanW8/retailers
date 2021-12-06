@@ -1,6 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.User;
 
 import java.util.List;
 import java.util.Optional;
