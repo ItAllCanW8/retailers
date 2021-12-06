@@ -13,7 +13,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Optional<Customer> findByAdminId(Long adminId);
 
+    Optional<Customer> findByAdminEmail(String email);
+
     List<Customer> findByOrderByIdDesc();
 
-    List<Customer> findByIsActiveOrderByIdDesc(Boolean isActive);
+    List<Customer> findByActiveOrderByIdDesc(Boolean isActive);
+
 }
