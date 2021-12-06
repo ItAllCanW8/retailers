@@ -41,19 +41,19 @@ public class SystemAdminController {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
 		}
 
-		User admin = userService.save(User.builder()
+		Customer customer = customerService.save(Customer.builder()
+				.name(signUpRequest.getName())
+				.regDate(LocalDate.now())
+				.isActive(true)
+				.build());
+
+		userService.save(User.builder()
 				.name(signUpRequest.getName())
 				.email(signUpRequest.getEmail())
 				.role(roleService.save("ADMIN"))
 				.password(passwordEncoder.encode("1111"))
 				.isActive(true)
-				.build());
-
-		Customer customer = customerService.save(Customer.builder()
-				.name(signUpRequest.getName())
-				.regDate(LocalDate.now())
-				.isActive(true)
-				.admin(admin)
+				.customer(customer)
 				.build());
 
 		return ResponseEntity.ok(new MessageResponse("Customer registered successfully!"));
@@ -64,21 +64,23 @@ public class SystemAdminController {
 	public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
 		Customer customer = customerService.getById(id);
 		customer.setActive(state.isActive());
-		/*
+
 		if (!state.isActive()) {
-			List<User> customerUsers = userService.findUsersByLocationCustomerAssocCustomerId(id);
+			List<User> customerUsers = userService.findUsersByCustomerId(id);
 			customerUsers.forEach(user -> user.setActive(state.isActive()));
 			customerUsers.forEach(userService::save);
-		}*/
+		}
 	}
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-    public List<CustomerWithMail> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
-        return customerService.findByParams(isOnlyActive).stream()
-                .map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
-                .toList();
-    }
+	@GetMapping
+	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+	public List<CustomerWithMail> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
+		return customerService.findByParams(isOnlyActive).stream()
+				.map(customer -> new CustomerWithMail(customer,
+						userService.getByRoleAndCustomerId(roleService.getByRole("ADMIN"),
+								customer.getId()).getEmail()))
+				.toList();
+	}
 /*
 	@PostMapping
 	public ResponseEntity<?> createCustomer(@RequestBody SignUpRequest signUpRequest) {

@@ -16,6 +16,7 @@ public interface AdminService {
     boolean createLocation(Long customerId, Location location);
 
     void deleteLocation(Long id);
+
     void deleteLocations(Set<Long> ids);
 
     List<User> findUsers(Long customerId);

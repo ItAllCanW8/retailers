@@ -1,5 +1,6 @@
 package com.itechart.retailers.service;
 
+import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 
 import java.util.List;
@@ -7,19 +8,23 @@ import java.util.Optional;
 
 public interface UserService {
 
-    List<User> findAll();
+	List<User> findAll();
 
-    User save(User user);
+	User save(User user);
 
-    User getById(Long id);
+	User getById(Long id);
 
-    void delete(User user);
+	void delete(User user);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 
-    Optional<User> findByEmail(String email);
+	User getByEmail(String email);
 
-    Boolean existsByEmail(String email);
+	Boolean existsByEmail(String email);
 
-    List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId);
+	List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId);
+
+	List<User> findUsersByCustomerId(Long customerId);
+
+	User getByRoleAndCustomerId(Role role, Long customerId);
 }

@@ -20,43 +20,48 @@ import java.util.List;
 @Table(name = "user")
 public class User extends Identity {
 
-    @Column(name = "name")
-    private String name;
+	@Column(name = "name")
+	private String name;
 
-    @Column(name = "surname")
-    private String surname;
+	@Column(name = "surname")
+	private String surname;
 
-    @Column(name = "birthday")
-    private LocalDate birthday;
+	@Column(name = "birthday")
+	private LocalDate birthday;
 
-    @Email
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+	@Email
+	@Column(name = "email", nullable = false, unique = true)
+	private String email;
 
-    @Column(name = "login")
-    private String login;
+	@Column(name = "login")
+	private String login;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+	@Column(name = "password", nullable = false)
+	private String password;
 
-    @Column(name = "active")
-    private boolean isActive;
+	@Column(name = "active")
+	private boolean isActive;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "role_id", nullable = false)
+	private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    @ToString.Exclude
-    private Address address;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "address_id")
+	@ToString.Exclude
+	private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    @ToString.Exclude
-    private Location location;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "location_id")
+	@ToString.Exclude
+	private Location location;
 
-    public List<SimpleGrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role.getRole()));
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id")
+	@ToString.Exclude
+	private Customer customer;
+
+	public List<SimpleGrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(this.role.getRole()));
+	}
 }

@@ -1,5 +1,6 @@
 package com.itechart.retailers.service.impl;
 
+import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.service.UserService;
@@ -41,8 +42,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<User> findByEmail(String email) {
-		return userRepository.findByEmail(email);
+	public User getByEmail(String email) {
+		return userRepository.getByEmail(email);
 	}
 
 	@Override
@@ -53,5 +54,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId) {
 		return userRepository.findUsersByLocationCustomerAssocCustomerId(customerId);
+	}
+
+	@Override
+	public List<User> findUsersByCustomerId(Long customerId) {
+		return userRepository.findUserByCustomerId(customerId);
+	}
+
+	@Override
+	public User getByRoleAndCustomerId(Role role, Long customerId) {
+		return userRepository.getByRoleAndCustomerId(role, customerId);
 	}
 }

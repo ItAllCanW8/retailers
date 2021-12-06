@@ -11,12 +11,13 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    Optional<Customer> findByAdminId(Long adminId);
 
-    Optional<Customer> findByAdminEmail(String email);
+    //Optional<Customer> findByAdminId(Long adminId);
+
+    //Optional<Customer> findByAdminEmail(String email);
 
     List<Customer> findByOrderByIdDesc();
 
-    List<Customer> findByActiveOrderByIdDesc(Boolean isActive);
+    List<Customer> findByIsActiveOrderByIdDesc(Boolean isActive);
 
 }
