@@ -2,10 +2,8 @@ package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.CustomerLocation;
 import com.itechart.retailers.model.entity.Location;
-import com.itechart.retailers.repository.AddressRepository;
-import com.itechart.retailers.repository.CustomerLocationRepository;
-import com.itechart.retailers.repository.CustomerRepository;
-import com.itechart.retailers.repository.LocationRepository;
+import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.repository.*;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +21,7 @@ public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepo;
     private final CustomerLocationRepository customerLocationRepo;
     private final AddressRepository addressRepo;
+    private final UserRepository userRepo;
 
     @Override
     public List<Location> findLocations(String adminEmail) {
@@ -34,6 +33,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Location> findLocations(Long customerId) {
         return locationRepo.findLocationsByCustomerAssocCustomerId(customerId);
+    }
+
+    @Override
+    public List<User> findUsers(Long customerId) {
+        return userRepo.findUsersByLocationCustomerAssocCustomerId(customerId);
     }
 
     @Override

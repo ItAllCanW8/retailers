@@ -1,6 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ public interface AdminService {
     List<Location> findLocations(String adminEmail);
 
     List<Location> findLocations(Long customerId);
+    List<User> findUsers(Long customerId);
 
     boolean createLocation(Long customerId, Location location);
 
