@@ -38,4 +38,8 @@ public class Location extends Identity {
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<CustomerLocation> customerAssoc;
+
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<User> employees;
 }

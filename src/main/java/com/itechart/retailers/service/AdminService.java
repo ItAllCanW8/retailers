@@ -13,6 +13,7 @@ public interface AdminService {
     List<Location> findLocations(String adminEmail);
 
     List<Location> findLocations(Long customerId);
+    List<User> findUsers(Long customerId);
 
     boolean createLocation(Long customerId, Location location);
 
