@@ -15,7 +15,6 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "customer")
-@DynamicUpdate
 public class Customer extends Identity {
 
     @Column(name = "name")
