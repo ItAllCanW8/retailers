@@ -17,48 +17,48 @@ import java.util.Set;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final AdminService adminService;
-    private final String authorities = "hasAuthority('ADMIN')";
-    private Long customerId;
+	private final AdminService adminService;
+	private final String authorities = "hasAuthority('ADMIN')";
+	private Long customerId;
 
-    @GetMapping("/location")
-    @PreAuthorize(authorities)
-    public List<Location> getLocations() {
-        setCustomerIdIfNotSet();
+	@GetMapping("/location")
+	@PreAuthorize(authorities)
+	public List<Location> getLocations() {
+		setCustomerIdIfNotSet();
 
-        return adminService.findLocations(customerId);
-    }
+		return adminService.findLocations(customerId);
+	}
 
-    @PostMapping("/location")
-    @PreAuthorize(authorities)
-    public ResponseEntity<?> createLocation(@RequestBody Location location) {
-        setCustomerIdIfNotSet();
+	@PostMapping("/location")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> createLocation(@RequestBody Location location) {
+		setCustomerIdIfNotSet();
 
-        adminService.createLocation(customerId, location);
+		adminService.createLocation(customerId, location);
 
-        return ResponseEntity.ok(new MessageResponse("Location added."));
-    }
+		return ResponseEntity.ok(new MessageResponse("Location added."));
+	}
 
-    @DeleteMapping("/location/{id}")
-    @PreAuthorize(authorities)
-    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
-        adminService.deleteLocation(id);
+	@DeleteMapping("/location/{id}")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
+		adminService.deleteLocation(id);
 
-        return ResponseEntity.ok(new MessageResponse("Location deleted."));
-    }
+		return ResponseEntity.ok(new MessageResponse("Location deleted."));
+	}
 
-    @DeleteMapping("/location")
-    @PreAuthorize(authorities)
-    public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
-        adminService.deleteLocations(ids);
+	@DeleteMapping("/location")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
+		adminService.deleteLocations(ids);
 
-        return ResponseEntity.ok(new MessageResponse("Locations deleted."));
-    }
+		return ResponseEntity.ok(new MessageResponse("Locations deleted."));
+	}
 
-    private void setCustomerIdIfNotSet(){
-        if (customerId == null) {
-            String adminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-            customerId = adminService.findCustomerId(adminEmail).get();
-        }
-    }
+	private void setCustomerIdIfNotSet() {
+		if (customerId == null) {
+			String adminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+			customerId = adminService.findCustomerId(adminEmail).get();
+		}
+	}
 }
