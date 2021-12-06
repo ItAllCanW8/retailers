@@ -1,6 +1,7 @@
 package com.itechart.retailers.model.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
