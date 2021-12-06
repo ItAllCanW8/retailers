@@ -17,7 +17,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findByOrderByIdDesc();
 
-    List<Customer> findByIsActiveOrderByIdDesc(Boolean isActive);
-    Optional<Customer> findByAdminEmail(String email);
+    List<Customer> findByActiveOrderByIdDesc(Boolean isActive);
 
 }

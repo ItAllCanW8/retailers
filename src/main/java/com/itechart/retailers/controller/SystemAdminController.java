@@ -64,12 +64,12 @@ public class SystemAdminController {
 	public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
 		Customer customer = customerService.getById(id);
 		customer.setActive(state.isActive());
-
+		/*
 		if (!state.isActive()) {
 			List<User> customerUsers = userService.findUsersByLocationCustomerAssocCustomerId(id);
 			customerUsers.forEach(user -> user.setActive(state.isActive()));
 			customerUsers.forEach(userService::save);
-		}
+		}*/
 	}
 
     @GetMapping
