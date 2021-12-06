@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,14 +27,7 @@ public class AdminController {
     public List<Location> getLocations(Authentication authentication) {
         String adminEmail = authentication.getName();
 
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        if (principal instanceof UserDetails) {
-//            String email = ((UserDetails)principal).getUsername();
-//        } else {
-//            String username = principal.toString();
-//        }
-
         return adminService.findLocations(adminEmail);
     }
+
 }
