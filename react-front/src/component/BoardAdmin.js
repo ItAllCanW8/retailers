@@ -17,6 +17,7 @@ class BoardAdmin extends Component {
     this.state = {
       name: "",
       email: "",
+      inlineRadioOptions: "All",
       redirect: null,
       isFetching: false
     };
@@ -70,6 +71,22 @@ class BoardAdmin extends Component {
               toastType: "success",
               message: response.data.message
             });
+            UserService.getAdminBoard().then(
+              response => {
+                this.setState({
+                  ...this.state,
+                  content: response.data,
+                  isFetching: false
+                });
+              },
+              error => {
+                this.setState({
+                  ...this.state,
+                  content: error.response.data.message,
+                  isFetching: false
+                });
+              }
+            );
             new bootstrap.Toast(this.toastRef.current).show();
           },
           error => {
@@ -89,6 +106,29 @@ class BoardAdmin extends Component {
     new bootstrap.Modal(document.getElementById('customerModal')).show();
   }
 
+  radioChange = (event) => {
+    const value = event.target.value;
+    this.setState({
+      inlineRadioOptions: value
+    });
+    UserService.getAdminBoard({isOnlyActive: value === 'Only active' || value === 'All' && null}).then(
+      response => {
+        this.setState({
+          ...this.state,
+          content: response.data,
+          isFetching: false
+        });
+      },
+      error => {
+        this.setState({
+          ...this.state,
+          content: error.response.data.message,
+          isFetching: false
+        });
+      }
+    );
+  }
+
   render() {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect}/>
@@ -96,9 +136,29 @@ class BoardAdmin extends Component {
     let isFormValidated = this.state.isFormValidated;
     return (
       <div>
-        <button type="button" className="btn btn-primary mb-3" onClick={this.openModal}>
-          Add customer
-        </button>
+        <div className="row align-items-center mb-3">
+          <div className="col align-items-center">
+            <button type="button" className="btn btn-primary me-3" onClick={this.openModal}>
+              Add customer
+            </button>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="All"
+                     checked={this.state.inlineRadioOptions === 'All'} onChange={this.radioChange}/>
+              <label className="form-check-label" htmlFor="inlineRadio1">All</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Only active"
+                     checked={this.state.inlineRadioOptions === 'Only active'} onChange={this.radioChange}/>
+              <label className="form-check-label" htmlFor="inlineRadio2">Only active</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="Only inactive"
+                     checked={this.state.inlineRadioOptions === 'Only inactive'} onChange={this.radioChange}/>
+              <label className="form-check-label" htmlFor="inlineRadio3">Only inactive</label>
+            </div>
+          </div>
+        </div>
+
         <Toast toastType={this.state.toastType} message={this.state.message} ref={this.toastRef}/>
         <div className="modal fade" id="customerModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true" ref={this.modalRef}>

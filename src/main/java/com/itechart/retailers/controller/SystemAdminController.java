@@ -72,13 +72,13 @@ public class SystemAdminController {
 		}
 	}
 
-	@GetMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public List<CustomerWithMail> getCustomers() {
-		return customerService.findAll().stream()
-				.map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
-				.toList();
-	}
+    @GetMapping
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    public List<CustomerWithMail> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
+        return customerService.findByParams(isOnlyActive).stream()
+                .map(customer -> new CustomerWithMail(customer, userService.getById(customer.getAdmin().getId()).getEmail()))
+                .toList();
+    }
 /*
 	@PostMapping
 	public ResponseEntity<?> createCustomer(@RequestBody SignUpRequest signUpRequest) {

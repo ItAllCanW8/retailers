@@ -20,6 +20,16 @@ class Customers extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.content !== this.props.content) {
+      let map = new Map();
+      if (this.props.content) {
+        this.props.content.forEach(item => map.set(item.customer.id, item.customer.active));
+        this.setState({statuses: map});
+      }
+    }
+  }
+
   changeCustomerStatus = (id) => {
     let map = this.state.statuses;
     map.set(id, !map.get(id));
@@ -28,6 +38,7 @@ class Customers extends Component {
   }
 
   render() {
+    console.log("render(customer)");
     return (
       <div className="list-group">
         {this.props.content && this.props.content.map(content =>
@@ -38,7 +49,6 @@ class Customers extends Component {
                 <input className="form-check-input" type="checkbox" role="switch" name="status"
                        id="flexSwitchCheckChecked"
                        onChange={() => this.changeCustomerStatus(content.customer.id)} checked={
-                  //content.customer.active
                   this.state && this.state.statuses && this.state.statuses.get(content.customer.id)
                 }/>
                 <label className="form-check-label" htmlFor="flexSwitchCheckChecked"/>
