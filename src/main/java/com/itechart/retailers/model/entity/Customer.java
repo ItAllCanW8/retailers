@@ -27,6 +27,7 @@ public class Customer extends Identity {
     @Column(name = "active")
     private boolean isActive;
 
+    //n+1 query
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "admin_id")
     @ToString.Exclude

@@ -1,16 +1,16 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.service.AdminService;
-import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,22 +18,47 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-    private final UserService userService;
     private final String authorities = "hasAuthority('ADMIN')";
+    private Long customerId;
 
-    @GetMapping("/locations")
+    @GetMapping("/location")
     @PreAuthorize(authorities)
-    public List<Location> getLocations(Authentication authentication) {
-        String adminEmail = authentication.getName();
+    public List<Location> getLocations() {
+        setCustomerIdIfNotSet();
 
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        if (principal instanceof UserDetails) {
-//            String email = ((UserDetails)principal).getUsername();
-//        } else {
-//            String username = principal.toString();
-//        }
+        return adminService.findLocations(customerId);
+    }
 
-        return adminService.findLocations(adminEmail);
+    @PostMapping("/location")
+    @PreAuthorize(authorities)
+    public ResponseEntity<?> createLocation(@RequestBody Location location) {
+        setCustomerIdIfNotSet();
+
+        adminService.createLocation(customerId, location);
+
+        return ResponseEntity.ok(new MessageResponse("Location added."));
+    }
+
+    @DeleteMapping("/location/{id}")
+    @PreAuthorize(authorities)
+    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
+        adminService.deleteLocation(id);
+
+        return ResponseEntity.ok(new MessageResponse("Location deleted."));
+    }
+
+    @DeleteMapping("/location")
+    @PreAuthorize(authorities)
+    public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
+        adminService.deleteLocations(ids);
+
+        return ResponseEntity.ok(new MessageResponse("Locations deleted."));
+    }
+
+    private void setCustomerIdIfNotSet(){
+        if (customerId == null) {
+            String adminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            customerId = adminService.findCustomerId(adminEmail).get();
+        }
     }
 }
