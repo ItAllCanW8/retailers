@@ -1,6 +1,5 @@
 package com.itechart.retailers.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,7 +33,6 @@ public class Customer extends Identity {
     @ToString.Exclude
     private User admin;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<CustomerLocation> locationAssoc;
