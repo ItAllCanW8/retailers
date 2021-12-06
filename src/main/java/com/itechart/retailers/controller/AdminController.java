@@ -1,6 +1,7 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,14 @@ public class AdminController {
         adminService.deleteLocations(ids);
 
         return ResponseEntity.ok(new MessageResponse("Locations deleted."));
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize(authorities)
+    public List<User> getUsers() {
+        setCustomerIdIfNotSet();
+
+        return adminService.findUsers(customerId);
     }
 
     private void setCustomerIdIfNotSet(){
