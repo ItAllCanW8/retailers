@@ -1,31 +1,21 @@
-import React, {Component} from 'react';
-import UserService from "../service/UserService";
+import React, { Component } from 'react';
+import axios from 'axios';
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      content: ""
+      content: '',
     };
   }
 
   componentDidMount() {
-    UserService.getPublicContent().then(
-      response => {
-        this.setState({
-          content: response.data
-        });
-      },
-      error => {
-        this.setState({
-          content:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
-      }
-    );
+    axios.get('all').then((response) => {
+      this.setState({
+        content: response.data,
+      });
+    });
   }
 
   render() {
