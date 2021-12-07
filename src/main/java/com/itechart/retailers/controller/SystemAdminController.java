@@ -64,6 +64,7 @@ public class SystemAdminController {
 	public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
 		Customer customer = customerService.getById(id);
 		customer.setActive(state.isActive());
+		customerService.save(customer);
 
 		if (!state.isActive()) {
 			List<User> customerUsers = userService.findUsersByCustomerId(id);
