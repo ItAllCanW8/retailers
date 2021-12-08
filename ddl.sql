@@ -1,5 +1,3 @@
-use retailers;
-
 create table address
 (
     id          bigint auto_increment,
@@ -92,8 +90,6 @@ create table location
     customer_id        bigint          not null,
     constraint id_UNIQUE
         unique (id),
-    constraint location_customer_id_uindex
-        unique (customer_id),
     constraint customer_id_fk
         foreign key (customer_id) references customer (id)
             on update cascade on delete cascade,
