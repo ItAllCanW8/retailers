@@ -7,6 +7,8 @@ import SystemAdmin from "./component/system-admin/SystemAdmin";
 import SignUp from "./component/auth/SignUp";
 import Navbar from "./component/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Locations from './component/admin/Locations';
+import Users from './component/admin/Users';
 
 class App extends Component {
   constructor(props) {
@@ -41,6 +43,8 @@ class App extends Component {
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/profile" component={Profile}/>
             <Route exact path="/system-admin" component={SystemAdmin}/>
+            <Route exact path="/locations" component={Locations}/>
+            <Route exact path="/users" component={Users}/>
           </div>
         </Switch>
       </Router>

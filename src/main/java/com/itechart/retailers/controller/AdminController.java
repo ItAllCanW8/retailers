@@ -21,7 +21,7 @@ public class AdminController {
 	private final String authorities = "hasAuthority('ADMIN')";
 	private Long customerId;
 
-	@GetMapping("/location")
+	@GetMapping("/locations")
 	@PreAuthorize(authorities)
 	public List<Location> getLocations() {
 		setCustomerIdIfNotSet();
@@ -29,7 +29,7 @@ public class AdminController {
 		return adminService.findLocations(customerId);
 	}
 
-	@PostMapping("/location")
+	@PostMapping("/locations")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
 		adminService.createLocation(location);
@@ -37,7 +37,7 @@ public class AdminController {
 		return ResponseEntity.ok(new MessageResponse("Location added."));
 	}
 
-	@DeleteMapping("/location/{id}")
+	@DeleteMapping("/locations/{id}")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
 		adminService.deleteLocation(id);
@@ -45,7 +45,7 @@ public class AdminController {
 		return ResponseEntity.ok(new MessageResponse("Location deleted."));
 	}
 
-	@DeleteMapping("/location")
+	@DeleteMapping("/locations")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
 		adminService.deleteLocations(ids);

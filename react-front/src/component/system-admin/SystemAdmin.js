@@ -6,7 +6,8 @@ import * as bootstrap from 'bootstrap';
 import Toast from '../common/Toast';
 import Customers from './Customers';
 import { ControlButtons } from './ControlButtons';
-import { Modal } from './Modal';
+import { CustomerInnerModal } from './CustomerInnerModal';
+import Modal from '../common/Modal';
 
 class SystemAdmin extends Component {
   constructor(props) {
@@ -21,7 +22,6 @@ class SystemAdmin extends Component {
       isFetching: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.openModal = this.openModal.bind(this);
   }
 
@@ -63,37 +63,31 @@ class SystemAdmin extends Component {
     });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.target.checkValidity()) {
-      document.getElementById('customerModal').click();
-      axios.post('system-admin', this.state).then(
-        (response) => {
-          this.setState({
-            email: '',
-            toastType: 'success',
-            message: response.data.message,
-          });
-          this.updateCustomers();
-          new bootstrap.Toast(this.toastRef.current).show();
-        },
-        (error) => {
-          this.setState({
-            email: '',
-            toastType: 'error',
-            message: error.response.data.message,
-          });
-          new bootstrap.Toast(this.toastRef.current).show();
-        }
-      );
-    } else {
-      this.setState({ isFormValidated: false });
-    }
+  submit = () => {
+    this.modalRef.current.click();
+    axios.post('system-admin', this.state).then(
+      (response) => {
+        this.setState({
+          email: '',
+          toastType: 'success',
+          message: response.data.message,
+        });
+        this.updateCustomers();
+        new bootstrap.Toast(this.toastRef.current).show();
+      },
+      (error) => {
+        this.setState({
+          email: '',
+          toastType: 'error',
+          message: error.response.data.message,
+        });
+        new bootstrap.Toast(this.toastRef.current).show();
+      }
+    );
   }
 
   openModal() {
-    new bootstrap.Modal(document.getElementById('customerModal')).show();
+    new bootstrap.Modal(this.modalRef.current).show();
   }
 
   radioChange = (event) => {
@@ -124,12 +118,10 @@ class SystemAdmin extends Component {
         />
         <Modal
           ref={this.modalRef}
-          formValidated={this.state.isFormValidated}
-          onSubmit={this.handleSubmit}
-          name={this.state.name}
-          onChange={this.handleChange}
-          email={this.state.email}
-        />
+          submit={this.submit}
+        >
+          <CustomerInnerModal name={this.state.name} email={this.state.email} onChange={this.handleChange}/>
+        </Modal>
         {!this.state.isFetching && <Customers content={this.state.content} />}
       </div>
     );

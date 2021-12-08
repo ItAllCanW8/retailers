@@ -145,7 +145,7 @@ class SignUp extends Component {
                 value={this.state.role || ''}
                 onChange={this.handleChange}
               >
-                ><option value="SYSTEM_ADMIN">SYSTEM_ADMIN</option>
+                <option value="SYSTEM_ADMIN">SYSTEM_ADMIN</option>
                 <option value="DIRECTOR">DIRECTOR</option>
               </select>
             </div>
