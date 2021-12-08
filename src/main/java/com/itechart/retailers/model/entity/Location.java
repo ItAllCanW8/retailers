@@ -1,10 +1,10 @@
 package com.itechart.retailers.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Builder
 @NoArgsConstructor
@@ -28,13 +28,23 @@ public class Location extends Identity {
     @Column(name = "available_capacity")
     private Integer availableCapacity;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @ToString.Exclude
     private Address address;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     @ToString.Exclude
-    private Set<CustomerLocation> customerAssoc;
+    private Customer customer;
+
+    @JsonIgnore
+    @JsonProperty(value = "customer")
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

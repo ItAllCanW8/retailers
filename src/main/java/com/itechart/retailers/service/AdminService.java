@@ -8,12 +8,9 @@ import java.util.Set;
 
 public interface AdminService {
 
-    @Deprecated
-    List<Location> findLocations(String adminEmail);
-
     List<Location> findLocations(Long customerId);
 
-    boolean createLocation(Long customerId, Location location);
+    boolean createLocation( Location location);
 
     void deleteLocation(Long id);
 

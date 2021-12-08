@@ -32,9 +32,7 @@ public class AdminController {
 	@PostMapping("/location")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
-		setCustomerIdIfNotSet();
-
-		adminService.createLocation(customerId, location);
+		adminService.createLocation(location);
 
 		return ResponseEntity.ok(new MessageResponse("Location added."));
 	}
