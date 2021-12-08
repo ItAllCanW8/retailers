@@ -11,8 +11,8 @@ export default class Navbar extends Component {
 
     this.state = {
       currentUser: undefined,
-      showModeratorBoard: false,
       showAdminBoard: false,
+      showSystemAdminBoard: false,
       collapse: false,
     };
     this.toggle = this.toggle.bind(this);
@@ -25,8 +25,8 @@ export default class Navbar extends Component {
       user = jwtDecode(user);
       this.setState({
         currentUser: user,
-        showModeratorBoard: user.role.includes('ADMIN'),
-        showAdminBoard: user.role.includes('SYSTEM_ADMIN'),
+        showAdminBoard: user.role.includes('ADMIN'),
+        showSystemAdminBoard: user.role.includes('SYSTEM_ADMIN'),
       });
     }
   }
@@ -34,8 +34,8 @@ export default class Navbar extends Component {
   logOut() {
     localStorage.removeItem('user');
     this.setState({
-      showModeratorBoard: false,
       showAdminBoard: false,
+      showSystemAdminBoard: false,
       currentUser: undefined,
     });
   }
@@ -45,7 +45,7 @@ export default class Navbar extends Component {
   }
 
   render() {
-    const { currentUser, showAdminBoard } = this.state;
+    const { currentUser, showAdminBoard, showSystemAdminBoard } = this.state;
 
     return (
       <nav className="navbar navbar-expand-sm navbar-light bg-light mb-3">
@@ -69,10 +69,24 @@ export default class Navbar extends Component {
                   Home
                 </Link>
               </li>
-              {showAdminBoard && (
+              {showSystemAdminBoard && (
                 <li className="nav-item">
                   <Link to={'/system-admin'} className="nav-link" tabIndex="-1">
                     Admin
+                  </Link>
+                </li>
+              )}
+              {showAdminBoard && (
+                <li className="nav-item">
+                  <Link to={'/locations'} className="nav-link" tabIndex="-1">
+                    Locations
+                  </Link>
+                </li>
+              )}
+              {showAdminBoard && (
+                <li className="nav-item">
+                  <Link to={'/users'} className="nav-link" tabIndex="-1">
+                    Users
                   </Link>
                 </li>
               )}
