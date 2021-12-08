@@ -1,3 +1,5 @@
+use retailers;
+
 create table address
 (
     id          bigint auto_increment,

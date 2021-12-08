@@ -1,7 +1,6 @@
 package com.itechart.retailers.model.entity;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
@@ -46,7 +45,7 @@ public class User extends Identity {
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	@ToString.Exclude
 	private Address address;

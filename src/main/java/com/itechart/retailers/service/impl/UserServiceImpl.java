@@ -53,7 +53,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId) {
-		return userRepository.findUsersByLocationCustomerAssocCustomerId(customerId);
+//		return userRepository.findUsersByLocationCustomerAssocCustomerId(customerId);
+		return null;
 	}
 
 	@Override

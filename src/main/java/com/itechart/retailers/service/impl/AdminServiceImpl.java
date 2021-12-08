@@ -1,6 +1,5 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.entity.CustomerLocation;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.service.AdminService;
@@ -19,30 +18,19 @@ public class AdminServiceImpl implements AdminService {
 	private final LocationRepository locationRepo;
 	private final CustomerRepository customerRepo;
 	private final UserRepository userRepo;
-	private final CustomerLocationRepository customerLocationRepo;
 	private final AddressRepository addressRepo;
 
 	@Override
-	public List<Location> findLocations(String adminEmail) {
-		Long customerId = userRepo.findByEmail(adminEmail).get().getCustomer().getId();
-
-		return locationRepo.findLocationsByCustomerAssocCustomerId(customerId);
-	}
-
-	@Override
 	public List<Location> findLocations(Long customerId) {
-		return locationRepo.findLocationsByCustomerAssocCustomerId(customerId);
+		return locationRepo.findLocationsByCustomerId(customerId);
 	}
 
 	@Override
 	@Transactional
-	public boolean createLocation(Long customerId, Location location) {
+	public boolean createLocation(Location location) {
 		addressRepo.save(location.getAddress());
 
-		return customerLocationRepo.save(CustomerLocation.builder()
-				.location(locationRepo.save(location))
-				.customer(customerRepo.getById(customerId))
-				.build()).getId() != null;
+		return locationRepo.save(location).getId() != null;
 	}
 
 	@Override
