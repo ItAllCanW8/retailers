@@ -78,10 +78,16 @@ export class LocationsInnerModal extends Component {
                                     id='totalCapacity'
                                     aria-describedby='inputGroupPrepend'
                                     autoComplete='off'
+                                    required
+                                    pattern="[0-9]+"
                                     value={this.props.totalCapacity || ''}
                                     onChange={this.props.onChange}
                                 />
+                                <div className='invalid-feedback'>
+                                    Input should contain a number
+                                </div>
                             </div>
+
                         </div>
                         <div className='col mb-2'>
                             <label
@@ -98,9 +104,14 @@ export class LocationsInnerModal extends Component {
                                     id='availableCapacity'
                                     aria-describedby='inputGroupPrepend'
                                     autoComplete='off'
+                                    required
+                                    pattern="[0-9]+"
                                     value={this.props.availableCapacity || ''}
                                     onChange={this.props.onChange}
                                 />
+                                <div className='invalid-feedback'>
+                                    Input should contain a number
+                                </div>
                             </div>
                         </div>
                     </div>
