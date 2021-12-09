@@ -1,12 +1,9 @@
 package com.itechart.retailers.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -26,4 +23,8 @@ public class Customer extends Identity {
 
     @Column(name = "active")
     private boolean isActive;
+
+    public Customer(Long customerId) {
+        this.setId(customerId);
+    }
 }
