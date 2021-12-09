@@ -1,5 +1,6 @@
 package com.itechart.retailers.controller;
 
+import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.service.AdminService;
@@ -32,6 +33,9 @@ public class AdminController {
 	@PostMapping("/locations")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
+		setCustomerIdIfNotSet();
+		location.setCustomer(new Customer(customerId));
+
 		adminService.createLocation(location);
 
 		return ResponseEntity.ok(new MessageResponse("Location added."));
