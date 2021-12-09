@@ -1,8 +1,9 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResponse;
+import com.itechart.retailers.repository.projection.UserView;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,7 @@ public class AdminController {
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
 		setCustomerIdIfNotSet();
-		location.setCustomer(new Customer(customerId));
-
-		adminService.createLocation(location);
+		adminService.createLocation(location, customerId);
 
 		return ResponseEntity.ok(new MessageResponse("Location added."));
 	}
@@ -55,6 +54,24 @@ public class AdminController {
 		adminService.deleteLocations(ids);
 
 		return ResponseEntity.ok(new MessageResponse("Locations deleted."));
+	}
+
+	@GetMapping("/users")
+	@PreAuthorize(authorities)
+	public List<UserView> getUsers(){
+		setCustomerIdIfNotSet();
+
+		return adminService.findEmployees(customerId);
+	}
+
+	@PostMapping("/users")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> createUser(@RequestBody User user){
+		setCustomerIdIfNotSet();
+
+		adminService.createUser(user, customerId);
+
+		return ResponseEntity.ok(new MessageResponse("User created."));
 	}
 
 	private void setCustomerIdIfNotSet() {

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +51,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId) {
-//		return userRepository.findUsersByLocationCustomerAssocCustomerId(customerId);
-		return null;
-	}
-
-	@Override
 	public List<User> findUsersByCustomerId(Long customerId) {
-		return userRepository.findUserByCustomerId(customerId);
+		return userRepository.findUsersByCustomerId(customerId);
 	}
 
 	@Override

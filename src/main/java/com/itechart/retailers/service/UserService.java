@@ -22,8 +22,6 @@ public interface UserService {
 
 	Boolean existsByEmail(String email);
 
-	List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId);
-
 	List<User> findUsersByCustomerId(Long customerId);
 
 	User getByRoleAndCustomerId(Role role, Long customerId);

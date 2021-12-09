@@ -28,4 +28,8 @@ public class Address extends Identity {
 
     @Column(name = "second_line")
     private String secondLine;
+
+    public Address(Long addressId) {
+        this.setId(addressId);
+    }
 }

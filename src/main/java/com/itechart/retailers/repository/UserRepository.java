@@ -2,6 +2,7 @@ package com.itechart.retailers.repository;
 
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.repository.projection.UserView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +16,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Boolean existsByEmail(String email);
 
-	List<User> findUserByRole(Role role);
+	List<User> findUsersByRole(Role role);
 
-	List<User> findUserByCustomerId(Long id);
+	List<User> findUsersByCustomerId(Long id);
+
+	List<UserView> findUserViewsByCustomerId(Long id);
 
 	User getByRoleAndCustomerId(Role role, Long customerId);
 
 	Optional<User> findByEmail(String email);
-
-    List<User> findUsersByLocationCustomerAssocCustomerId(Long customerId);
 }

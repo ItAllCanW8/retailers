@@ -1,5 +1,7 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -59,6 +61,16 @@ public class User extends Identity {
 	@JoinColumn(name = "customer_id")
 	@ToString.Exclude
 	private Customer customer;
+
+	@JsonIgnore
+	@JsonProperty(value = "customer")
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 	public List<SimpleGrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(this.role.getRole()));

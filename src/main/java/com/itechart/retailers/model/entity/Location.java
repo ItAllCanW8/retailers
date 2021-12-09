@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -37,6 +38,10 @@ public class Location extends Identity {
     @JoinColumn(name = "customer_id")
     @ToString.Exclude
     private Customer customer;
+
+    public Location(Long id) {
+        this.setId(id);
+    }
 
     @JsonIgnore
     @JsonProperty(value = "customer")
