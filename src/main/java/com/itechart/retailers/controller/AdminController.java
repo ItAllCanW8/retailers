@@ -80,7 +80,7 @@ public class AdminController {
 	public ResponseEntity<?> updateUserStatuses(@RequestBody UpdateUserStatusesReq req){
 		adminService.updateUserStatuses(req.getIds(), req.isActive());
 
-		return ResponseEntity.ok(new MessageResponse("Status changed."));
+		return ResponseEntity.ok(new MessageResponse("Statuses updated."));
 	}
 
 	private void setCustomerIdIfNotSet() {
