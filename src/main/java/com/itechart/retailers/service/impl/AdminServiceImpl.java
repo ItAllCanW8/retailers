@@ -2,7 +2,7 @@ package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.repository.*;
-import com.itechart.retailers.repository.projection.UserView;
+import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import java.util.Set;
 public class AdminServiceImpl implements AdminService {
 
 	private final LocationRepository locationRepo;
-	private final CustomerRepository customerRepo;
 	private final UserRepository userRepo;
 	private final AddressRepository addressRepo;
 	private final RoleRepository roleRepo;
@@ -71,6 +70,18 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 		return userRepo.save(user).getId() != null;
+	}
+
+	@Override
+	@Transactional
+	public void updateUserStatuses(Set<Long> ids, boolean newStatus) {
+		for (Long id: ids) {
+			userRepo.changeUserStatus(id, newStatus);
+		}
+
+//		User user = userRepo.findById(userId).get();
+//		user.setActive(!user.isActive());
+//		userRepo.save(user);
 	}
 
 	@Override

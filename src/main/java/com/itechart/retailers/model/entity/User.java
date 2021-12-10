@@ -47,7 +47,7 @@ public class User extends Identity {
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(name = "address_id")
 	@ToString.Exclude
 	private Address address;

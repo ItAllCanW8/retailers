@@ -2,7 +2,7 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.User;
-import com.itechart.retailers.repository.projection.UserView;
+import com.itechart.retailers.model.entity.projection.UserView;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +21,8 @@ public interface AdminService {
     List<UserView> findEmployees(Long customerId);
 
     boolean createUser(User user, Long customerId);
+
+    void updateUserStatuses(Set<Long> ids, boolean newStatus);
 
     Optional<Long> findCustomerId(String adminEmail);
 }

@@ -2,8 +2,9 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.request.UpdateUserStatusesReq;
 import com.itechart.retailers.model.payload.response.MessageResponse;
-import com.itechart.retailers.repository.projection.UserView;
+import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +73,14 @@ public class AdminController {
 		adminService.createUser(user, customerId);
 
 		return ResponseEntity.ok(new MessageResponse("User created."));
+	}
+
+	@PutMapping("/users/update-statuses")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> updateUserStatuses(@RequestBody UpdateUserStatusesReq req){
+		adminService.updateUserStatuses(req.getIds(), req.isActive());
+
+		return ResponseEntity.ok(new MessageResponse("Status changed."));
 	}
 
 	private void setCustomerIdIfNotSet() {
