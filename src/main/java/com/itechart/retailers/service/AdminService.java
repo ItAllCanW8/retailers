@@ -1,6 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
 
@@ -23,6 +24,10 @@ public interface AdminService {
     boolean createUser(User user, Long customerId);
 
     void updateUserStatus(Long id, boolean isActive);
+
+    boolean createSupplier(Supplier supplier, Long customerId);
+
+    List<Supplier> findSuppliers(Long customerId);
 
     Optional<Long> findCustomerId(String adminEmail);
 }

@@ -1,10 +1,9 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
-import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.repository.*;
+import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.service.AdminService;
-import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,10 @@ public class AdminServiceImpl implements AdminService {
 	private final LocationRepository locationRepo;
 	private final UserRepository userRepo;
 	private final AddressRepository addressRepo;
-	private final RoleService roleService;
+	private final RoleRepository roleRepo;
+	private final WarehouseRepository warehouseRepo;
+	private final SupplierRepository supplierRepo;
+	private final CustomerRepository customerRepo;
 
 	@Override
 	public List<Location> findLocations(Long customerId) {
@@ -62,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
 		user.setAddress(new Address(addressId));
 
 		String roleStr = user.getRole().getRole();
-		user.setRole(roleService.save(roleStr));
+		user.setRole(roleRepo.getByRole(roleStr));
 
 		if(roleStr.equals("DISPATCHER") || roleStr.equals("WAREHOUSE_MANAGER") || roleStr.equals("SHOP_MANAGER")){
 			String locationIdentifier = user.getLocation().getIdentifier();
@@ -75,8 +77,34 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	@Transactional
-	public void updateUserStatus(Long id, boolean isActive) {
-		userRepo.changeUserStatus(id, isActive);
+	public void updateUserStatuses(Set<Long> ids, boolean newStatus) {
+		for (Long id: ids) {
+			userRepo.changeUserStatus(id, newStatus);
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean createSupplier(Supplier supplier, Long customerId) {
+		supplierRepo.save(supplier);
+
+		Set<Warehouse> warehouses = supplier.getWarehouses();
+
+		for (Warehouse wh: warehouses) {
+			wh.setSupplier(supplier);
+			addressRepo.save(wh.getAddress());
+		}
+
+		warehouseRepo.saveAll(warehouses);
+
+		customerRepo.findById(customerId).get().getSuppliers().add(supplier);
+
+		return true;
+	}
+
+	@Override
+	public List<Supplier> findSuppliers(Long customerId) {
+		return supplierRepo.findByCustomers_Id(customerId);
 	}
 
 	@Override

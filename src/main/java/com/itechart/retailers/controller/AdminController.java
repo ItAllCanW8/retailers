@@ -1,6 +1,7 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.model.entity.projection.UserView;
@@ -84,6 +85,24 @@ public class AdminController {
 		adminService.updateUserStatus(id, isActive);
 
 		return ResponseEntity.ok(new MessageResponse("Statuses updated."));
+	}
+
+	@GetMapping("/suppliers")
+	@PreAuthorize(authorities)
+	public List<Supplier> getSuppliers(){
+		setCustomerIdIfNotSet();
+
+		return adminService.findSuppliers(customerId);
+	}
+
+	@PostMapping("/suppliers")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier){
+		setCustomerIdIfNotSet();
+
+		adminService.createSupplier(supplier, customerId);
+
+		return ResponseEntity.ok(new MessageResponse("Supplier created."));
 	}
 
 	private void setCustomerIdIfNotSet() {
