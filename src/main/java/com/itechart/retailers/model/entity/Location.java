@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -17,7 +16,7 @@ import java.util.Optional;
 @Table(name = "location")
 public class Location extends Identity {
 
-    @Column(name = "identifier")
+    @Column(name = "identifier", nullable = false, unique = true)
     private String identifier;
 
     @Column(name = "type")

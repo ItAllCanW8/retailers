@@ -20,6 +20,9 @@ public class AdminServiceImpl implements AdminService {
 	private final UserRepository userRepo;
 	private final AddressRepository addressRepo;
 	private final RoleRepository roleRepo;
+	private final WarehouseRepository warehouseRepo;
+	private final SupplierRepository supplierRepo;
+	private final CustomerRepository customerRepo;
 
 	@Override
 	public List<Location> findLocations(Long customerId) {
@@ -78,10 +81,30 @@ public class AdminServiceImpl implements AdminService {
 		for (Long id: ids) {
 			userRepo.changeUserStatus(id, newStatus);
 		}
+	}
 
-//		User user = userRepo.findById(userId).get();
-//		user.setActive(!user.isActive());
-//		userRepo.save(user);
+	@Override
+	@Transactional
+	public boolean createSupplier(Supplier supplier, Long customerId) {
+		supplierRepo.save(supplier);
+
+		Set<Warehouse> warehouses = supplier.getWarehouses();
+
+		for (Warehouse wh: warehouses) {
+			wh.setSupplier(supplier);
+			addressRepo.save(wh.getAddress());
+		}
+
+		warehouseRepo.saveAll(warehouses);
+
+		customerRepo.findById(customerId).get().getSuppliers().add(supplier);
+
+		return true;
+	}
+
+	@Override
+	public List<Supplier> findSuppliers(Long customerId) {
+		return supplierRepo.findByCustomers_Id(customerId);
 	}
 
 	@Override
