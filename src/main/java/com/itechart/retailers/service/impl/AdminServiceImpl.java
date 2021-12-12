@@ -1,8 +1,8 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
-import com.itechart.retailers.repository.*;
 import com.itechart.retailers.model.entity.projection.UserView;
+import com.itechart.retailers.repository.*;
 import com.itechart.retailers.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -74,10 +74,8 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	@Transactional
-	public void updateUserStatuses(Set<Long> ids, boolean newStatus) {
-		for (Long id: ids) {
-			userRepo.changeUserStatus(id, newStatus);
-		}
+	public void updateUserStatus(Long id, boolean isActive) {
+		userRepo.changeUserStatus(id, isActive);
 
 //		User user = userRepo.findById(userId).get();
 //		user.setActive(!user.isActive());

@@ -13,9 +13,10 @@ import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +43,10 @@ public class AuthorizationController {
 
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
-        } catch (AuthenticationException e) {
+        } catch (BadCredentialsException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Incorrect email or password!"));
+        } catch (LockedException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Account has been disabled.\nPlease, contact your administrator."));
         }
 
         UserDetailsImpl authenticatedUser = (UserDetailsImpl) authentication.getPrincipal();

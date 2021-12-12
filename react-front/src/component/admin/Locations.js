@@ -1,11 +1,10 @@
 import React, { Component, createRef } from 'react';
 import { Redirect } from 'react-router-dom';
-import * as bootstrap from 'bootstrap';
 import Modal from '../common/Modal';
 import { LocationsInnerModal } from './LocationsInnerModal';
 import axios from 'axios';
 import Toast from '../common/Toast';
-import AuthService from '../../service/AuthService';
+import Util from '../../service/Util';
 
 class Locations extends Component {
   constructor(props) {
@@ -30,14 +29,8 @@ class Locations extends Component {
   }
 
   componentDidMount() {
-    const currentUser = AuthService.getCurrentUser();
+    Util.redirectIfDoesntHaveRole(this, 'ADMIN');
 
-    if (!currentUser || !currentUser.role.includes('ADMIN')) {
-      this.setState({ redirect: '/' });
-      return;
-    }
-
-    this.setState({ ...this.state, isFetching: true });
     this.updateLocations();
   }
 
@@ -45,16 +38,7 @@ class Locations extends Component {
     axios.get('admin/locations').then(
       (response) => {
         this.setState({
-          ...this.state,
-          locations: response.data,
-          isFetching: false
-        });
-      },
-      (error) => {
-        this.setState({
-          ...this.state,
-          content: error.response.data.message,
-          isFetching: false
+          locations: response.data
         });
       }
     );
@@ -64,33 +48,13 @@ class Locations extends Component {
     this.modalRef.current.click();
     axios.post('admin/locations', this.state).then(
       (response) => {
-        this.setState({
-          toastType: 'success',
-          message: response.data.message
-        });
+        Util.showPositiveToast(this, response, this.toastRef);
         this.updateLocations();
-        new bootstrap.Toast(this.toastRef.current).show();
       },
       (error) => {
-        this.setState({
-          toastType: 'error',
-          message: error.response.data.message
-        });
-        new bootstrap.Toast(this.toastRef.current).show();
+        Util.showNegativeToast(this, error, this.toastRef);
       }
     );
-  };
-
-  handleChange = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue)) {
-      value = optionalIntValue;
-    }
-    this.setState({
-      [name]: value
-    });
   };
 
   handleAddressChange = (event) => {
@@ -122,15 +86,16 @@ class Locations extends Component {
   };
 
   deleteLocations = () => {
-    axios.delete("admin/locations", {
+    axios.delete('admin/locations', {
       data: this.state.ids
     })
-    .then(this.updateLocations);
-    this.setState({ids: []});
-  }
-
-  openModal = () => {
-    new bootstrap.Modal(this.modalRef.current).show();
+    .then(
+      (response) => {
+        Util.showPositiveToast(this, response, this.toastRef);
+        this.setState({ ids: [] });
+        this.updateLocations();
+      }
+    );
   };
 
   render() {
@@ -149,7 +114,7 @@ class Locations extends Component {
             <button
               type='button'
               className='btn btn-primary me-3'
-              onClick={this.openModal}
+              onClick={() => Util.openModal(this.modalRef)}
             >
               Add
             </button>
@@ -168,11 +133,13 @@ class Locations extends Component {
           submit={this.submit}
         >
           <LocationsInnerModal identifier={this.state.identifier} type={this.state.type}
-                               onChange={this.handleChange} onAddressChange={this.handleAddressChange}
                                stateCode={this.state.address.stateCode} city={this.state.address.city}
                                firstLine={this.state.address.firstLine} secondLine={this.state.address.secondLine}
                                totalCapacity={this.state.totalCapacity}
-                               availableCapacity={this.state.availableCapacity} />
+                               availableCapacity={this.state.availableCapacity}
+                               onChange={() => Util.handleChange(this, window.event)}
+                               onAddressChange={() => Util.handleAddressChange(this, window.event)}
+          />
         </Modal>
         <table className='table table-striped'>
           <thead>

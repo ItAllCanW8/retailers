@@ -61,7 +61,7 @@ public class SystemAdminController {
 
 	@PostMapping("{id}")
 	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
-	public void changeActivateUser(@PathVariable Long id, @RequestBody CustomerState state) {
+	public void updateUserStatus(@PathVariable Long id, @RequestBody CustomerState state) {
 		Customer customer = customerService.getById(id);
 		customer.setActive(state.isActive());
 		customerService.save(customer);

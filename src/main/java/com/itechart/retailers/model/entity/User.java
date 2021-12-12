@@ -37,6 +37,7 @@ public class User extends Identity {
 	@Column(name = "login")
 	private String login;
 
+	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 

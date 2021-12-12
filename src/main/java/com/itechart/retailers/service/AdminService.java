@@ -22,7 +22,7 @@ public interface AdminService {
 
     boolean createUser(User user, Long customerId);
 
-    void updateUserStatuses(Set<Long> ids, boolean newStatus);
+    void updateUserStatus(Long id, boolean isActive);
 
     Optional<Long> findCustomerId(String adminEmail);
 }

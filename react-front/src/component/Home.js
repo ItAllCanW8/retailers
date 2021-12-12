@@ -11,7 +11,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    axios.get('all').then((response) => {
+    axios.get('/').then((response) => {
       this.setState({
         content: response.data,
       });

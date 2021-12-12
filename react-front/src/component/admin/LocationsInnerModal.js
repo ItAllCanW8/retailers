@@ -17,7 +17,7 @@ export class LocationsInnerModal extends Component {
             <div className='modal-body'>
                 <div className='container-fluid' style={{padding: 0}}>
                     <div className='row'>
-                        <div className='col-6 mb-2'>
+                        <div className='mb-1'>
                             <h5>Details</h5>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ export class LocationsInnerModal extends Component {
                     </div>
 
                     <div className='row'>
-                        <div className='col-6 mb-2'>
+                        <div className='col-6 mt-1 mb-1'>
                             <h5>Address</h5>
                         </div>
                     </div>
