@@ -9,6 +9,7 @@ import Navbar from "./component/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Locations from './component/admin/Locations';
 import Users from './component/admin/Users';
+import Items from './component/admin/Items';
 
 class App extends Component {
   constructor(props) {
@@ -45,6 +46,7 @@ class App extends Component {
             <Route exact path="/system-admin" component={SystemAdmin}/>
             <Route exact path="/locations" component={Locations}/>
             <Route exact path="/users" component={Users}/>
+            <Route exact path="/items" component={Items}/>
           </div>
         </Switch>
       </Router>

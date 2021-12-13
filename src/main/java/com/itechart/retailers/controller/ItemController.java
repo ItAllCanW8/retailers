@@ -7,9 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/items")
+@RequestMapping("/api/items")
 public class ItemController {
 
     private final ItemService itemService;
@@ -36,9 +37,11 @@ public class ItemController {
         itemService.save(item);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteById(@PathVariable Long id) {
-        itemService.deleteById(id);
+    public void deleteById(@RequestBody Set<Long> ids) {
+        for (Long id : ids) {
+            itemService.deleteById(id);
+        }
     }
 }

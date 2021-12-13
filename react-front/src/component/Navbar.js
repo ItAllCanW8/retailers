@@ -90,6 +90,13 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
+              {showAdminBoard && (
+                <li className="nav-item">
+                  <Link to={'/items'} className="nav-link" tabIndex="-1">
+                    Items
+                  </Link>
+                </li>
+              )}
             </ul>
             <div className="d-flex">
               {currentUser ? (
