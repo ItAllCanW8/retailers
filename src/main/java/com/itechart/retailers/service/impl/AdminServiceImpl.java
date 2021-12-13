@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.service.AdminService;
+import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class AdminServiceImpl implements AdminService {
 	private final LocationRepository locationRepo;
 	private final UserRepository userRepo;
 	private final AddressRepository addressRepo;
-	private final RoleRepository roleRepo;
+	private final RoleService roleService;
 
 	@Override
 	public List<Location> findLocations(Long customerId) {
@@ -61,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
 		user.setAddress(new Address(addressId));
 
 		String roleStr = user.getRole().getRole();
-		user.setRole(roleRepo.getByRole(roleStr));
+		user.setRole(roleService.save(roleStr));
 
 		if(roleStr.equals("DISPATCHER") || roleStr.equals("WAREHOUSE_MANAGER") || roleStr.equals("SHOP_MANAGER")){
 			String locationIdentifier = user.getLocation().getIdentifier();
@@ -76,10 +77,6 @@ public class AdminServiceImpl implements AdminService {
 	@Transactional
 	public void updateUserStatus(Long id, boolean isActive) {
 		userRepo.changeUserStatus(id, isActive);
-
-//		User user = userRepo.findById(userId).get();
-//		user.setActive(!user.isActive());
-//		userRepo.save(user);
 	}
 
 	@Override
