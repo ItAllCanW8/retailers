@@ -72,6 +72,7 @@ public class AdminController {
 		setCustomerIdIfNotSet();
 
 		user.setPassword(passwordEncoder.encode("1111"));
+		user.setActive(true);
 		adminService.createUser(user, customerId);
 
 		return ResponseEntity.ok(new MessageResponse("User created."));
