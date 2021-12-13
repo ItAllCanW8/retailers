@@ -77,10 +77,8 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	@Transactional
-	public void updateUserStatuses(Set<Long> ids, boolean newStatus) {
-		for (Long id: ids) {
-			userRepo.changeUserStatus(id, newStatus);
-		}
+	public void updateUserStatus(Long id, boolean isActive) {
+		userRepo.changeUserStatus(id, isActive);
 	}
 
 	@Override
@@ -105,6 +103,12 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public List<Supplier> findSuppliers(Long customerId) {
 		return supplierRepo.findByCustomers_Id(customerId);
+	}
+
+	@Override
+	@Transactional
+	public void updateSupplierStatus(Long id, boolean isActive) {
+		supplierRepo.changeSupplierStatus(id, isActive);
 	}
 
 	@Override

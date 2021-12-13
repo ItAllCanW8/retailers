@@ -100,9 +100,18 @@ public class AdminController {
 	public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier){
 		setCustomerIdIfNotSet();
 
+		supplier.setActive(true);
 		adminService.createSupplier(supplier, customerId);
 
 		return ResponseEntity.ok(new MessageResponse("Supplier created."));
+	}
+
+	@PutMapping("/suppliers/{id}")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> updateSupplierStatus(@PathVariable Long id, @RequestBody boolean isActive){
+		adminService.updateSupplierStatus(id, isActive);
+
+		return ResponseEntity.ok(new MessageResponse("Status updated."));
 	}
 
 	private void setCustomerIdIfNotSet() {
