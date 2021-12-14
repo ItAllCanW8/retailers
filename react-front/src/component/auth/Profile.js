@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import Util from '../../service/Util';
 import Toast from '../common/Toast';
+import AuthService from '../../service/AuthService';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -37,6 +38,10 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    const currentUser = AuthService.getCurrentUser();
+    if (!currentUser) {
+      this.setState({ redirect: '/' });
+    }
     this.updateProfile();
   }
 
