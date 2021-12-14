@@ -53,7 +53,7 @@ public class User extends Identity {
 	@ToString.Exclude
 	private Address address;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "location_id")
 	@ToString.Exclude
 	private Location location;
