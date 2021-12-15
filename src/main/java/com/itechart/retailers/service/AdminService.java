@@ -31,5 +31,9 @@ public interface AdminService {
 
     void updateSupplierStatus(Long id, boolean isActive);
 
+    boolean createSupplier(Supplier supplier, Long customerId);
+
+    List<Supplier> findSuppliers(Long customerId);
+
     Optional<Long> findCustomerId(String adminEmail);
 }
