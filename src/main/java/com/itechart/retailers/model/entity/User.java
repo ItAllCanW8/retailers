@@ -48,22 +48,21 @@ public class User extends Identity {
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(name = "address_id")
 	@ToString.Exclude
 	private Address address;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "location_id")
 	@ToString.Exclude
 	private Location location;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "customer_id")
 	@ToString.Exclude
 	private Customer customer;
 
-	@JsonIgnore
 	@JsonProperty(value = "customer")
 	public Customer getCustomer() {
 		return customer;
@@ -73,6 +72,7 @@ public class User extends Identity {
 		this.customer = customer;
 	}
 
+	@JsonIgnore
 	public List<SimpleGrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(this.role.getRole()));
 	}

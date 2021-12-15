@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -25,11 +26,12 @@ public class AdminController {
 	private final AdminService adminService;
 	private final String authorities = "hasAuthority('ADMIN')";
 	private Long customerId;
+	private String customerEmail;
 
 	@GetMapping("/locations")
 	@PreAuthorize(authorities)
 	public List<Location> getLocations() {
-		setCustomerIdIfNotSet();
+		setCustomerId();
 
 		return adminService.findLocations(customerId);
 	}
@@ -37,7 +39,7 @@ public class AdminController {
 	@PostMapping("/locations")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
-		setCustomerIdIfNotSet();
+		setCustomerId();
 		adminService.createLocation(location, customerId);
 
 		return ResponseEntity.ok(new MessageResponse("Location added."));
@@ -62,7 +64,7 @@ public class AdminController {
 	@GetMapping("/users")
 	@PreAuthorize(authorities)
 	public List<UserView> getUsers(){
-		setCustomerIdIfNotSet();
+		setCustomerId();
 
 		return adminService.findEmployees(customerId);
 	}
@@ -70,7 +72,7 @@ public class AdminController {
 	@PostMapping("/users")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createUser(@RequestBody User user){
-		setCustomerIdIfNotSet();
+		setCustomerId();
 
 		user.setPassword(passwordEncoder.encode("1111"));
 		user.setActive(true);
@@ -90,7 +92,7 @@ public class AdminController {
 	@GetMapping("/suppliers")
 	@PreAuthorize(authorities)
 	public List<Supplier> getSuppliers(){
-		setCustomerIdIfNotSet();
+		setCustomerId();
 
 		return adminService.findSuppliers(customerId);
 	}
@@ -98,7 +100,7 @@ public class AdminController {
 	@PostMapping("/suppliers")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier){
-		setCustomerIdIfNotSet();
+		setCustomerId();
 
 		supplier.setActive(true);
 		adminService.createSupplier(supplier, customerId);
@@ -114,10 +116,11 @@ public class AdminController {
 		return ResponseEntity.ok(new MessageResponse("Status updated."));
 	}
 
-	private void setCustomerIdIfNotSet() {
-		if (customerId == null) {
-			String adminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-			customerId = adminService.findCustomerId(adminEmail).get();
+	private void setCustomerId() {
+		String currentCustomerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		if (!Objects.equals(customerEmail, currentCustomerEmail)) {
+			customerEmail = currentCustomerEmail;
+			customerId = adminService.findCustomerId(customerEmail).get();
 		}
 	}
 }

@@ -57,16 +57,6 @@ class Locations extends Component {
     );
   };
 
-  handleAddressChange = (event) => {
-    const target = event.target;
-    this.setState({
-      address: {
-        ...this.state.address,
-        [target.name]: target.value
-      }
-    });
-  };
-
   handleLocationSelection = (event, id) => {
     if (event.target.checked) {
       this.setState({

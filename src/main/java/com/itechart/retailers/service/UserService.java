@@ -2,6 +2,8 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.service.exception.EmptyPasswordException;
+import com.itechart.retailers.service.exception.IncorrectPasswordException;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,11 +16,13 @@ public interface UserService {
 
 	User getById(Long id);
 
+	void update(User user, String currentPassword, String newPassword) throws IncorrectPasswordException, EmptyPasswordException;
+
 	void delete(User user);
 
 	void deleteById(Long id);
 
-	User getByEmail(String email);
+	Optional<User> getByEmail(String email);
 
 	Boolean existsByEmail(String email);
 

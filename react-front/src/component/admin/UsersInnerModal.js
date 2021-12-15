@@ -70,13 +70,14 @@ export class UsersInnerModal extends Component {
             <div className='col mb-2 mt-2'>
               <Autocomplete
                 disablePortal
+                required
                 id='combo-box-demo'
                 value={this.props.location}
                 onChange={(event, newValue) => {
                   this.props.onLocationChange(newValue);
                 }}
                 options={this.props.locationIds}
-                renderInput={(params) => <TextField {...params} label='Location' />}
+                renderInput={(params) => <TextField {...params} required={true} label='Location' />}
               />
             </div>
           </div>}
