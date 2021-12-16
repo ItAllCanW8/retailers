@@ -42,12 +42,12 @@ public class Application extends Identity {
     @JoinColumn(name = "destination_location")
     private Location destLocation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by")
     @ToString.Exclude
     private User createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_upd_by")
     @ToString.Exclude
     private User lastUpdBy;

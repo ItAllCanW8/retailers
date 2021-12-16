@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Locations from './component/admin/Locations';
 import Users from './component/admin/Users';
 import Items from './component/admin/Items';
+import Applications from './component/employee/Applications';
 
 class App extends Component {
   constructor(props) {
@@ -47,6 +48,7 @@ class App extends Component {
             <Route exact path="/locations" component={Locations}/>
             <Route exact path="/users" component={Users}/>
             <Route exact path="/items" component={Items}/>
+            <Route exact path="/applications" component={Applications}/>
           </div>
         </Switch>
       </Router>

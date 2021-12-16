@@ -2,6 +2,7 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.dto.ApplicationDto;
 import com.itechart.retailers.model.entity.Application;
+import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/applications")
+@RequestMapping("api/applications")
 public class ApplicationController {
 
     private final ApplicationService applicationService;
@@ -36,8 +37,8 @@ public class ApplicationController {
 
     @PostMapping
     @PreAuthorize(authorities)
-    public void create(@RequestBody ApplicationDto applicationDto) {
-        applicationService.save(applicationDto);
+    public void create(@RequestBody ApplicationReq applicationReq) {
+        applicationService.save(applicationReq);
     }
 
     @DeleteMapping("/{id}")

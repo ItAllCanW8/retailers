@@ -13,6 +13,7 @@ export default class Navbar extends Component {
       currentUser: undefined,
       showAdminBoard: false,
       showSystemAdminBoard: false,
+      showDispatcherBoard: false,
       collapse: false,
     };
     this.toggle = this.toggle.bind(this);
@@ -27,6 +28,7 @@ export default class Navbar extends Component {
         currentUser: user,
         showAdminBoard: user.role.includes('ADMIN'),
         showSystemAdminBoard: user.role.includes('SYSTEM_ADMIN'),
+        showDispatcherBoard: user.role.includes('DISPATCHER')
       });
     }
   }
@@ -45,7 +47,7 @@ export default class Navbar extends Component {
   }
 
   render() {
-    const { currentUser, showAdminBoard, showSystemAdminBoard } = this.state;
+    const { currentUser, showAdminBoard, showSystemAdminBoard, showDispatcherBoard } = this.state;
 
     return (
       <nav className="navbar navbar-expand-sm navbar-light bg-light mb-3">
@@ -90,10 +92,17 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
-              {showAdminBoard && (
+              {(showAdminBoard || showDispatcherBoard) && (
                 <li className="nav-item">
                   <Link to={'/items'} className="nav-link" tabIndex="-1">
                     Items
+                  </Link>
+                </li>
+              )}
+              {showDispatcherBoard && (
+                <li className="nav-item">
+                  <Link to={'/applications'} className="nav-link" tabIndex="-1">
+                    Applications
                   </Link>
                 </li>
               )}

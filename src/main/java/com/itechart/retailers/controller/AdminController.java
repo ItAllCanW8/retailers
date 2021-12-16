@@ -29,7 +29,7 @@ public class AdminController {
 	private String customerEmail;
 
 	@GetMapping("/locations")
-	@PreAuthorize(authorities)
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('DISPATCHER')")
 	public List<Location> getLocations() {
 		setCustomerId();
 
@@ -37,7 +37,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/locations")
-	@PreAuthorize(authorities)
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('DISPATCHER')")
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
 		setCustomerId();
 		adminService.createLocation(location, customerId);
