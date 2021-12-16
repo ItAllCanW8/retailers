@@ -29,8 +29,9 @@ public class Item extends Identity {
 	@JoinColumn(name = "category_id", nullable = false)
 	@ToString.Exclude
 	private Category category;
-/*
+
 	@OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
 	@ToString.Exclude
-	private Set<ApplicationItem> applicationAssoc;*/
+	private Set<ApplicationItem> applicationAssoc;
+
 }

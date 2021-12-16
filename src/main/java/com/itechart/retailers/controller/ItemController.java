@@ -37,17 +37,10 @@ public class ItemController {
 
 	@PostMapping("/items")
 	@PreAuthorize(authorities)
-	public ResponseEntity<?> create(@RequestBody ItemDtoCreation itemDto) {
-		System.out.println("im here w item" + itemDto);
-
-		Category category = categoryService.saveIfNotExists(Category.builder().name(itemDto.getCategoryName()).build());
-		Item item = Item.builder()
-				.upc(itemDto.getUpc())
-				.label(itemDto.getLabel())
-				.units(itemDto.getUnits())
-				.category(category)
-				.build();
-
+	public ResponseEntity<?> create(@RequestBody Item item) {
+		Category category = categoryService.saveIfNotExists(
+				item.getCategory());
+		item.setCategory(category);
 		itemService.save(item);
 		return ResponseEntity.ok(new MessageResponse("Item added."));
 	}
