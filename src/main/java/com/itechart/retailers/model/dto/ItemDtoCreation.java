@@ -5,10 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ItemDto {
+public class ItemDtoCreation {
 
 	private String upc;
-	private Integer amount;
-	private Float cost;
+	private String label;
+	private int units;
+	private String categoryName;
 
 }

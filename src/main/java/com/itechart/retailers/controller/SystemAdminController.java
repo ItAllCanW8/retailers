@@ -35,6 +35,9 @@ public class SystemAdminController {
 	private final PasswordGenerator passwordGenerator;
 	private final PasswordEncoder passwordEncoder;
 
+	private final String authorities = "hasAuthority('SYSTEM_ADMIN')";
+
+
 	@PostMapping
 	public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
 		if (userService.existsByEmail(signUpRequest.getEmail())) {
@@ -60,21 +63,13 @@ public class SystemAdminController {
 	}
 
 	@PostMapping("{id}")
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+	@PreAuthorize(authorities)
 	public void updateUserStatus(@PathVariable Long id, @RequestBody CustomerState state) {
-		Customer customer = customerService.getById(id);
-		customer.setActive(state.isActive());
-		customerService.save(customer);
-
-		if (!state.isActive()) {
-			List<User> customerUsers = userService.findUsersByCustomerId(id);
-			customerUsers.forEach(user -> user.setActive(state.isActive()));
-			customerUsers.forEach(userService::save);
-		}
+		userService.changeUserStatus(id, state.isActive());
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+	@PreAuthorize(authorities)
 	public List<CustomerWithMail> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
 		return customerService.findByParams(isOnlyActive).stream()
 				.map(customer -> new CustomerWithMail(customer,

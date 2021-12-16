@@ -1,7 +1,10 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.Customer;
+import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.repository.CustomerRepository;
+import com.itechart.retailers.repository.RoleRepository;
+import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,8 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
 	private final CustomerRepository customerRepository;
+	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
 
 	@Override
 	public Customer save(Customer customer) {
@@ -31,5 +36,22 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getById(Long id) {
 		return customerRepository.getById(id);
+	}
+
+	@Override
+	public void changeActivateUser(Long customerId, boolean active) {
+		Customer customer = customerRepository.getById(customerId);
+		customer.setActive(active);
+		customerRepository.save(customer);
+
+		if (!active) {
+			List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
+			customerUsers.forEach(user -> user.setActive(false));
+			userRepository.saveAll(customerUsers);
+		} else {
+			User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole("ADMIN"), customerId);
+			user.setActive(true);
+			userRepository.save(user);
+		}
 	}
 }

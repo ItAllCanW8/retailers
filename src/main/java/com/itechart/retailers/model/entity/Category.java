@@ -17,6 +17,7 @@ import javax.persistence.Table;
 @Setter
 public class Category extends Identity {
 
-    @Column(name = "name", nullable = false, length = 45)
-    private String name;
+	@Column(name = "name", nullable = false, length = 45, unique = true)
+	private String name;
+
 }

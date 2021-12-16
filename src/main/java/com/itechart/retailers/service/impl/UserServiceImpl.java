@@ -1,7 +1,10 @@
 package com.itechart.retailers.service.impl;
 
+import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.repository.CustomerRepository;
+import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
@@ -18,6 +21,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
+	private final CustomerRepository customerRepository;
+	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -84,5 +89,23 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getByRoleAndCustomerId(Role role, Long customerId) {
 		return userRepository.getByRoleAndCustomerId(role, customerId);
+	}
+
+	@Override
+	public void changeUserStatus(Long customerId, boolean status) {
+		Customer customer = customerRepository.getById(customerId);
+		customer.setActive(status);
+		customerRepository.save(customer);
+
+		if (!status) {
+			List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
+			customerUsers.forEach(user -> user.setActive(false));
+			userRepository.saveAll(customerUsers);
+		} else {
+			Role role = roleRepository.getByRole("ADMIN");
+			User user = userRepository.getByRoleAndCustomerId(role, customerId);
+			user.setActive(true);
+			userRepository.save(user);
+		}
 	}
 }

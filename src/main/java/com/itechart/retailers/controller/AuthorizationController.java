@@ -31,51 +31,53 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthorizationController {
 
-    private final UserRepository userRepository;
-    private final RoleService roleService;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final RoleService roleService;
+	private final AuthenticationManager authenticationManager;
+	private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LogInRequest requestDto) {
-        Authentication authentication;
+	@PostMapping("/login")
+	public ResponseEntity<?> authenticate(@RequestBody LogInRequest requestDto) {
+		Authentication authentication;
 
-        try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Incorrect email or password!"));
-        } catch (LockedException e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Account was disabled. Please, contact your administrator."));
-        }
+		try {
+			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
+		} catch (BadCredentialsException e) {
+			return ResponseEntity.badRequest().body(new MessageResponse("Incorrect email or password!"));
+		} catch (LockedException e) {
+			return ResponseEntity.badRequest().body(new MessageResponse("Account was disabled. Please, contact your administrator."));
+		}
 
-        UserDetailsImpl authenticatedUser = (UserDetailsImpl) authentication.getPrincipal();
+		UserDetailsImpl authenticatedUser = (UserDetailsImpl) authentication.getPrincipal();
 
-        String accessToken = JWT.create()
-                .withSubject(authenticatedUser.getEmail())
-                .withExpiresAt(new Date(Long.MAX_VALUE))
+		String accessToken = JWT.create()
+				.withSubject(authenticatedUser.getEmail())
+				.withExpiresAt(new Date(Long.MAX_VALUE))
 //                .withExpiresAt(new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000))
-                .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
-                .withClaim("email", authenticatedUser.getEmail())
-                .withClaim("role", authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
-                .withClaim("name", authenticatedUser.getUsername())
-                .sign(Algorithm.HMAC256("secret"));
+				.withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+				.withClaim("email", authenticatedUser.getEmail())
+				.withClaim("role", authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
+				.withClaim("name", authenticatedUser.getUsername())
+				.sign(Algorithm.HMAC256("secret"));
 
-        return ResponseEntity.ok(new UserAuthenticationResponse(accessToken));
-    }
+		System.out.println(accessToken);
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
-        }
-        User user = User.builder()
-                .name(signUpRequest.getName())
-                .email(signUpRequest.getEmail())
-                .role(roleService.save(signUpRequest.getRole()))
-                .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .isActive(true)
-                .build();
-        userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("Success! Now you can log in to the system"));
-    }
+		return ResponseEntity.ok(new UserAuthenticationResponse(accessToken));
+	}
+
+	@PostMapping("/signup")
+	public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken!"));
+		}
+		User user = User.builder()
+				.name(signUpRequest.getName())
+				.email(signUpRequest.getEmail())
+				.role(roleService.save(signUpRequest.getRole()))
+				.password(passwordEncoder.encode(signUpRequest.getPassword()))
+				.isActive(true)
+				.build();
+		userRepository.save(user);
+		return ResponseEntity.ok(new MessageResponse("Success! Now you can log in to the system"));
+	}
 }
