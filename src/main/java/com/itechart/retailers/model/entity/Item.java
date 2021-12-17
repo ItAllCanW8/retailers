@@ -30,6 +30,10 @@ public class Item extends Identity {
 	@ToString.Exclude
 	private Category category;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "customer_id", nullable = false)
+	private Customer customer;
+
 	@OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private Set<ApplicationItem> applicationAssoc;

@@ -17,69 +17,74 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
 
-    private final ApplicationRepository applicationRepository;
+	private final ApplicationRepository applicationRepository;
 
-    @Override
-    public List<Application> findAll() {
-        return applicationRepository.findAll();
-    }
+	@Override
+	public List<Application> findAll() {
+		return applicationRepository.findAll();
+	}
 
-    @Override
-    public void save(ApplicationDto applicationDto) {
-        try {
-            applicationRepository.save(convertToEntity(applicationDto));
-        } catch (NumberFormatException e) {
-            //log exception
-        }
-    }
+	@Override
+	public void save(ApplicationDto applicationDto) {
+		try {
+			applicationRepository.save(convertToEntity(applicationDto));
+		} catch (NumberFormatException e) {
+			//log exception
+		}
+	}
 
-    @Override
-    public Application getById(Long id) {
-        return applicationRepository.getById(id);
-    }
+	@Override
+	public Application getById(Long id) {
+		return applicationRepository.getById(id);
+	}
 
-    @Override
-    public void delete(Application application) {
-        applicationRepository.delete(application);
-    }
+	@Override
+	public void delete(Application application) {
+		applicationRepository.delete(application);
+	}
 
-    @Override
-    public void deleteById(Long id) {
-        applicationRepository.deleteById(id);
-    }
+	@Override
+	public void deleteById(Long id) {
+		applicationRepository.deleteById(id);
+	}
 
-    private Application convertToEntity(ApplicationDto applicationDto) {
-        UserDto createdBy = applicationDto.getCreatedBy();
-        Set<ItemDto> itemDtos = applicationDto.getItems();
+	@Override
+	public List<Application> findApplicationsByDestLocation(Location destLocation) {
+		return applicationRepository.findApplicationsByDestLocation(destLocation);
+	}
 
-        Application application = Application.builder()
-                .applicationNumber(applicationDto.getApplicationNumber())
-                .itemsTotal(Long.valueOf(applicationDto.getItemsTotal()))
-                .unitsTotal(Long.valueOf(applicationDto.getUnitsTotal()))
-                .srcLocation(Location.builder()
-                        .identifier(applicationDto.getSrcLocation()).build())
-                .destLocation(Location.builder()
-                        .identifier(applicationDto.getDestLocation()).build())
-                .createdBy(User.builder()
-                        .name(createdBy.getName())
-                        .surname(createdBy.getSurname())
-                        .email(createdBy.getEmail()).build())
-                .build();
+	private Application convertToEntity(ApplicationDto applicationDto) {
+		UserDto createdBy = applicationDto.getCreatedBy();
+		Set<ItemDto> itemDtos = applicationDto.getItems();
 
-        Set<ApplicationItem> applicationItems = new HashSet<>();
+		Application application = Application.builder()
+				.applicationNumber(applicationDto.getApplicationNumber())
+				.itemsTotal(Long.valueOf(applicationDto.getItemsTotal()))
+				.unitsTotal(Long.valueOf(applicationDto.getUnitsTotal()))
+				.srcLocation(Location.builder()
+						.identifier(applicationDto.getSrcLocation()).build())
+				.destLocation(Location.builder()
+						.identifier(applicationDto.getDestLocation()).build())
+				.createdBy(User.builder()
+						.name(createdBy.getName())
+						.surname(createdBy.getSurname())
+						.email(createdBy.getEmail()).build())
+				.build();
 
-        for (ItemDto itemDto : itemDtos) {
-            applicationItems.add(ApplicationItem.builder()
-                    .item(Item.builder()
-                            .upc(itemDto.getUpc()).build())
-                    .amount(itemDto.getAmount())
-                    .cost(itemDto.getCost())
-                    .application(application)
-                    .build());
-        }
+		Set<ApplicationItem> applicationItems = new HashSet<>();
 
-        application.setItemAssoc(applicationItems);
+		for (ItemDto itemDto : itemDtos) {
+			applicationItems.add(ApplicationItem.builder()
+					.item(Item.builder()
+							.upc(itemDto.getUpc()).build())
+					.amount(itemDto.getAmount())
+					.cost(itemDto.getCost())
+					.application(application)
+					.build());
+		}
 
-        return application;
-    }
+		application.setItemAssoc(applicationItems);
+
+		return application;
+	}
 }

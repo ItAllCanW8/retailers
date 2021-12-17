@@ -28,7 +28,7 @@ create table customer
     id                bigint auto_increment,
     name              varchar(255)     null,
     registration_date date             null,
-    active            bit default b'0' null,
+    active            bit default b'1' null,
     constraint id_UNIQUE
         unique (id)
 );
@@ -45,9 +45,11 @@ create table customer_category
     constraint id_UNIQUE
         unique (id),
     constraint fk_customer_category_category
-        foreign key (category_id) references category (id),
+        foreign key (category_id) references category (id)
+            on update cascade on delete cascade,
     constraint fk_customer_category_customer
         foreign key (customer_id) references customer (id)
+            on update cascade on delete cascade
 );
 
 create index fk_customer_category_category_idx
@@ -66,10 +68,12 @@ create table item
     label       varchar(45) null,
     units       int         null,
     category_id bigint      null,
+    customer_id bigint      not null,
     constraint id_UNIQUE
         unique (id),
     constraint fk_category_id
         foreign key (category_id) references category (id)
+            on update cascade on delete cascade
 );
 
 create index fk_category_id_idx
@@ -81,21 +85,27 @@ alter table item
 create table location
 (
     id                 bigint auto_increment,
-    identifier         varchar(255)    null,
+    identifier         varchar(255)    not null,
     type               varchar(45)     null,
     total_capacity     int             null,
     available_capacity int             null,
-    address_id         bigint          null,
     rental_tax_rate    float default 0 null,
+    address_id         bigint          null,
     customer_id        bigint          not null,
     constraint id_UNIQUE
         unique (id),
-    constraint customer_id_fk
-        foreign key (customer_id) references customer (id)
-            on update cascade on delete cascade,
+    constraint identifier_UNIQUE
+        unique (identifier),
     constraint fk_location_address
         foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
+    constraint fk_location_customer
+        foreign key (customer_id) references customer (id)
+            on update cascade on delete cascade
 );
+
+create index fk_location_customer_idx
+    on location (customer_id);
 
 create index fk_locations_addresses_idx
     on location (address_id);
@@ -111,9 +121,11 @@ create table location_item
     constraint id_UNIQUE
         unique (id),
     constraint fk_location_item_item
-        foreign key (item_id) references item (id),
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade,
     constraint fk_location_item_location
         foreign key (location_id) references location (id)
+            on update cascade on delete cascade
 );
 
 create index fk_location_item_location_idx
@@ -152,8 +164,9 @@ alter table state_tax
 create table supplier
 (
     id         bigint auto_increment,
-    name       varchar(255) null,
-    identifier varchar(255) null,
+    name       varchar(255)     null,
+    identifier varchar(255)     not null,
+    active     bit default b'1' null,
     constraint identifier_UNIQUE
         unique (id)
 );
@@ -161,26 +174,28 @@ create table supplier
 alter table supplier
     add primary key (id);
 
-create table supplier_warehouse
+create table customer_supplier
 (
-    id           bigint auto_increment,
-    supplier_id  bigint not null,
-    warehouse_id bigint not null,
+    id          bigint auto_increment,
+    customer_id bigint not null,
+    supplier_id bigint not null,
     constraint id_UNIQUE
         unique (id),
-    constraint fk_supplier_warehouse_supplier
-        foreign key (supplier_id) references supplier (id),
-    constraint fk_supplier_warehouse_warehouse
-        foreign key (warehouse_id) references location (id)
+    constraint fk_customer_supplier_customer
+        foreign key (customer_id) references customer (id)
+            on update cascade,
+    constraint fk_customer_supplier_supplier
+        foreign key (supplier_id) references supplier (id)
+            on update cascade on delete cascade
 );
 
-create index fk_supplier_warehouse_supplier_idx
-    on supplier_warehouse (supplier_id);
+create index fk_customer_supplier_customer_idx
+    on customer_supplier (customer_id);
 
-create index fk_supplier_warehouse_warehouse_idx
-    on supplier_warehouse (warehouse_id);
+create index fk_customer_supplier_supplier_idx
+    on customer_supplier (supplier_id);
 
-alter table supplier_warehouse
+alter table customer_supplier
     add primary key (id);
 
 create table user
@@ -192,7 +207,7 @@ create table user
     email       varchar(255)     not null,
     login       varchar(255)     null,
     password    varchar(255)     not null,
-    active      bit default b'0' null,
+    active      bit default b'1' null,
     role_id     bigint           null,
     address_id  bigint           null,
     location_id bigint           null,
@@ -205,9 +220,11 @@ create table user
         foreign key (customer_id) references customer (id)
             on update cascade on delete cascade,
     constraint fk_user_address
-        foreign key (address_id) references address (id),
+        foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
     constraint fk_user_location
-        foreign key (location_id) references location (id),
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade,
     constraint fk_user_role
         foreign key (role_id) references role (id)
 );
@@ -237,13 +254,17 @@ create table application
     constraint id_UNIQUE
         unique (id),
     constraint fk_application_created_by
-        foreign key (created_by) references user (id),
+        foreign key (created_by) references user (id)
+            on update cascade on delete cascade,
     constraint fk_application_dest_location
-        foreign key (destination_location) references location (id),
+        foreign key (destination_location) references location (id)
+            on update cascade on delete cascade,
     constraint fk_application_src_location
-        foreign key (source_location) references location (id),
+        foreign key (source_location) references location (id)
+            on update cascade on delete cascade,
     constraint fk_application_upd_by
         foreign key (last_upd_by) references user (id)
+            on update cascade on delete cascade
 );
 
 create index fk_application_created_by_idx
@@ -271,9 +292,11 @@ create table application_item
     constraint id_UNIQUE
         unique (id),
     constraint fk_application_item_application
-        foreign key (application_id) references application (id),
+        foreign key (application_id) references application (id)
+            on update cascade on delete cascade,
     constraint fk_application_item_item
         foreign key (item_id) references item (id)
+            on update cascade on delete cascade
 );
 
 create index fk_application_item_application_idx
@@ -297,9 +320,11 @@ create table bill
     constraint id_UNIQUE
         unique (id),
     constraint fk_bill_location
-        foreign key (location_id) references location (id),
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade,
     constraint fk_bill_user
         foreign key (shop_manager) references user (id)
+            on update cascade on delete cascade
 );
 
 create index fk_bill_location_idx
@@ -321,9 +346,11 @@ create table bill_item
     constraint id_UNIQUE
         unique (id),
     constraint fk_bill_item_bill
-        foreign key (bill_id) references bill (id),
+        foreign key (bill_id) references bill (id)
+            on update cascade on delete cascade,
     constraint fk_bill_item_item
         foreign key (item_id) references item (id)
+            on update cascade on delete cascade
 );
 
 create index fk_bills_idx
@@ -335,18 +362,46 @@ create index fk_items_idx
 alter table bill_item
     add primary key (id);
 
+create table warehouse
+(
+    id          bigint auto_increment,
+    name        varchar(45) null,
+    address_id  bigint      null,
+    supplier_id bigint      not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_warehouse_address
+        foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
+    constraint fk_warehouse_supplier
+        foreign key (supplier_id) references supplier (id)
+            on update cascade on delete cascade
+);
+
+create index fk_warehouse_address_idx
+    on warehouse (address_id);
+
+create index fk_warehouse_supplier_idx
+    on warehouse (supplier_id);
+
+alter table warehouse
+    add primary key (id);
+
 create table write_off_act
 (
     id           bigint auto_increment,
-    identifier   varchar(255) null,
+    identifier   varchar(255) not null,
     date_time    datetime     null,
     total_amount bigint       null,
     total_sum    bigint       null,
     location_id  bigint       null,
     constraint id_UNIQUE
         unique (id),
+    constraint identifier_UNIQUE
+        unique (identifier),
     constraint fk_write_off_act_location
         foreign key (location_id) references location (id)
+            on update cascade on delete cascade
 );
 
 create index fk_write_off_act_location_idx
@@ -365,9 +420,11 @@ create table write_off_item
     constraint id_UNIQUE
         unique (id),
     constraint fk_write_off_item_item
-        foreign key (item_id) references item (id),
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade,
     constraint fk_write_off_item_write_off
         foreign key (write_off_id) references write_off_act (id)
+            on update cascade on delete cascade
 );
 
 create index fk_item_idx

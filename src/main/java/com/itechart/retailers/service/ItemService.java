@@ -16,4 +16,6 @@ public interface ItemService {
 
     void deleteById(Long id);
 
+    List<Item> findItemsByCustomerId(Long customerId);
+
 }
