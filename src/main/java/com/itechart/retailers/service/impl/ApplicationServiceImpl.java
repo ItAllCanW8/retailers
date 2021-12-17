@@ -23,39 +23,39 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
 
-    private final ApplicationRepository applicationRepository;
-    private final LocationRepository locationRepository;
-    private final SecurityContextService securityService;
+	private final ApplicationRepository applicationRepository;
+	private final LocationRepository locationRepository;
+	private final SecurityContextService securityService;
 
 	@Override
 	public List<Application> findAll() {
 		return applicationRepository.findAll();
 	}
 
-    @Override
-    @Transactional
-    public void save(ApplicationReq applicationDto) {
-        User currentUser = securityService.getCurrentUser();
+	@Override
+	@Transactional
+	public void save(ApplicationReq applicationDto) {
+		User currentUser = securityService.getCurrentUser();
 
-        Set<ApplicationItem> itemsAssoc = applicationDto.getItems().stream().map(ai -> ApplicationItem.builder()
-                        .item(Item.builder().upc(ai.getUpc()).build())
-                        .amount(ai.getAmount())
-                        .cost(ai.getCost())
-                        .build())
-                .collect(Collectors.toSet());
+		Set<ApplicationItem> itemsAssoc = applicationDto.getItems().stream().map(ai -> ApplicationItem.builder()
+						.item(Item.builder().upc(ai.getUpc()).build())
+						.amount(ai.getAmount())
+						.cost(ai.getCost())
+						.build())
+				.collect(Collectors.toSet());
 
-        Application application = Application.builder()
-                .applicationNumber(applicationDto.getApplicationNumber())
-                .destLocation(locationRepository.findLocationByIdentifier(applicationDto.getLocation().getIdentifier()).get())
-                .status("Open")
-                .itemAssoc(itemsAssoc)
-                .createdBy(currentUser)
-                .srcLocation(currentUser.getLocation())
-                .regDateTime(LocalDateTime.now())
-                .build();
+		Application application = Application.builder()
+				.applicationNumber(applicationDto.getApplicationNumber())
+				.destLocation(locationRepository.findLocationByIdentifier(applicationDto.getLocation().getIdentifier()).get())
+				.status("Open")
+				.itemAssoc(itemsAssoc)
+				.createdBy(currentUser)
+				.srcLocation(currentUser.getLocation())
+				.regDateTime(LocalDateTime.now())
+				.build();
 
-        applicationRepository.save(application);
-    }
+		applicationRepository.save(application);
+	}
 
 	@Override
 	public Application getById(Long id) {
@@ -72,34 +72,39 @@ public class ApplicationServiceImpl implements ApplicationService {
 		applicationRepository.deleteById(id);
 	}
 
-    private Application convertToEntity(ApplicationDto applicationDto) {
-        UserDto createdBy = applicationDto.getCreatedBy();
-        Set<ItemDto> itemDtos = applicationDto.getItems();
+	@Override
+	public List<Application> findApplicationsByDestLocation(Location destLocation) {
+		return applicationRepository.findApplicationsByDestLocation(destLocation);
+	}
 
-        Application application = Application.builder()
-                .applicationNumber(applicationDto.getApplicationNumber())
-                .itemsTotal(Long.valueOf(applicationDto.getItemsTotal()))
-                .unitsTotal(Long.valueOf(applicationDto.getUnitsTotal()))
-                .srcLocation(Location.builder()
-                        .identifier(applicationDto.getSrcLocation()).build())
-                .destLocation(Location.builder()
-                        .identifier(applicationDto.getDestLocation()).build())
-                .createdBy(User.builder()
-                        .name(createdBy.getName())
-                        .surname(createdBy.getSurname())
-                        .email(createdBy.getEmail()).build())
-                .build();
+	private Application convertToEntity(ApplicationDto applicationDto) {
+		UserDto createdBy = applicationDto.getCreatedBy();
+		Set<ItemDto> itemDtos = applicationDto.getItems();
 
-        Set<ApplicationItem> applicationItems = new HashSet<>();
+		Application application = Application.builder()
+				.applicationNumber(applicationDto.getApplicationNumber())
+				.itemsTotal(Long.valueOf(applicationDto.getItemsTotal()))
+				.unitsTotal(Long.valueOf(applicationDto.getUnitsTotal()))
+				.srcLocation(Location.builder()
+						.identifier(applicationDto.getSrcLocation()).build())
+				.destLocation(Location.builder()
+						.identifier(applicationDto.getDestLocation()).build())
+				.createdBy(User.builder()
+						.name(createdBy.getName())
+						.surname(createdBy.getSurname())
+						.email(createdBy.getEmail()).build())
+				.build();
 
-        for (ItemDto itemDto : itemDtos) {
-            applicationItems.add(ApplicationItem.builder()
-                    .item(Item.builder().upc(itemDto.getUpc()).build())
-                    .amount(itemDto.getAmount())
-                    .cost(itemDto.getCost())
-                    .application(application)
-                    .build());
-        }
+		Set<ApplicationItem> applicationItems = new HashSet<>();
+
+		for (ItemDto itemDto : itemDtos) {
+			applicationItems.add(ApplicationItem.builder()
+					.item(Item.builder().upc(itemDto.getUpc()).build())
+					.amount(itemDto.getAmount())
+					.cost(itemDto.getCost())
+					.application(application)
+					.build());
+		}
 
 		application.setItemAssoc(applicationItems);
 
