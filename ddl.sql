@@ -1,508 +1,439 @@
--- MySQL Workbench Forward Engineering
+create table address
+(
+    id          bigint auto_increment,
+    state_code  varchar(2)   null,
+    city        varchar(255) null,
+    first_line  varchar(255) null,
+    second_line varchar(255) null,
+    constraint id_UNIQUE
+        unique (id)
+);
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+alter table address
+    add primary key (id);
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema retailers
--- -----------------------------------------------------
+create table category
+(
+    id   bigint auto_increment,
+    name varchar(45) null,
+    constraint id_UNIQUE
+        unique (id)
+);
 
--- -----------------------------------------------------
--- Schema retailers
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `retailers` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `retailers` ;
+alter table category
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`address`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`address` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `state_code` VARCHAR(2) NULL DEFAULT NULL,
-  `city` VARCHAR(255) NULL DEFAULT NULL,
-  `first_line` VARCHAR(255) NULL DEFAULT NULL,
-  `second_line` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 93
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table customer
+(
+    id                bigint auto_increment,
+    name              varchar(255)     null,
+    registration_date date             null,
+    active            bit default b'1' null,
+    constraint id_UNIQUE
+        unique (id)
+);
 
+alter table customer
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`customer`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`customer` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `registration_date` DATE NULL DEFAULT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 2
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table customer_category
+(
+    id           bigint auto_increment,
+    category_tax float default 0 null,
+    customer_id  bigint          null,
+    category_id  bigint          null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_customer_category_category
+        foreign key (category_id) references category (id)
+            on update cascade on delete cascade,
+    constraint fk_customer_category_customer
+        foreign key (customer_id) references customer (id)
+            on update cascade on delete cascade
+);
 
+create index fk_customer_category_category_idx
+    on customer_category (category_id);
 
--- -----------------------------------------------------
--- Table `retailers`.`location`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`location` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `identifier` VARCHAR(255) NOT NULL,
-  `type` VARCHAR(45) NULL DEFAULT NULL,
-  `total_capacity` INT NULL DEFAULT NULL,
-  `available_capacity` INT NULL DEFAULT NULL,
-  `rental_tax_rate` FLOAT NULL DEFAULT '0',
-  `address_id` BIGINT NULL DEFAULT NULL,
-  `customer_id` BIGINT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `identifier_UNIQUE` (`identifier` ASC) VISIBLE,
-  INDEX `fk_locations_addresses_idx` (`address_id` ASC) VISIBLE,
-  INDEX `fk_location_customer_idx` (`customer_id` ASC) VISIBLE,
-  CONSTRAINT `fk_location_address`
-    FOREIGN KEY (`address_id`)
-    REFERENCES `retailers`.`address` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_location_customer`
-    FOREIGN KEY (`customer_id`)
-    REFERENCES `retailers`.`customer` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 29
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_customer_category_customer_idx
+    on customer_category (customer_id);
 
+alter table customer_category
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`role`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`role` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(30) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `role_UNIQUE` (`role` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 9
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table item
+(
+    id          bigint auto_increment,
+    upc         varchar(20) null,
+    label       varchar(45) null,
+    units       int         null,
+    category_id bigint      null,
+    customer_id bigint      not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_category_id
+        foreign key (category_id) references category (id)
+            on update cascade on delete cascade
+);
 
+create index fk_category_id_idx
+    on item (category_id);
 
--- -----------------------------------------------------
--- Table `retailers`.`user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`user` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `surname` VARCHAR(255) NULL DEFAULT NULL,
-  `birthday` DATE NULL DEFAULT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `login` VARCHAR(255) NULL DEFAULT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
-  `role_id` BIGINT NULL DEFAULT NULL,
-  `address_id` BIGINT NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_customer_id` (`customer_id` ASC) VISIBLE,
-  INDEX `fk_user_role` (`role_id` ASC) VISIBLE,
-  INDEX `fk_user_address_idx` (`address_id` ASC) VISIBLE,
-  INDEX `fk_user_location_idx` (`location_id` ASC) VISIBLE,
-  CONSTRAINT `fk_customer_id`
-    FOREIGN KEY (`customer_id`)
-    REFERENCES `retailers`.`customer` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_user_address`
-    FOREIGN KEY (`address_id`)
-    REFERENCES `retailers`.`address` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_user_location`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_user_role`
-    FOREIGN KEY (`role_id`)
-    REFERENCES `retailers`.`role` (`id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 32
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+alter table item
+    add primary key (id);
 
+create table location
+(
+    id                 bigint auto_increment,
+    identifier         varchar(255)    not null,
+    type               varchar(45)     null,
+    total_capacity     int             null,
+    available_capacity int             null,
+    rental_tax_rate    float default 0 null,
+    address_id         bigint          null,
+    customer_id        bigint          not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint identifier_UNIQUE
+        unique (identifier),
+    constraint fk_location_address
+        foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
+    constraint fk_location_customer
+        foreign key (customer_id) references customer (id)
+            on update cascade on delete cascade
+);
 
--- -----------------------------------------------------
--- Table `retailers`.`application`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`application` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `application_number` VARCHAR(45) NULL DEFAULT NULL,
-  `reg_date_time` DATETIME NULL DEFAULT NULL,
-  `last_upd_date_time` DATETIME NULL DEFAULT NULL,
-  `status` VARCHAR(45) NULL DEFAULT NULL,
-  `items_total` BIGINT NULL DEFAULT NULL,
-  `units_total` BIGINT NULL DEFAULT NULL,
-  `source_location` BIGINT NULL DEFAULT NULL,
-  `destination_location` BIGINT NULL DEFAULT NULL,
-  `created_by` BIGINT NULL DEFAULT NULL,
-  `last_upd_by` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_application_created_by_idx` (`created_by` ASC) VISIBLE,
-  INDEX `fk_application_dest_location_idx` (`destination_location` ASC) VISIBLE,
-  INDEX `fk_application_src_location_idx` (`source_location` ASC) VISIBLE,
-  INDEX `fk_application_upd_by_idx` (`last_upd_by` ASC) VISIBLE,
-  CONSTRAINT `fk_application_created_by`
-    FOREIGN KEY (`created_by`)
-    REFERENCES `retailers`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_application_dest_location`
-    FOREIGN KEY (`destination_location`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_application_src_location`
-    FOREIGN KEY (`source_location`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_application_upd_by`
-    FOREIGN KEY (`last_upd_by`)
-    REFERENCES `retailers`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_location_customer_idx
+    on location (customer_id);
 
+create index fk_locations_addresses_idx
+    on location (address_id);
 
--- -----------------------------------------------------
--- Table `retailers`.`category`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`category` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+alter table location
+    add primary key (id);
 
+create table location_item
+(
+    id          bigint auto_increment,
+    location_id bigint not null,
+    item_id     bigint not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_location_item_item
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade,
+    constraint fk_location_item_location
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade
+);
 
--- -----------------------------------------------------
--- Table `retailers`.`item`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `upc` VARCHAR(20) NULL DEFAULT NULL,
-  `label` VARCHAR(45) NULL DEFAULT NULL,
-  `units` INT NULL DEFAULT NULL,
-  `category_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_category_id_idx` (`category_id` ASC) VISIBLE,
-  CONSTRAINT `fk_category_id`
-    FOREIGN KEY (`category_id`)
-    REFERENCES `retailers`.`category` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_location_item_location_idx
+    on location_item (location_id);
 
+alter table location_item
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`application_item`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`application_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `cost` FLOAT NULL DEFAULT NULL,
-  `application_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_application_item_application_idx` (`application_id` ASC) VISIBLE,
-  INDEX `fk_items_idx` (`item_id` ASC) VISIBLE,
-  CONSTRAINT `fk_application_item_application`
-    FOREIGN KEY (`application_id`)
-    REFERENCES `retailers`.`application` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_application_item_item`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `retailers`.`item` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table role
+(
+    id   bigint auto_increment,
+    role varchar(30) not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint role_UNIQUE
+        unique (role)
+);
 
+alter table role
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`bill`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`bill` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `number` VARCHAR(45) NULL DEFAULT NULL,
-  `total_amount` BIGINT NULL DEFAULT NULL,
-  `total_units` BIGINT NULL DEFAULT NULL,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
-  `shop_manager` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_bill_location_idx` (`location_id` ASC) VISIBLE,
-  INDEX `fk_bills_users_idx` (`shop_manager` ASC) VISIBLE,
-  CONSTRAINT `fk_bill_location`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_bill_user`
-    FOREIGN KEY (`shop_manager`)
-    REFERENCES `retailers`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table state_tax
+(
+    id         bigint auto_increment,
+    state_code varchar(2) null,
+    tax        float      null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint state_code_UNIQUE
+        unique (state_code)
+);
 
+alter table state_tax
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`bill_item`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`bill_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `price` FLOAT NULL DEFAULT NULL,
-  `bill_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_bills_idx` (`bill_id` ASC) VISIBLE,
-  INDEX `fk_items_idx` (`item_id` ASC) VISIBLE,
-  CONSTRAINT `fk_bill_item_bill`
-    FOREIGN KEY (`bill_id`)
-    REFERENCES `retailers`.`bill` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_bill_item_item`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `retailers`.`item` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table supplier
+(
+    id         bigint auto_increment,
+    name       varchar(255)     null,
+    identifier varchar(255)     not null,
+    active     bit default b'1' null,
+    constraint identifier_UNIQUE
+        unique (id)
+);
 
+alter table supplier
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`customer_category`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`customer_category` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `category_tax` FLOAT NULL DEFAULT '0',
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  `category_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_customer_category_category_idx` (`category_id` ASC) VISIBLE,
-  INDEX `fk_customer_category_customer_idx` (`customer_id` ASC) VISIBLE,
-  CONSTRAINT `fk_customer_category_category`
-    FOREIGN KEY (`category_id`)
-    REFERENCES `retailers`.`category` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_customer_category_customer`
-    FOREIGN KEY (`customer_id`)
-    REFERENCES `retailers`.`customer` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table customer_supplier
+(
+    id          bigint auto_increment,
+    customer_id bigint not null,
+    supplier_id bigint not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_customer_supplier_customer
+        foreign key (customer_id) references customer (id)
+            on update cascade,
+    constraint fk_customer_supplier_supplier
+        foreign key (supplier_id) references supplier (id)
+            on update cascade on delete cascade
+);
 
+create index fk_customer_supplier_customer_idx
+    on customer_supplier (customer_id);
 
--- -----------------------------------------------------
--- Table `retailers`.`supplier`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`supplier` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `identifier` VARCHAR(255) NOT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `identifier_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 13
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_customer_supplier_supplier_idx
+    on customer_supplier (supplier_id);
 
+alter table customer_supplier
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`customer_supplier`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`customer_supplier` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `customer_id` BIGINT NOT NULL,
-  `supplier_id` BIGINT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_customer_supplier_customer_idx` (`customer_id` ASC) VISIBLE,
-  INDEX `fk_customer_supplier_supplier_idx` (`supplier_id` ASC) VISIBLE,
-  CONSTRAINT `fk_customer_supplier_customer`
-    FOREIGN KEY (`customer_id`)
-    REFERENCES `retailers`.`customer` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_customer_supplier_supplier`
-    FOREIGN KEY (`supplier_id`)
-    REFERENCES `retailers`.`supplier` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 10
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table user
+(
+    id          bigint auto_increment,
+    name        varchar(255)     null,
+    surname     varchar(255)     null,
+    birthday    date             null,
+    email       varchar(255)     not null,
+    login       varchar(255)     null,
+    password    varchar(255)     not null,
+    active      bit default b'1' null,
+    role_id     bigint           null,
+    address_id  bigint           null,
+    location_id bigint           null,
+    customer_id bigint           null,
+    constraint email_UNIQUE
+        unique (email),
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_customer_id
+        foreign key (customer_id) references customer (id)
+            on update cascade on delete cascade,
+    constraint fk_user_address
+        foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
+    constraint fk_user_location
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade,
+    constraint fk_user_role
+        foreign key (role_id) references role (id)
+);
 
+create index fk_user_address_idx
+    on user (address_id);
 
--- -----------------------------------------------------
--- Table `retailers`.`location_item`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`location_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `location_id` BIGINT NOT NULL,
-  `item_id` BIGINT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_location_item_location_idx` (`location_id` ASC) VISIBLE,
-  INDEX `fk_location_item_item` (`item_id` ASC) VISIBLE,
-  CONSTRAINT `fk_location_item_item`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `retailers`.`item` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_location_item_location`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_user_location_idx
+    on user (location_id);
 
+alter table user
+    add primary key (id);
 
--- -----------------------------------------------------
--- Table `retailers`.`state_tax`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`state_tax` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `state_code` VARCHAR(2) NULL DEFAULT NULL,
-  `tax` FLOAT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `state_code_UNIQUE` (`state_code` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create table application
+(
+    id                   bigint auto_increment,
+    application_number   varchar(45) null,
+    reg_date_time        datetime    null,
+    last_upd_date_time   datetime    null,
+    status               varchar(45) null,
+    items_total          bigint      null,
+    units_total          bigint      null,
+    source_location      bigint      null,
+    destination_location bigint      null,
+    created_by           bigint      null,
+    last_upd_by          bigint      null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_application_created_by
+        foreign key (created_by) references user (id)
+            on update cascade on delete cascade,
+    constraint fk_application_dest_location
+        foreign key (destination_location) references location (id)
+            on update cascade on delete cascade,
+    constraint fk_application_src_location
+        foreign key (source_location) references location (id)
+            on update cascade on delete cascade,
+    constraint fk_application_upd_by
+        foreign key (last_upd_by) references user (id)
+            on update cascade on delete cascade
+);
 
+create index fk_application_created_by_idx
+    on application (created_by);
 
--- -----------------------------------------------------
--- Table `retailers`.`warehouse`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`warehouse` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
-  `address_id` BIGINT NULL DEFAULT NULL,
-  `supplier_id` BIGINT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_warehouse_supplier_idx` (`supplier_id` ASC) VISIBLE,
-  INDEX `fk_warehouse_address_idx` (`address_id` ASC) VISIBLE,
-  CONSTRAINT `fk_warehouse_address`
-    FOREIGN KEY (`address_id`)
-    REFERENCES `retailers`.`address` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_warehouse_supplier`
-    FOREIGN KEY (`supplier_id`)
-    REFERENCES `retailers`.`supplier` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 23
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+create index fk_application_dest_location_idx
+    on application (destination_location);
+
+create index fk_application_src_location_idx
+    on application (source_location);
+
+create index fk_application_upd_by_idx
+    on application (last_upd_by);
+
+alter table application
+    add primary key (id);
+
+create table application_item
+(
+    id             bigint auto_increment,
+    amount         int    null,
+    cost           float  null,
+    application_id bigint null,
+    item_id        bigint null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_application_item_application
+        foreign key (application_id) references application (id)
+            on update cascade on delete cascade,
+    constraint fk_application_item_item
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade
+);
+
+create index fk_application_item_application_idx
+    on application_item (application_id);
+
+create index fk_items_idx
+    on application_item (item_id);
+
+alter table application_item
+    add primary key (id);
+
+create table bill
+(
+    id           bigint auto_increment,
+    number       varchar(45) null,
+    total_amount bigint      null,
+    total_units  bigint      null,
+    date_time    datetime    null,
+    location_id  bigint      null,
+    shop_manager bigint      null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_bill_location
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade,
+    constraint fk_bill_user
+        foreign key (shop_manager) references user (id)
+            on update cascade on delete cascade
+);
+
+create index fk_bill_location_idx
+    on bill (location_id);
+
+create index fk_bills_users_idx
+    on bill (shop_manager);
+
+alter table bill
+    add primary key (id);
+
+create table bill_item
+(
+    id      bigint auto_increment,
+    amount  int    null,
+    price   float  null,
+    bill_id bigint null,
+    item_id bigint null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_bill_item_bill
+        foreign key (bill_id) references bill (id)
+            on update cascade on delete cascade,
+    constraint fk_bill_item_item
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade
+);
+
+create index fk_bills_idx
+    on bill_item (bill_id);
+
+create index fk_items_idx
+    on bill_item (item_id);
+
+alter table bill_item
+    add primary key (id);
+
+create table warehouse
+(
+    id          bigint auto_increment,
+    name        varchar(45) null,
+    address_id  bigint      null,
+    supplier_id bigint      not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_warehouse_address
+        foreign key (address_id) references address (id)
+            on update cascade on delete cascade,
+    constraint fk_warehouse_supplier
+        foreign key (supplier_id) references supplier (id)
+            on update cascade on delete cascade
+);
+
+create index fk_warehouse_address_idx
+    on warehouse (address_id);
+
+create index fk_warehouse_supplier_idx
+    on warehouse (supplier_id);
+
+alter table warehouse
+    add primary key (id);
+
+create table write_off_act
+(
+    id           bigint auto_increment,
+    identifier   varchar(255) not null,
+    date_time    datetime     null,
+    total_amount bigint       null,
+    total_sum    bigint       null,
+    location_id  bigint       null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint identifier_UNIQUE
+        unique (identifier),
+    constraint fk_write_off_act_location
+        foreign key (location_id) references location (id)
+            on update cascade on delete cascade
+);
+
+create index fk_write_off_act_location_idx
+    on write_off_act (location_id);
+
+alter table write_off_act
+    add primary key (id);
+
+create table write_off_item
+(
+    id           bigint auto_increment,
+    amount       int         null,
+    reason       varchar(45) null,
+    write_off_id bigint      not null,
+    item_id      bigint      not null,
+    constraint id_UNIQUE
+        unique (id),
+    constraint fk_write_off_item_item
+        foreign key (item_id) references item (id)
+            on update cascade on delete cascade,
+    constraint fk_write_off_item_write_off
+        foreign key (write_off_id) references write_off_act (id)
+            on update cascade on delete cascade
+);
+
+create index fk_item_idx
+    on write_off_item (item_id);
+
+create index fk_write_off_item_write_off_idx
+    on write_off_item (write_off_id);
+
+alter table write_off_item
+    add primary key (id);
 
 
--- -----------------------------------------------------
--- Table `retailers`.`write_off_act`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`write_off_act` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `identifier` VARCHAR(255) NOT NULL,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `total_amount` BIGINT NULL DEFAULT NULL,
-  `total_sum` BIGINT NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `identifier_UNIQUE` (`identifier` ASC) VISIBLE,
-  INDEX `fk_write_off_act_location_idx` (`location_id` ASC) VISIBLE,
-  CONSTRAINT `fk_write_off_act_location`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `retailers`.`location` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `retailers`.`write_off_item`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retailers`.`write_off_item` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `reason` VARCHAR(45) NULL DEFAULT NULL,
-  `write_off_id` BIGINT NOT NULL,
-  `item_id` BIGINT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_item_idx` (`item_id` ASC) VISIBLE,
-  INDEX `fk_write_off_item_write_off_idx` (`write_off_id` ASC) VISIBLE,
-  CONSTRAINT `fk_write_off_item_item`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `retailers`.`item` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_write_off_item_write_off`
-    FOREIGN KEY (`write_off_id`)
-    REFERENCES `retailers`.`write_off_act` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

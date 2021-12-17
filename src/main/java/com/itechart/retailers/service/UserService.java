@@ -29,4 +29,6 @@ public interface UserService {
 	List<User> findUsersByCustomerId(Long customerId);
 
 	User getByRoleAndCustomerId(Role role, Long customerId);
+
+	void changeUserStatus(Long customerId, boolean status);
 }

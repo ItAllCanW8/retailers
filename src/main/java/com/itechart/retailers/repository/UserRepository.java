@@ -29,7 +29,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("update User u set u.isActive = :newStatus where u.id = :id")
 	void changeUserStatus(@Param(value = "id") Long id, @Param(value = "newStatus") boolean newStatus);
 
+	@Query("select u from User u where u.role = ?1 and u.customer.id = ?2")
 	User getByRoleAndCustomerId(Role role, Long customerId);
 
 	Optional<User> findByEmail(String email);
+
+	@Query("select u from User u where u.customer.id = ?1 and u.isActive = ?2")
+	List<User> findUsersByCustomerIdAndActive(Long customerId, boolean status);
+
 }

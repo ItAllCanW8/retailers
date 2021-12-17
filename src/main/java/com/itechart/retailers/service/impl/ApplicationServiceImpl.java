@@ -27,10 +27,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final LocationRepository locationRepository;
     private final SecurityContextService securityService;
 
-    @Override
-    public List<Application> findAll() {
-        return applicationRepository.findAll();
-    }
+	@Override
+	public List<Application> findAll() {
+		return applicationRepository.findAll();
+	}
 
     @Override
     @Transactional
@@ -57,20 +57,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.save(application);
     }
 
-    @Override
-    public Application getById(Long id) {
-        return applicationRepository.getById(id);
-    }
+	@Override
+	public Application getById(Long id) {
+		return applicationRepository.getById(id);
+	}
 
-    @Override
-    public void delete(Application application) {
-        applicationRepository.delete(application);
-    }
+	@Override
+	public void delete(Application application) {
+		applicationRepository.delete(application);
+	}
 
-    @Override
-    public void deleteById(Long id) {
-        applicationRepository.deleteById(id);
-    }
+	@Override
+	public void deleteById(Long id) {
+		applicationRepository.deleteById(id);
+	}
 
     private Application convertToEntity(ApplicationDto applicationDto) {
         UserDto createdBy = applicationDto.getCreatedBy();
@@ -101,8 +101,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .build());
         }
 
-        application.setItemAssoc(applicationItems);
+		application.setItemAssoc(applicationItems);
 
-        return application;
-    }
+		return application;
+	}
 }
