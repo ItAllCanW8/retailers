@@ -119,7 +119,7 @@ class Applications extends Component {
   };
 
   acceptApplication = (id) => {
-
+    axios.put('/application/' + id + '/accept');
   };
 
   render() {
@@ -172,9 +172,14 @@ class Applications extends Component {
           <tbody>
           {this.state.applications && this.state.applications.map((application) => (
             <tr key={application.id}>
-              <th scope='row' onClick={() => this.openEditModal(application.id)}>
-                {/*<input className='form-check-input' type='checkbox' value={location.id}*/}
-                {/*       onChange={() => this.handleLocationSelection(window.event, location.id)} />*/}
+              <th scope='row'>
+                {application.status === 'STARTED_PROCESSING' && (
+                  <button className='btn btn-primary'
+                          onClick={() => this.acceptApplication(application.id)}
+                  >
+                    Accept
+                  </button>
+                )}
               </th>
               <td>{application.applicationNumber}</td>
               <td>{application.srcLocation.identifier}</td>
