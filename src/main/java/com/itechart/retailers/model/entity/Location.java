@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Builder
 @NoArgsConstructor
@@ -15,6 +16,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "location")
 public class Location extends Identity {
+
+    public Location (Long id) {
+        this.setId(id);
+    }
 
     @Column(name = "identifier", nullable = false, unique = true)
     private String identifier;
@@ -38,17 +43,13 @@ public class Location extends Identity {
     @ToString.Exclude
     private Customer customer;
 
-    public Location(Long id) {
-        this.setId(id);
-    }
-
     @JsonIgnore
     @JsonProperty(value = "customer")
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+    @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private Set<LocationItem> itemAssoc;
 }

@@ -52,27 +52,27 @@ public class ApplicationServiceImpl implements ApplicationService {
 			}
 		}
 
+		Application application = Application.builder()
+				.applicationNumber(applicationReq.getApplicationNumber())
+				.destLocation(currentUser.getLocation())
+				.status("STARTED_PROCESSING")
+				.createdBy(currentUser)
+				.lastUpdBy(currentUser)
+				.regDateTime(LocalDateTime.now())
+				.lastUpdDateTime(LocalDateTime.now())
+				.build();
+
 		Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream()
 				.map(ai -> ApplicationItem.builder()
 						.item(itemRepository.findItemByUpc(ai.getUpc()).get())
+						.application(application)
 						.amount(ai.getAmount())
 						.cost(ai.getCost())
 						.build())
 				.collect(Collectors.toSet());
 
-		Application application = Application.builder()
-				.applicationNumber(applicationReq.getApplicationNumber())
-				.destLocation(locationRepository.findLocationByIdentifier(applicationReq.getLocation().getIdentifier()).get())
-				.status("Started Processing")
-				.itemAssoc(itemsAssoc)
-				.createdBy(currentUser)
-				.srcLocation(currentUser.getLocation())
-				.regDateTime(LocalDateTime.now())
-				.build();
-
 		applicationRepository.save(application);
-
-		applicationItemRepository.saveAll(application.getItemAssoc());
+		applicationItemRepository.saveAll(itemsAssoc);
 	}
 
 	@Override
@@ -93,6 +93,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public List<Application> findApplicationsByDestLocation(Location destLocation) {
 		return applicationRepository.findApplicationsByDestLocation(destLocation);
+	}
+
+	@Override
+	public Integer getOccupiedCapacity(Long id) {
+		int occupiedCapacity = 0;
+		Set<ApplicationItem> applicationItems = applicationRepository.getById(id).getItemAssoc();
+		for(ApplicationItem applicationItem : applicationItems) {
+			occupiedCapacity += applicationItem.getItem().getUnits() * applicationItem.getAmount();
+		}
+		return occupiedCapacity;
 	}
 
 	private Application convertToEntity(ApplicationDto applicationDto) {

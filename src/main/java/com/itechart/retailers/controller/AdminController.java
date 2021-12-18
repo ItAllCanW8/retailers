@@ -3,9 +3,12 @@ package com.itechart.retailers.controller;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.response.LocationResponse;
 import com.itechart.retailers.model.payload.response.MessageResponse;
 import com.itechart.retailers.model.entity.projection.UserView;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
+import com.itechart.retailers.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +27,8 @@ public class AdminController {
 
 	private final PasswordEncoder passwordEncoder;
 	private final AdminService adminService;
+	private final SecurityContextService securityService;
+	private final LocationService locationService;
 	private final String authorities = "hasAuthority('ADMIN')";
 	private Long customerId;
 	private String customerEmail;
@@ -34,6 +39,12 @@ public class AdminController {
 		setCustomerId();
 
 		return adminService.findLocations(customerId);
+	}
+
+	@GetMapping("/current-location")
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('DISPATCHER')")
+	public LocationResponse getCurrentLocation() {
+		return new LocationResponse(locationService.getCurrentAvailableCapacity(), securityService.getCurrentLocation().getTotalCapacity());
 	}
 
 	@PostMapping("/locations")

@@ -48,8 +48,12 @@ public class ApplicationController {
 
     @PutMapping("/application/{id}/accept")
     @PreAuthorize(authorities)
-    public void acceptApplication(@PathVariable Long id) {
-
+    public ResponseEntity<?> acceptApplication(@PathVariable Long id) {
+        if (!locationService.canAcceptApplication(id)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("There is no space in location!"));
+        }
+        locationService.acceptApplication(id);
+        return ResponseEntity.ok(new MessageResponse("Application accepted."));
     }
 
 

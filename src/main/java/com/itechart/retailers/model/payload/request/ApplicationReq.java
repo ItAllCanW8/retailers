@@ -11,7 +11,6 @@ import java.util.Set;
 public class ApplicationReq {
 
     private String applicationNumber;
-    private Location location;
     private Set<ApplicationItemReq> items;
 
 }

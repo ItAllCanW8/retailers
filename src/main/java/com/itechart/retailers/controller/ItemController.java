@@ -27,7 +27,7 @@ public class ItemController {
 	private final CategoryService categoryService;
 	private final UserService userService;
 
-	private final String authorities = "hasAuthority('ADMIN')";
+	private final String authorities = "hasAuthority('ADMIN') or hasAuthority('DISPATCHER')";
 	private Long customerId;
 
 	@GetMapping("/items")

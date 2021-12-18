@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,10 +17,14 @@ public class ApplicationItem extends Identity {
 
     @ManyToOne
     @JoinColumn(name = "application_id")
+    @ToString.Exclude
+    @JsonIgnore
     private Application application;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @ToString.Exclude
+    @JsonIgnore
     private Item item;
 
     @Column(name = "amount")

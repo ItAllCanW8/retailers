@@ -12,12 +12,13 @@ class Applications extends Component {
     this.modalRef = createRef();
     this.toastRef = createRef();
     this.state = {
+      location: {
+        availableAmount: 0,
+        totalAmount: 0
+      },
       locationIds: [],
       applications: [],
       applicationNumber: '',
-      location: {
-        identifier: ''
-      },
       status: '',
       items: [{
         upc: '',
@@ -41,6 +42,13 @@ class Applications extends Component {
   }
 
   updateApplications = () => {
+    axios.get('admin/current-location').then(
+      (response) => {
+        this.setState({
+          location: response.data
+        });
+      }
+    );
     axios.get('applications').then(
       (response) => {
         this.setState({
@@ -119,7 +127,15 @@ class Applications extends Component {
   };
 
   acceptApplication = (id) => {
-    axios.put('/application/' + id + '/accept');
+    axios.put('/application/' + id + '/accept').then(
+      (response) => {
+        Util.showPositiveToast(this, response, this.toastRef);
+        this.updateApplications();
+      },
+      (error) => {
+        Util.showNegativeToast(this, error, this.toastRef);
+      }
+    );
   };
 
   render() {
@@ -134,7 +150,7 @@ class Applications extends Component {
           ref={this.toastRef}
         />
         <div className='row align-items-center mb-3'>
-          <div className='col align-items-center'>
+          <div className='col-auto align-items-center'>
             <button
               type='button'
               className='btn btn-primary me-3'
@@ -142,6 +158,9 @@ class Applications extends Component {
             >
               Add
             </button>
+          </div>
+          <div className='col align-items-center'>
+            <h4>Space available: {this.state.location.availableAmount}/{this.state.location.totalAmount}</h4>
           </div>
         </div>
         <Modal
@@ -182,10 +201,10 @@ class Applications extends Component {
                 )}
               </th>
               <td>{application.applicationNumber}</td>
-              <td>{application.srcLocation.identifier}</td>
+              <td>{application.srcLocation && application.srcLocation.identifier}</td>
               <td>{application.destLocation.identifier}</td>
               <td>{application.lastUpdDateTime}</td>
-              <td>{application.lastUpdBy}</td>
+              <td>{application.lastUpdBy.name}</td>
               <td>{application.status}</td>
 
             </tr>

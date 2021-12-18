@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Autocomplete, TextField } from '@mui/material';
 
 class ApplicationsInnerModal extends Component {
   render() {
@@ -38,21 +37,6 @@ class ApplicationsInnerModal extends Component {
                   onChange={this.props.onChange}
                 />
               </div>
-            </div>
-          </div>
-          <div className='row'>
-            <div className='col mb-2'>
-              <Autocomplete
-                disablePortal
-                required
-                id='combo-box-demo'
-                value={this.props.location.identifier}
-                onChange={(event, newValue) => {
-                  this.props.onLocationChange(newValue);
-                }}
-                options={this.props.locationIds}
-                renderInput={(params) => <TextField {...params} required={true} label='Destination location' />}
-              />
             </div>
           </div>
           {this.props.items && this.props.items.map((item, index, arr) => (

@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 public class SecurityContextService {
 
     private final UserRepository userRepository;
-    private final CustomerRepository customerRepository;
-    private final LocationRepository locationRepository;
 
     public User getCurrentUser() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();

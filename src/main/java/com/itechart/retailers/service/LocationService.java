@@ -1,5 +1,7 @@
 package com.itechart.retailers.service;
 
 public interface LocationService {
-    boolean locationCanAcceptApplication(Long applicationId);
+    boolean canAcceptApplication(Long applicationId);
+    Integer getCurrentAvailableCapacity();
+    void acceptApplication(Long applicationId);
 }

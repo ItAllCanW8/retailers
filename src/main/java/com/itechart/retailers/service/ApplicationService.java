@@ -24,4 +24,6 @@ public interface ApplicationService {
 
     List<Application> findApplicationsByDestLocation(Location destLocation);
 
+    Integer getOccupiedCapacity(Long id);
+
 }
