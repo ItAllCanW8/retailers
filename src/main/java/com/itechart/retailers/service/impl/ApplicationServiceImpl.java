@@ -5,10 +5,13 @@ import com.itechart.retailers.model.dto.ItemDto;
 import com.itechart.retailers.model.dto.UserDto;
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
+import com.itechart.retailers.repository.ApplicationItemRepository;
 import com.itechart.retailers.repository.ApplicationRepository;
+import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.repository.LocationRepository;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
+import com.itechart.retailers.service.exception.UndefinedItemException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +30,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private final ApplicationRepository applicationRepository;
 	private final LocationRepository locationRepository;
 	private final SecurityContextService securityService;
+	private final ItemRepository itemRepository;
+	private final ApplicationItemRepository applicationItemRepository;
 
 	@Override
 	public List<Application> findAll() {
@@ -34,11 +40,21 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public void save(ApplicationReq applicationReq) {
+	public void save(ApplicationReq applicationReq) throws UndefinedItemException {
 		User currentUser = securityService.getCurrentUser();
 
-		Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream().map(ai -> ApplicationItem.builder()
-						.item(Item.builder().upc(ai.getUpc()).build())
+		Set<Optional<Item>> optionalItems = applicationReq.getItems().stream()
+				.map(ai -> itemRepository.findItemByUpc(ai.getUpc())).collect(Collectors.toSet());
+
+		for (Optional<Item> item : optionalItems) {
+			if (item.isEmpty()) {
+				throw new UndefinedItemException();
+			}
+		}
+
+		Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream()
+				.map(ai -> ApplicationItem.builder()
+						.item(itemRepository.findItemByUpc(ai.getUpc()).get())
 						.amount(ai.getAmount())
 						.cost(ai.getCost())
 						.build())
@@ -55,6 +71,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 				.build();
 
 		applicationRepository.save(application);
+
+		applicationItemRepository.saveAll(application.getItemAssoc());
 	}
 
 	@Override
@@ -109,5 +127,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setItemAssoc(applicationItems);
 
 		return application;
+	}
+
+	public Item getFromOptional(Optional<Item> item) throws UndefinedItemException {
+		if (item.isPresent()) {
+			return item.get();
+		} else {
+			throw new UndefinedItemException();
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.itechart.retailers.service;
 import com.itechart.retailers.model.entity.Item;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemService {
 
@@ -17,5 +18,7 @@ public interface ItemService {
     void deleteById(Long id);
 
     List<Item> findItemsByCustomerId(Long customerId);
+
+    Optional<Item> findItemByUpc(String upc);
 
 }
