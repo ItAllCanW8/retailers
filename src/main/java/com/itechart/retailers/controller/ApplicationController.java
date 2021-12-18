@@ -1,27 +1,23 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.dto.ApplicationDto;
 import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.service.ApplicationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/applications")
+@RequestMapping("api/application")
+@RequiredArgsConstructor
 public class ApplicationController {
 
     private final ApplicationService applicationService;
     private final String authorities = "hasAuthority('DISPATCHER') or hasAuthority('WAREHOUSE_MANAGER')" +
             " or hasAuthority('SHOP_MANAGER')";
 
-    @Autowired
-    public ApplicationController(ApplicationService applicationService) {
-        this.applicationService = applicationService;
-    }
 
     @GetMapping
     @PreAuthorize(authorities)

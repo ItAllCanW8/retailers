@@ -118,6 +118,8 @@ create table location_item
     id          bigint auto_increment,
     location_id bigint not null,
     item_id     bigint not null,
+    amount      int    not null,
+    cost        float  not null,
     constraint id_UNIQUE
         unique (id),
     constraint fk_location_item_item

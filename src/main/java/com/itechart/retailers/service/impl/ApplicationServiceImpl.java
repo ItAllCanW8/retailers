@@ -34,10 +34,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public void save(ApplicationReq applicationDto) {
+	public void save(ApplicationReq applicationReq) {
 		User currentUser = securityService.getCurrentUser();
 
-		Set<ApplicationItem> itemsAssoc = applicationDto.getItems().stream().map(ai -> ApplicationItem.builder()
+		Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream().map(ai -> ApplicationItem.builder()
 						.item(Item.builder().upc(ai.getUpc()).build())
 						.amount(ai.getAmount())
 						.cost(ai.getCost())
@@ -45,9 +45,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 				.collect(Collectors.toSet());
 
 		Application application = Application.builder()
-				.applicationNumber(applicationDto.getApplicationNumber())
-				.destLocation(locationRepository.findLocationByIdentifier(applicationDto.getLocation().getIdentifier()).get())
-				.status("Open")
+				.applicationNumber(applicationReq.getApplicationNumber())
+				.destLocation(locationRepository.findLocationByIdentifier(applicationReq.getLocation().getIdentifier()).get())
+				.status("Started Processing")
 				.itemAssoc(itemsAssoc)
 				.createdBy(currentUser)
 				.srcLocation(currentUser.getLocation())

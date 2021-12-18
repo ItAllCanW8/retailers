@@ -27,4 +27,5 @@ public class ApplicationItem extends Identity {
 
     @Column(name = "cost")
     private Float cost;
+
 }
