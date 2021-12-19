@@ -36,7 +36,7 @@ class Modal extends Component {
                 : 'row g-3 needs-validation was-validated'
             }
             noValidate
-            onSubmit={() => this.handleSubmit(window.event, this.props.submit)}
+            onSubmit={() => this.handleSubmit(window.event, this.props.submit || function(){})}
           >
             {this.props.children}
           </form>

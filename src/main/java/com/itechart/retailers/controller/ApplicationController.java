@@ -56,6 +56,12 @@ public class ApplicationController {
         return ResponseEntity.ok(new MessageResponse("Application accepted."));
     }
 
+    @PutMapping("/application/{id}/forward")
+    @PreAuthorize(authorities)
+    public ResponseEntity<?> acceptApplication(@PathVariable Long id, @RequestBody String locationIdentifier) {
+        System.out.println(locationIdentifier);
+        return null;
+    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(authorities)

@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
     List<Location> findLocationsByCustomerId(Long customerId);
-
+    List<Location> findLocationsByCustomerIdAndIdNot(Long customerId, Long id);
     Optional<Location> findLocationByIdentifier(String identifier);
 }

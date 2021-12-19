@@ -1,5 +1,6 @@
 package com.itechart.retailers.repository;
 
+import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
@@ -20,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Boolean existsByEmail(String email);
 
 	List<User> findUsersByRole(Role role);
+
+	List<User> findUsersByRoleAndCustomer(Role role, Customer customer);
 
 	List<User> findUsersByCustomerId(Long id);
 

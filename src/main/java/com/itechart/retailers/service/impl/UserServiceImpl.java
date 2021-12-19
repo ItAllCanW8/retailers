@@ -6,6 +6,7 @@ import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.repository.CustomerRepository;
 import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 	private final CustomerRepository customerRepository;
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final SecurityContextService securityService;
 
 	@Override
 	public List<User> findAll() {
@@ -107,5 +109,11 @@ public class UserServiceImpl implements UserService {
 			user.setActive(true);
 			userRepository.save(user);
 		}
+	}
+
+	@Override
+	public List<User> getUsersByRoleNameInCurrentCustomer(String roleName) {
+		Role role = roleRepository.findByRole(roleName).get();
+		return userRepository.findUsersByRoleAndCustomer(role, securityService.getCurrentCustomer());
 	}
 }
