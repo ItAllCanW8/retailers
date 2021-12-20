@@ -12,6 +12,7 @@ import com.itechart.retailers.repository.LocationRepository;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.exception.UndefinedItemException;
+import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -99,10 +100,19 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public Integer getOccupiedCapacity(Long id) {
 		int occupiedCapacity = 0;
 		Set<ApplicationItem> applicationItems = applicationRepository.getById(id).getItemAssoc();
-		for(ApplicationItem applicationItem : applicationItems) {
+		for (ApplicationItem applicationItem : applicationItems) {
 			occupiedCapacity += applicationItem.getItem().getUnits() * applicationItem.getAmount();
 		}
 		return occupiedCapacity;
+	}
+
+	@Override
+	public void acceptApplication(Long id, String locationIdentifier) throws UndefinedLocationException {
+		Location location = locationRepository.findLocationByIdentifier(locationIdentifier)
+				.orElseThrow(UndefinedLocationException::new);
+		Application application = applicationRepository.getById(id);
+		application.setDestLocation(location);
+		applicationRepository.save(application);
 	}
 
 	private Application convertToEntity(ApplicationDto applicationDto) {
@@ -139,11 +149,5 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return application;
 	}
 
-	public Item getFromOptional(Optional<Item> item) throws UndefinedItemException {
-		if (item.isPresent()) {
-			return item.get();
-		} else {
-			throw new UndefinedItemException();
-		}
-	}
+
 }
