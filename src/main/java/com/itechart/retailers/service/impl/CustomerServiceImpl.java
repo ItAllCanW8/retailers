@@ -15,43 +15,43 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-	private final CustomerRepository customerRepository;
-	private final UserRepository userRepository;
-	private final RoleRepository roleRepository;
+    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-	@Override
-	public Customer save(Customer customer) {
-		return customerRepository.save(customer);
-	}
+    @Override
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
 
-	@Override
-	public List<Customer> findByParams(Boolean isOnlyActive) {
-		if (isOnlyActive == null) {
-			return customerRepository.findByOrderByIdDesc();
-		} else {
-			return customerRepository.findByIsActiveOrderByIdDesc(isOnlyActive);
-		}
-	}
+    @Override
+    public List<Customer> findByParams(Boolean isOnlyActive) {
+        if (isOnlyActive == null) {
+            return customerRepository.findByOrderByIdDesc();
+        } else {
+            return customerRepository.findByIsActiveOrderByIdDesc(isOnlyActive);
+        }
+    }
 
-	@Override
-	public Customer getById(Long id) {
-		return customerRepository.getById(id);
-	}
+    @Override
+    public Customer getById(Long id) {
+        return customerRepository.getById(id);
+    }
 
-	@Override
-	public void changeActivateUser(Long customerId, boolean active) {
-		Customer customer = customerRepository.getById(customerId);
-		customer.setActive(active);
-		customerRepository.save(customer);
+    @Override
+    public void changeUserStatus(Long customerId, boolean active) {
+        Customer customer = customerRepository.getById(customerId);
+        customer.setActive(active);
+        customerRepository.save(customer);
 
-		if (!active) {
-			List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
-			customerUsers.forEach(user -> user.setActive(false));
-			userRepository.saveAll(customerUsers);
-		} else {
-			User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole("ADMIN"), customerId);
-			user.setActive(true);
-			userRepository.save(user);
-		}
-	}
+        if (!active) {
+            List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
+            customerUsers.forEach(user -> user.setActive(false));
+            userRepository.saveAll(customerUsers);
+        } else {
+            User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole("ADMIN"), customerId);
+            user.setActive(true);
+            userRepository.save(user);
+        }
+    }
 }

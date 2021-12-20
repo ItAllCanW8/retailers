@@ -29,13 +29,13 @@ class Locations extends Component {
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'ADMIN');
+    Util.redirectIfDoesntHaveRole(this, 'ROLE_ADMIN');
 
     this.updateLocations();
   }
 
   updateLocations = () => {
-    axios.get('admin/locations').then(
+    axios.get('/locations').then(
       (response) => {
         this.setState({
           locations: response.data
@@ -46,7 +46,7 @@ class Locations extends Component {
 
   submit = () => {
     this.modalRef.current.click();
-    axios.post('admin/locations', this.state).then(
+    axios.post('/locations', this.state).then(
       (response) => {
         Util.showPositiveToast(this, response, this.toastRef);
         this.updateLocations();
@@ -76,7 +76,7 @@ class Locations extends Component {
   };
 
   deleteLocations = () => {
-    axios.delete('admin/locations', {
+    axios.delete('/locations', {
       data: this.state.ids
     })
     .then(

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CustomerWithMail {
+public class CustomerResp {
 
     private Customer customer;
     private String email;

@@ -35,8 +35,8 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'ADMIN');
-    axios.get('admin/locations').then(
+    Util.redirectIfDoesntHaveRole(this, 'ROLE_ADMIN');
+    axios.get('/locations').then(
       (response) => {
         this.setState({
           locationIds: response.data.map(location => location.identifier)
@@ -47,7 +47,7 @@ class Users extends Component {
   }
 
   updateUsers = () => {
-    axios.get('admin/users').then(
+    axios.get('/users').then(
       (response) => {
         this.setState({
           users: response.data
@@ -58,7 +58,7 @@ class Users extends Component {
 
   submit = () => {
     this.modalRef.current.click();
-    axios.post('admin/users', this.state).then(
+    axios.post('/users', this.state).then(
       (response) => {
         Util.showPositiveToast(this, response, this.toastRef);
         this.updateUsers();
@@ -74,7 +74,7 @@ class Users extends Component {
       user.id === id ? {...user, isActive: !user.isActive} : user
     );
     this.setState({ users: map });
-    axios.put('admin/users/' + id, map.find(user => user.id === id).isActive, {
+    axios.put('/users/' + id, map.find(user => user.id === id).isActive, {
       headers: {
         'Content-Type': 'application/json',
       }

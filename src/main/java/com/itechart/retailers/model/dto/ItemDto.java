@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class ItemDto {
 
-	private String upc;
-	private Integer amount;
-	private Float cost;
+    private String upc;
+    private Integer amount;
+    private Float cost;
 
 }

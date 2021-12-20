@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "location")
 public class Location extends Identity {
 
-    public Location (Long id) {
+    public Location(Long id) {
         this.setId(id);
     }
 

@@ -1,13 +1,13 @@
 import React, { Component, createRef } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import AuthService from '../../service/AuthService';
 import * as bootstrap from 'bootstrap';
 import Toast from '../common/Toast';
 import Customers from './Customers';
 import { ControlButtons } from './ControlButtons';
 import { CustomerInnerModal } from './CustomerInnerModal';
 import Modal from '../common/Modal';
+import Util from '../../service/Util';
 
 class SystemAdmin extends Component {
   constructor(props) {
@@ -26,12 +26,7 @@ class SystemAdmin extends Component {
   }
 
   componentDidMount() {
-    const currentUser = AuthService.getCurrentUser();
-
-    if (!currentUser || !currentUser.role.includes('SYSTEM_ADMIN')) {
-      this.setState({ redirect: '/' });
-      return;
-    }
+    Util.redirectIfDoesntHaveRole(this, 'ROLE_SYSTEM_ADMIN');
 
     this.setState({ ...this.state, isFetching: true });
     this.updateCustomers();

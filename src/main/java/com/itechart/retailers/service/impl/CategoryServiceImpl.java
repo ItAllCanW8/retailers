@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-	private final CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-	@Override
-	public Category saveIfNotExists(Category category) {
-		if (categoryRepository.findByName(category.getName()).isPresent()) {
-			return categoryRepository.findByName(category.getName()).get();
-		} else {
-			return categoryRepository.save(category);
-		}
-	}
+    @Override
+    public Category saveIfNotExists(Category category) {
+        if (categoryRepository.findByName(category.getName()).isPresent()) {
+            return categoryRepository.findByName(category.getName()).get();
+        } else {
+            return categoryRepository.save(category);
+        }
+    }
 
 }
