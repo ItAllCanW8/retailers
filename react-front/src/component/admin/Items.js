@@ -5,7 +5,6 @@ import { Redirect } from 'react-router-dom';
 import Toast from '../common/Toast';
 import Modal from '../common/Modal';
 import ItemsInnerModal from './ItemsInnerModal';
-import AuthService from '../../service/AuthService';
 
 class Items extends Component {
   constructor(props) {
@@ -26,11 +25,7 @@ class Items extends Component {
 
 
   componentDidMount() {
-    const currentUser = AuthService.getCurrentUser();
-
-    if (!currentUser || (!currentUser.role.includes('ADMIN') && !currentUser.role.includes('DISPATCHER'))) {
-      this.setState({ redirect: '/' });
-    }
+    Util.redirectIfDoesntHaveRole(this,'item:post');
 
     this.updateItems();
   }

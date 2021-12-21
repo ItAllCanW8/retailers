@@ -26,9 +26,9 @@ export default class Navbar extends Component {
       user = jwtDecode(user);
       this.setState({
         currentUser: user,
-        showAdminBoard: user.role.includes('ADMIN'),
-        showSystemAdminBoard: user.role.includes('SYSTEM_ADMIN'),
-        showDispatcherBoard: user.role.includes('DISPATCHER')
+        showAdminBoard: user.role.includes('ROLE_ADMIN'),
+        showSystemAdminBoard: user.role.includes('ROLE_SYSTEM_ADMIN'),
+        showDispatcherBoard: user.role.includes('ROLE_DISPATCHER')
       });
     }
   }

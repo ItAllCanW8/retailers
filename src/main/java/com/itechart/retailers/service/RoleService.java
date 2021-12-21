@@ -4,7 +4,7 @@ import com.itechart.retailers.model.entity.Role;
 
 public interface RoleService {
 
-	Role save(String roleName);
+    Role save(String roleName);
 
-	Role getByRole(String role);
+    Role getByRole(String role);
 }

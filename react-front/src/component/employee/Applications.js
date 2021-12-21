@@ -18,9 +18,9 @@ class Applications extends Component {
     this.noAvailableSpaceModalRef = createRef();
     this.forwardModalRef = createRef();
     this.state = {
-      location: {
-        availableAmount: 0,
-        totalAmount: 0
+      currentLocation: {
+        location: {},
+        availableAmount: 0
       },
       currentLocationIdentifier: '',
       selectedApplicationId: '',
@@ -40,18 +40,11 @@ class Applications extends Component {
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'DISPATCHER');
+    Util.redirectIfDoesntHaveRole(this, 'ROLE_DISPATCHER');
     axios.get('locations-except-current').then(
       (response) => {
         this.setState({
           locationIds: response.data.map(location => location.identifier)
-        });
-      }
-    );
-    axios.get('current-location').then(
-      (response) => {
-        this.setState({
-          currentLocationIdentifier: response.data.identifier
         });
       }
     );
@@ -66,10 +59,10 @@ class Applications extends Component {
   }
 
   updateApplications = () => {
-    axios.get('admin/current-location').then(
+    axios.get('current-location').then(
       (response) => {
         this.setState({
-          location: response.data
+          currentLocation: response.data
         });
       }
     );
@@ -209,7 +202,7 @@ class Applications extends Component {
             </button>
           </div>
           <div className='col align-items-center'>
-            <h4>Space available: {this.state.location.availableAmount}/{this.state.location.totalAmount}</h4>
+            <h4>Space available: {this.state.currentLocation.availableAmount}/{this.state.currentLocation.location.totalCapacity}</h4>
           </div>
         </div>
         <Modal ref={this.noAvailableSpaceModalRef}>
@@ -258,7 +251,7 @@ class Applications extends Component {
             <tr key={application.id}>
               <th scope='row'>
                 {application.status === 'STARTED_PROCESSING'
-                && application.destLocation.identifier === this.state.currentLocationIdentifier
+                && application.destLocation.identifier === this.state.currentLocation.location.identifier
                 && (
                   <button className='btn btn-primary'
                           onClick={() => this.acceptApplication(application.id)}

@@ -1,5 +1,6 @@
 package com.itechart.retailers.repository;
 
+import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,11 @@ import java.util.Optional;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
+    List<Location> findLocationsByCustomer(Customer customer);
+
     List<Location> findLocationsByCustomerId(Long customerId);
+
     List<Location> findLocationsByCustomerIdAndIdNot(Long customerId, Long id);
+
     Optional<Location> findLocationByIdentifier(String identifier);
 }

@@ -1,4 +1,4 @@
 package com.itechart.retailers.service.exception;
 
-public class EmptyPasswordException extends Exception{
+public class EmptyPasswordException extends Exception {
 }

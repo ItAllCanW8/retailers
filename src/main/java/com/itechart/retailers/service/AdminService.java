@@ -11,23 +11,23 @@ import java.util.Set;
 
 public interface AdminService {
 
-    List<Location> findLocations(Long customerId);
+    List<Location> findLocations();
 
-    boolean createLocation(Location location, Long customerId);
+    boolean createLocation(Location location);
 
     void deleteLocation(Long id);
 
     void deleteLocations(Set<Long> ids);
 
-    List<UserView> findEmployees(Long customerId);
+    List<UserView> findEmployees();
 
-    boolean createUser(User user, Long customerId);
+    boolean createUser(User user);
 
     void updateUserStatus(Long id, boolean isActive);
 
-    boolean createSupplier(Supplier supplier, Long customerId);
+    boolean createSupplier(Supplier supplier);
 
-    List<Supplier> findSuppliers(Long customerId);
+    List<Supplier> findSuppliers();
 
     void updateSupplierStatus(Long id, boolean isActive);
 

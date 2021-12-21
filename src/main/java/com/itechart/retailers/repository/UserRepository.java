@@ -16,28 +16,28 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	Optional<User> getByEmail(String email);
+    Optional<User> getByEmail(String email);
 
-	Boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 
-	List<User> findUsersByRole(Role role);
+    List<User> findUsersByRole(Role role);
 
-	List<User> findUsersByRoleAndCustomer(Role role, Customer customer);
+    List<User> findUsersByRoleAndCustomer(Role role, Customer customer);
 
-	List<User> findUsersByCustomerId(Long id);
+    List<User> findUsersByCustomerId(Long id);
 
-	List<UserView> findUserViewsByCustomerId(Long id);
+    List<UserView> findUserViewsByCustomerId(Long id);
 
-	@Modifying
-	@Query("update User u set u.isActive = :newStatus where u.id = :id")
-	void changeUserStatus(@Param(value = "id") Long id, @Param(value = "newStatus") boolean newStatus);
+    @Modifying
+    @Query("update User u set u.isActive = :newStatus where u.id = :id")
+    void changeUserStatus(@Param(value = "id") Long id, @Param(value = "newStatus") boolean newStatus);
 
-	@Query("select u from User u where u.role = ?1 and u.customer.id = ?2")
-	User getByRoleAndCustomerId(Role role, Long customerId);
+    @Query("select u from User u where u.role = ?1 and u.customer.id = ?2")
+    User getByRoleAndCustomerId(Role role, Long customerId);
 
-	Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-	@Query("select u from User u where u.customer.id = ?1 and u.isActive = ?2")
-	List<User> findUsersByCustomerIdAndActive(Long customerId, boolean status);
+    @Query("select u from User u where u.customer.id = ?1 and u.isActive = ?2")
+    List<User> findUsersByCustomerIdAndActive(Long customerId, boolean status);
 
 }

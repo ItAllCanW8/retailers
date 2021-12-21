@@ -1,6 +1,5 @@
 package com.itechart.retailers.model.payload.request;
 
-import com.itechart.retailers.model.entity.Location;
 import lombok.Getter;
 import lombok.Setter;
 

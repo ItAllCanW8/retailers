@@ -12,7 +12,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "warehouse")
-public class Warehouse extends Identity{
+public class Warehouse extends Identity {
 
     @Column(name = "name")
     private String name;

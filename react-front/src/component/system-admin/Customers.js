@@ -35,7 +35,11 @@ class Customers extends Component {
     let map = this.state.statuses;
     map.set(id, !map.get(id));
     this.setState({ statuses: map });
-    axios.post('system-admin/' + id, { active: this.state.statuses.get(id) });
+    axios.post('system-admin/' + id, this.state.statuses.get(id), {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    } );
   };
 
   render() {

@@ -10,18 +10,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-	private final RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-	@Override
-	public Role save(String roleName) {
-		return roleRepository.findByRole(roleName).orElseGet(() ->
-				roleRepository.save(Role.builder().role(roleName).build())
-		);
-	}
+    @Override
+    public Role save(String roleName) {
+        return roleRepository.findByRole(roleName).orElseGet(() ->
+                roleRepository.save(Role.builder().role(roleName).build())
+        );
+    }
 
-	@Override
-	public Role getByRole(String role) {
-		return roleRepository.getByRole(role);
-	}
+    @Override
+    public Role getByRole(String role) {
+        return roleRepository.getByRole(role);
+    }
 
 }

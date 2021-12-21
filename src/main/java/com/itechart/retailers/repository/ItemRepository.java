@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-	List<Item> findItemsByCustomerId(Long customerId);
+    List<Item> findItemsByCustomerId(Long customerId);
 
-	Optional<Item> findItemByUpc(String upc);
+    Optional<Item> findItemByUpc(String upc);
 
 }

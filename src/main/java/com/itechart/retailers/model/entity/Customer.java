@@ -26,11 +26,11 @@ public class Customer extends Identity {
     @Column(name = "active")
     private boolean isActive;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "customer_supplier",
-            joinColumns = { @JoinColumn(name = "customer_id") },
-            inverseJoinColumns = { @JoinColumn(name = "supplier_id") }
+            joinColumns = {@JoinColumn(name = "customer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "supplier_id")}
     )
     @ToString.Exclude
     Set<Supplier> suppliers = new HashSet<>();

@@ -14,6 +14,7 @@ import com.itechart.retailers.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class LocationServiceImpl implements LocationService {
     public Integer getCurrentAvailableCapacity() {
         int occupiedCapacity = 0;
         Location location = securityContextService.getCurrentLocation();
-        for (LocationItem locationItem: location.getItemAssoc()) {
+        for (LocationItem locationItem : location.getItemAssoc()) {
             occupiedCapacity += locationItem.getItem().getUnits() * locationItem.getAmount();
         }
         return location.getTotalCapacity() - occupiedCapacity;
@@ -54,6 +55,8 @@ public class LocationServiceImpl implements LocationService {
         locationItemRepository.saveAll(locationItems);
 
         Application application = applicationService.getById(applicationId);
+        application.setLastUpdDateTime(LocalDateTime.now());
+        application.setLastUpdBy(securityContextService.getCurrentUser());
         application.setStatus("FINISHED_PROCESSING");
         applicationRepository.save(application);
         applicationItemRepository.deleteAll(application.getItemAssoc());

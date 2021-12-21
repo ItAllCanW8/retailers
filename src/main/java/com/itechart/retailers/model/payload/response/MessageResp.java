@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LocationResponse {
-    private Integer availableAmount;
-    private Integer totalAmount;
+public class MessageResp {
+
+    String message;
 }
