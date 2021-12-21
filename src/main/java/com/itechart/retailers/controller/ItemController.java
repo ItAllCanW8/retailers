@@ -21,54 +21,54 @@ import java.util.Set;
 @RequestMapping("/api")
 public class ItemController {
 
-    private final ItemService itemService;
-    private final CategoryService categoryService;
-    private final UserService userService;
+	private final ItemService itemService;
+	private final CategoryService categoryService;
+	private final UserService userService;
 
-    private final String authorities = "hasAuthority('item:get') or hasAuthority('item:post')";
-    private Long customerId;
+	private final String authorities = "hasAuthority('item:get') or hasAuthority('item:post')";
+	private Long customerId;
 
-    @GetMapping("/items")
-    public List<Item> getAll() {
-        if (customerId == null) {
-            setCustomerId();
-        }
+	@GetMapping("/items")
+	public List<Item> getAll() {
+		if (customerId == null) {
+			setCustomerId();
+		}
 
-        return itemService.findItemsByCustomerId(customerId);
-    }
+		return itemService.findItemsByCustomerId(customerId);
+	}
 
-    @GetMapping("/items/{id}")
-    @PreAuthorize(authorities)
-    public Item getById(@PathVariable Long id) {
-        return itemService.getById(id);
-    }
+	@GetMapping("/items/{id}")
+	@PreAuthorize(authorities)
+	public Item getById(@PathVariable Long id) {
+		return itemService.getById(id);
+	}
 
-    @PostMapping("/items")
-    @PreAuthorize(authorities)
-    public ResponseEntity<?> create(@RequestBody Item item) {
-        if (customerId == null) {
-            setCustomerId();
-        }
-        Category category = categoryService.saveIfNotExists(
-                item.getCategory());
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        item.setCustomer(customer);
-        item.setCategory(category);
-        itemService.save(item);
-        return ResponseEntity.ok(new MessageResp("Item added."));
-    }
+	@PostMapping("/items")
+	@PreAuthorize(authorities)
+	public ResponseEntity<?> create(@RequestBody Item item) {
+		if (customerId == null) {
+			setCustomerId();
+		}
+		Category category = categoryService.saveIfNotExists(
+				item.getCategory(), customerId);
+		Customer customer = new Customer();
+		customer.setId(customerId);
+		item.setCustomer(customer);
+		item.setCategory(category);
+		itemService.save(item);
+		return ResponseEntity.ok(new MessageResp("Item added."));
+	}
 
-    @DeleteMapping("/items")
-    @PreAuthorize(authorities)
-    public void deleteById(@RequestBody Set<Long> ids) {
-        for (Long id : ids) {
-            itemService.deleteById(id);
-        }
-    }
+	@DeleteMapping("/items")
+	@PreAuthorize(authorities)
+	public void deleteById(@RequestBody Set<Long> ids) {
+		for (Long id : ids) {
+			itemService.deleteById(id);
+		}
+	}
 
-    private void setCustomerId() {
-        String currentCustomerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        this.customerId = userService.getByEmail(currentCustomerEmail).get().getCustomer().getId();
-    }
+	private void setCustomerId() {
+		String currentCustomerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		this.customerId = userService.getByEmail(currentCustomerEmail).get().getCustomer().getId();
+	}
 }
