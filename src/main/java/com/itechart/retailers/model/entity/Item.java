@@ -38,4 +38,8 @@ public class Item extends Identity {
     @ToString.Exclude
     private Set<ApplicationItem> applicationAssoc;
 
+    public Item(Long id){
+        this.setId(id);
+    }
+
 }
