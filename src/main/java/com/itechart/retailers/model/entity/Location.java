@@ -33,6 +33,9 @@ public class Location extends Identity {
     @Column(name = "available_capacity")
     private Integer availableCapacity;
 
+    @Column(name = "rental_tax_rate")
+    private Float rentalTaxRate;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @ToString.Exclude
