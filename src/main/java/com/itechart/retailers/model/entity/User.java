@@ -65,4 +65,8 @@ public class User extends Identity {
     public Customer getCustomer() {
         return customer;
     }
+
+    public User(Long id) {
+        this.setId(id);
+    }
 }

@@ -38,4 +38,7 @@ public class Item extends Identity {
     @ToString.Exclude
     private Set<ApplicationItem> applicationAssoc;
 
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<BillItem> itemAssoc;
 }
