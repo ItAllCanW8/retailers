@@ -8,6 +8,10 @@ class AuthService {
     }
   }
 
+  currentUserHasRole(role) {
+    return this.getCurrentUser().role.includes(role);
+  }
+
   authHeader() {
     const user = JSON.parse(localStorage.getItem('user'));
 

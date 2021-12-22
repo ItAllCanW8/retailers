@@ -2,12 +2,13 @@ package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
-import com.itechart.retailers.repository.ApplicationItemRepository;
-import com.itechart.retailers.repository.ApplicationRepository;
-import com.itechart.retailers.repository.ItemRepository;
-import com.itechart.retailers.repository.LocationRepository;
+import com.itechart.retailers.model.payload.request.DispatchItemReq;
+import com.itechart.retailers.model.payload.response.LocationItemResp;
+import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
+import com.itechart.retailers.service.LocationItemService;
+import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final SecurityContextService securityService;
     private final ItemRepository itemRepository;
     private final ApplicationItemRepository applicationItemRepository;
+    private final LocationItemService locationItemService;
+    private final LocationItemRepository locationItemRepository;
 
     @Override
     public List<Application> getCurrentApplications() {
@@ -39,8 +42,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public void save(ApplicationReq applicationReq) throws UndefinedItemException {
-        User currentUser = securityService.getCurrentUser();
-
         Set<Optional<Item>> optionalItems = applicationReq.getItems().stream()
                 .map(ai -> itemRepository.findItemByUpc(ai.getUpc())).collect(Collectors.toSet());
 
@@ -50,15 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
 
-        Application application = Application.builder()
-                .applicationNumber(applicationReq.getApplicationNumber())
-                .destLocation(currentUser.getLocation())
-                .status("STARTED_PROCESSING")
-                .createdBy(currentUser)
-                .lastUpdBy(currentUser)
-                .regDateTime(LocalDateTime.now())
-                .lastUpdDateTime(LocalDateTime.now())
-                .build();
+        Application application = getApplication(applicationReq.getApplicationNumber(), securityService.getCurrentLocation());
 
         Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream()
                 .map(ai -> ApplicationItem.builder()
@@ -113,6 +106,56 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setSrcLocation(securityService.getCurrentLocation());
         application.setDestLocation(location);
         applicationRepository.save(application);
+    }
+
+    @Override
+    @Transactional
+    public void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException {
+        Application application = getApplication(dispatchItemReq.getApplicationNumber(), locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation()).get());
+
+        for (LocationItemResp enteredLocationItem : dispatchItemReq.getItemsToDispatch()) {
+            if (enteredLocationItem.getAmount() > getActualLocationItem(enteredLocationItem.getUpc()).getAmount()) {
+                throw new ItemAmountException();
+            }
+        }
+
+        for (LocationItemResp locationItemResp : dispatchItemReq.getItemsToDispatch()) {
+            LocationItem locationItem = locationItemRepository.getByItemUpcAndLocation(locationItemResp.getUpc(), securityService.getCurrentLocation());
+            locationItem.setAmount(locationItem.getAmount() - locationItemResp.getAmount());
+            locationItemRepository.save(locationItem);
+        }
+
+        Set<ApplicationItem> itemsAssoc = dispatchItemReq.getItemsToDispatch().stream()
+                .map(ai -> ApplicationItem.builder()
+                        .item(itemRepository.findItemByUpc(ai.getUpc()).get())
+                        .application(application)
+                        .amount(ai.getAmount())
+                        .cost(ai.getCost())
+                        .build())
+                .collect(Collectors.toSet());
+
+        applicationRepository.save(application);
+        applicationItemRepository.saveAll(itemsAssoc);
+    }
+
+    private LocationItem getActualLocationItem(String upc) {
+        return locationItemRepository.findByLocation(securityService.getCurrentLocation())
+                .stream()
+                .filter(li -> li.getItem().getUpc().equals(upc))
+                .findFirst().get();
+    }
+
+    private Application getApplication(String applicationNumber, Location destLocation) {
+        User currentUser = securityService.getCurrentUser();
+        return Application.builder()
+                .applicationNumber(applicationNumber)
+                .destLocation(destLocation)
+                .status("STARTED_PROCESSING")
+                .createdBy(currentUser)
+                .lastUpdBy(currentUser)
+                .regDateTime(LocalDateTime.now())
+                .lastUpdDateTime(LocalDateTime.now())
+                .build();
     }
 
 

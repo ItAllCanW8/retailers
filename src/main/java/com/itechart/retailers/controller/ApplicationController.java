@@ -2,9 +2,11 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
+import com.itechart.retailers.model.payload.request.DispatchItemReq;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.LocationService;
+import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,17 @@ public class ApplicationController {
             return ResponseEntity.badRequest().body(new MessageResp("Item is not found!"));
         }
         return ResponseEntity.ok(new MessageResp("Application created."));
+    }
+
+    @PostMapping("/dispatch-items")
+    @PreAuthorize(authorities)
+    public ResponseEntity<?> dispatchItems(@RequestBody DispatchItemReq dispatchItemReq) {
+        try {
+            applicationService.dispatchItems(dispatchItemReq);
+        } catch (ItemAmountException e) {
+            return ResponseEntity.badRequest().body(new MessageResp("Item amount to dispatch cannot be more than actual amount"));
+        }
+        return ResponseEntity.ok(new MessageResp("Items dispatched successfully"));
     }
 
     @PutMapping("/application/{id}/accept")
