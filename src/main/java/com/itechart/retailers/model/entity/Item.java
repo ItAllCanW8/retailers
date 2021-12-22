@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "item")
 public class Item extends Identity {
 
-    @Column(name = "upc", length = 20)
+    @Column(name = "upc", length = 20, unique = true, nullable = false)
     private String upc;
 
     @Column(name = "label", length = 45)

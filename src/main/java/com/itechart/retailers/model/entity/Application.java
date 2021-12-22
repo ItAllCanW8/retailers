@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "application")
 public class Application extends Identity {
 
-    @Column(name = "application_number")
+    @Column(name = "application_number", length = 45, unique = true, nullable = false)
     private String applicationNumber;
 
     @Column(name = "reg_date_time")
@@ -27,12 +27,6 @@ public class Application extends Identity {
 
     @Column(name = "status")
     private String status;
-
-    @Column(name = "items_total")
-    private Long itemsTotal;
-
-    @Column(name = "units_total")
-    private Long unitsTotal;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "source_location")
@@ -51,6 +45,10 @@ public class Application extends Identity {
     @JoinColumn(name = "last_upd_by")
     @ToString.Exclude
     private User lastUpdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
     @ToString.Exclude

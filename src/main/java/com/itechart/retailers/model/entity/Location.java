@@ -30,9 +30,6 @@ public class Location extends Identity {
     @Column(name = "total_capacity")
     private Integer totalCapacity;
 
-    @Column(name = "available_capacity")
-    private Integer availableCapacity;
-
     @Column(name = "rental_tax_rate")
     private Float rentalTaxRate;
 
