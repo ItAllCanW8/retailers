@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,18 +19,20 @@ public class TaxServiceImpl implements TaxService {
     private final CustomerCategoryRepository customerCategoryRepo;
 
     @Override
-    public Float loadStateTax(StateCode stateCode) {
-        return stateTaxRepo.getByStateCode(stateCode).getTax();
+    public Optional<Float> loadStateTax(StateCode stateCode) {
+        return Optional.of(stateTaxRepo.getByStateCode(stateCode).getTax());
     }
 
     @Override
-    public Float loadRentalTax(Long locationId) {
-        return locationRepo.getById(locationId).getRentalTaxRate();
+    @Transactional
+    public Optional<Float> loadRentalTax(Long locationId) {
+        return Optional.of(locationRepo.getById(locationId).getRentalTaxRate());
     }
 
     @Override
-    public Float loadItemCategoryTax(Long customerId, Long categoryId) {
-        return customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId).get().getCategoryTax();
+    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) {
+        return Optional.of(customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId).get()
+                .getCategoryTax());
     }
 
     @Override

@@ -3,13 +3,15 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.StateCode;
 
+import java.util.Optional;
+
 public interface TaxService {
 
-    Float loadStateTax(StateCode stateCode);
+    Optional<Float> loadStateTax(StateCode stateCode);
 
-    Float loadRentalTax(Long locationId);
+    Optional<Float> loadRentalTax(Long locationId);
 
-    Float loadItemCategoryTax(Long customerId, Long categoryId);
+    Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId);
 
     void updateRentalTax(Long locationId, Float newTax);
 

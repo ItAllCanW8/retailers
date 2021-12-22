@@ -12,17 +12,17 @@ public class TaxServiceTests {
 
     @Test
     void loadStateTax() {
-        System.out.println(taxService.loadStateTax(StateCode.valueOf("NY")));
+        System.out.println(taxService.loadStateTax(StateCode.valueOf("NY")).get());
     }
 
     @Test
     void loadRentalTax() {
-        System.out.println(taxService.loadRentalTax(28L));
+        System.out.println(taxService.loadRentalTax(28L).get());
     }
 
     @Test
     void loadCategoryTax() {
-        System.out.println(taxService.loadItemCategoryTax(1L, 1L));
+        System.out.println(taxService.loadItemCategoryTax(1L, 1L).get());
     }
 
     @Test
