@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 
 export class UsersInnerModal extends Component {
