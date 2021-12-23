@@ -5,6 +5,7 @@ import { LocationsInnerModal } from './LocationsInnerModal';
 import axios from 'axios';
 import Toast from '../common/Toast';
 import Util from '../../service/Util';
+import AuthService from '../../service/AuthService';
 
 class Locations extends Component {
   constructor(props) {
@@ -23,14 +24,11 @@ class Locations extends Component {
         secondLine: ''
       },
       totalCapacity: null,
-      availableCapacity: null,
-      redirect: null
+      availableCapacity: null
     };
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'ROLE_ADMIN');
-
     this.updateLocations();
   }
 
@@ -89,9 +87,10 @@ class Locations extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('location:get')) {
+      return <Redirect to={"/"} />;
     }
+
     return (
       <div>
         <Toast
@@ -141,7 +140,6 @@ class Locations extends Component {
             <th scope='col'>City</th>
             <th scope='col'>Address line 1</th>
             <th scope='col'>Address line 2</th>
-            <th scope='col'>Available</th>
           </tr>
           </thead>
           <tbody>
@@ -162,7 +160,6 @@ class Locations extends Component {
               <td>{location.address.city}</td>
               <td>{location.address.firstLine}</td>
               <td>{location.address.secondLine}</td>
-              <td>{location.availableCapacity}/{location.totalCapacity}</td>
             </tr>
           ))}
           </tbody>

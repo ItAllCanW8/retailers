@@ -5,6 +5,7 @@ import Modal from '../common/Modal';
 import Util from '../../service/Util';
 import axios from 'axios';
 import { UsersInnerModal } from './UsersInnerModal';
+import AuthService from '../../service/AuthService';
 
 class Users extends Component {
   constructor(props) {
@@ -29,13 +30,11 @@ class Users extends Component {
       },
       location: {
         identifier: ''
-      },
-      redirect: null
+      }
     };
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'ROLE_ADMIN');
     axios.get('/locations').then(
       (response) => {
         this.setState({
@@ -82,8 +81,8 @@ class Users extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('ROLE_ADMIN')) {
+      return <Redirect to={"/"} />;
     }
     return (
       <div>

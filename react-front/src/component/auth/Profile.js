@@ -108,8 +108,8 @@ export default class Profile extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('any')) {
+      return <Redirect to={"/"} />;
     }
 
     const user = this.state.user;

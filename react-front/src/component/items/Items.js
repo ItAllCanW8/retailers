@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Toast from '../common/Toast';
 import Modal from '../common/Modal';
 import ItemsInnerModal from './ItemsInnerModal';
+import AuthService from '../../service/AuthService';
 
 class Items extends Component {
   constructor(props) {
@@ -25,8 +26,6 @@ class Items extends Component {
 
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this,'item:post');
-
     this.updateItems();
   }
 
@@ -93,9 +92,10 @@ class Items extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('item:get')) {
+      return <Redirect to={"/"} />;
     }
+
     return (
       <div>
         <Toast

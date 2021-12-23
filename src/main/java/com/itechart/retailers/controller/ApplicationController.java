@@ -54,7 +54,7 @@ public class ApplicationController {
         try {
             applicationService.dispatchItems(dispatchItemReq);
         } catch (ItemAmountException e) {
-            return ResponseEntity.badRequest().body(new MessageResp("Item amount to dispatch cannot be more than actual amount"));
+            return ResponseEntity.badRequest().body(new MessageResp("Incorrect item amount input!"));
         }
         return ResponseEntity.ok(new MessageResp("Items dispatched successfully"));
     }
