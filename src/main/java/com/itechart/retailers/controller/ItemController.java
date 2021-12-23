@@ -49,13 +49,7 @@ public class ItemController {
 		if (customerId == null) {
 			setCustomerId();
 		}
-		Category category = categoryService.saveIfNotExists(
-				item.getCategory(), customerId);
-		Customer customer = new Customer();
-		customer.setId(customerId);
-		item.setCustomer(customer);
-		item.setCategory(category);
-		itemService.save(item);
+		itemService.create(item, customerId);
 		return ResponseEntity.ok(new MessageResp("Item added."));
 	}
 

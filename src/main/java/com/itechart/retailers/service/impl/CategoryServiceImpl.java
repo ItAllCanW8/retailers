@@ -39,7 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
 			category = categoryRepository.save(category);
 			customerCategoryRepository.save(CustomerCategory.builder()
 					.category(category)
-					.customer(customer).build());
+					.customer(customer)
+					.build());
 		}
 		return category;
 	}
