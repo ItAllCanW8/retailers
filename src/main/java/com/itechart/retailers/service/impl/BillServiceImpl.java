@@ -1,16 +1,22 @@
 package com.itechart.retailers.service.impl;
 
+import com.itechart.retailers.model.dto.BillDto;
 import com.itechart.retailers.model.entity.*;
+import com.itechart.retailers.model.entity.projection.BillView;
 import com.itechart.retailers.repository.BillItemRepository;
 import com.itechart.retailers.repository.BillRepository;
 import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.repository.LocationItemRepository;
 import com.itechart.retailers.service.BillService;
+import com.itechart.retailers.service.exception.ItemAmountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,8 +29,8 @@ public class BillServiceImpl implements BillService {
     private final LocationItemRepository locationItemRepo;
 
     @Override
-    @Transactional
-    public void createBill(Bill bill, Long locationId, Long shopManagerId) {
+    @Transactional(rollbackFor = ItemAmountException.class)
+    public void createBill(Bill bill, Long locationId, Long shopManagerId) throws ItemAmountException {
         bill.setRegDateTime(LocalDateTime.now());
         bill.setLocation(new Location(locationId));
         bill.setShopManager(new User(shopManagerId));
@@ -33,26 +39,49 @@ public class BillServiceImpl implements BillService {
 
         bill = billRepo.save(bill);
 
-//        long totalAmount = 0;
-//        long totalUnits = 0;
-
-        for (BillItem billItem : billItems){
+        for (BillItem billItem : billItems) {
             Item item = itemRepo.findItemByUpc(billItem.getItem().getUpc()).get();
+            Long itemId = item.getId();
 
-//            if(locationItemRepo.existsLocationItemByLocationIdAndItemId(locationId, item.getId())){
-            if(locationItemRepo.getByLocationIdAndItemId(locationId, item.getId()).get().getAmount()
-                    >= billItem.getAmount()){
-                billItem.setItem(item);
-                billItem.setBill(bill);
+            int locationItemAmount = locationItemRepo.getByLocationIdAndItemId(locationId, itemId).get().getAmount();
+            int billItemAmount = billItem.getAmount();
 
-//                billItemRepo.save(billItem);
-            } else {
-                //TODO: error
+            if (locationItemAmount < billItemAmount) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                throw new ItemAmountException("Item amount to sell cannot be more than actual amount in shop");
             }
-//            totalAmount += billItem.getAmount();
-//            itemRepo.findItemByUpc(billItem.getItem().getUpc()).get().getUnits();
+
+            billItem.setItem(item);
+            billItem.setBill(bill);
+
+            locationItemRepo.updateItemAmount(locationId, itemId, locationItemAmount - billItemAmount);
         }
 
         billItemRepo.saveAll(billItems);
+    }
+
+    @Override
+    public List<BillDto> loadShopBills(Long shopId) {
+        List<BillView> billViews =  billRepo.findAllByLocationId(shopId);
+        List<BillDto> billDtos = new ArrayList<>(billViews.size());
+
+        for (BillView billView : billViews){
+            long totalItemAmount = 0;
+            float totalItemSum = 0;
+
+            for (BillItem item : billView.getItemAssoc()){
+                totalItemAmount += item.getAmount();
+                totalItemSum += item.getPrice();
+            }
+
+            billDtos.add(BillDto.builder()
+                    .number(billView.getNumber())
+                    .regDateTime(billView.getRegDateTime())
+                    .totalItemAmount(totalItemAmount)
+                    .totalItemSum(totalItemSum)
+                    .build());
+        }
+
+        return billDtos;
     }
 }

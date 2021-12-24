@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class Item extends Identity {
     private Set<ApplicationItem> applicationAssoc;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @JsonIgnore
     @ToString.Exclude
     private Set<BillItem> itemAssoc;
 }

@@ -1,5 +1,7 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,12 +20,6 @@ public class Bill extends Identity{
 
     @Column(name = "number", unique = true, length = 45, nullable = false)
     private String number;
-
-    @Column(name = "total_amount")
-    private Long totalAmount;
-
-    @Column(name = "total_units")
-    private Long totalUnits;
 
     @Column(name = "date_time")
     private LocalDateTime regDateTime;

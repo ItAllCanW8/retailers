@@ -27,11 +27,11 @@ public class TaxServiceTests {
 
     @Test
     void updateRentalTax() {
-        taxService.updateRentalTax(28L, 0.05f);
+        taxService.updateRentalTax(28L, 0.04f);
     }
 
     @Test
     void updateItemCategoryTax() {
-        taxService.updateItemCategoryTax(0.05f, 1L, 1L);
+        taxService.updateItemCategoryTax(0.01f, 1L, 1L);
     }
 }

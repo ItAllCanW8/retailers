@@ -22,6 +22,7 @@ public class BillItem extends Identity{
     private Float price;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "bill_id")
     private Bill bill;
 
