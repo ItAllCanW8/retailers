@@ -4,6 +4,8 @@ import axios from 'axios';
 import Toast from '../common/Toast';
 import ForwardInnerModal from '../applications/ForwardInnerModal';
 import Modal from '../common/Modal';
+import AuthService from '../../service/AuthService';
+import { Redirect } from 'react-router-dom';
 
 class Warehouse extends Component {
   constructor(props) {
@@ -24,29 +26,19 @@ class Warehouse extends Component {
         destLocation: '',
         itemsToDispatch: [{
           upc: 0,
-          amount: 0
+          amount: 0,
+          cost: 0,
         }]
       },
-      currentLocationIdentifier: '',
-      selectedApplicationId: '',
       forwardLocation: '',
-      managers: [{}],
       locationIds: [],
       applications: [],
       applicationNumber: '',
-      status: '',
-      items: [{
-        upc: '',
-        amount: '',
-        cost: null
-      }],
-      redirect: null
+      status: ''
     };
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'application:get');
-
     axios.get('locations-except-current').then(
       (response) => {
         this.setState({
@@ -77,7 +69,8 @@ class Warehouse extends Component {
             itemsToDispatch: response.data.map(item => {
               return {
                 upc: item.upc,
-                amount: ''
+                amount: '',
+                cost: item.cost
               };
             })
           }
@@ -134,6 +127,9 @@ class Warehouse extends Component {
   };
 
   render() {
+    if (!AuthService.currentUserHasRole('ROLE_WAREHOUSE_MANAGER')) {
+      return <Redirect to={"/"} />;
+    }
     return (
       <div>
         <Toast

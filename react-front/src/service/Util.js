@@ -15,6 +15,9 @@ class Util {
   }
 
   showNegativeToast = (component, error, toastRef) => {
+    if (error.response.data.message === '' || !error.response.data.message) {
+      error.response.data.message = 'Incorrect input!'
+    }
     component.setState({
       toastType: 'error',
       message: error.response.data.message

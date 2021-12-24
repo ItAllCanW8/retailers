@@ -9,6 +9,9 @@ class AuthService {
   }
 
   currentUserHasRole(role) {
+    if (!this.getCurrentUser()) {
+      return false;
+    }
     return this.getCurrentUser().role.includes(role);
   }
 

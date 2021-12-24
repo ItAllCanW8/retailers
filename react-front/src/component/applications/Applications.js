@@ -35,13 +35,11 @@ class Applications extends Component {
         upc: '',
         amount: '',
         cost: null
-      }],
-      redirect: null
+      }]
     };
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'application:get');
     axios.get('locations-except-current').then(
       (response) => {
         this.setState({
@@ -151,9 +149,10 @@ class Applications extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('application:get')) {
+      return <Redirect to={"/"} />;
     }
+
     return (
       <div>
         <Toast

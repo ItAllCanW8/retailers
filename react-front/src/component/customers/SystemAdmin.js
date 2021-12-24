@@ -8,6 +8,7 @@ import { ControlButtons } from './ControlButtons';
 import { CustomerInnerModal } from './CustomerInnerModal';
 import Modal from '../common/Modal';
 import Util from '../../service/Util';
+import AuthService from '../../service/AuthService';
 
 class SystemAdmin extends Component {
   constructor(props) {
@@ -18,8 +19,7 @@ class SystemAdmin extends Component {
       name: '',
       email: '',
       radioOption: 'All',
-      redirect: null,
-      isFetching: false,
+      isFetching: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -96,9 +96,10 @@ class SystemAdmin extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('ROLE_SYSTEM_ADMIN')) {
+      return <Redirect to={"/"} />;
     }
+
     return (
       <div>
         <Toast

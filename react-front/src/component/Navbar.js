@@ -42,11 +42,6 @@ export default class Navbar extends Component {
 
   logOut() {
     localStorage.removeItem('user');
-    this.setState({
-      showAdminBoard: false,
-      showSystemAdminBoard: false,
-      currentUser: undefined,
-    });
   }
 
   toggle() {

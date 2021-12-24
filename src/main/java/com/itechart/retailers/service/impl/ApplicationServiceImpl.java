@@ -51,7 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
 
-        Application application = getApplication(applicationReq.getApplicationNumber(), securityService.getCurrentLocation());
+        Application application = createApplication(applicationReq.getApplicationNumber(), securityService.getCurrentLocation());
 
         Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream()
                 .map(ai -> ApplicationItem.builder()
@@ -111,10 +111,13 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException {
-        Application application = getApplication(dispatchItemReq.getApplicationNumber(), locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation()).get());
+        Application application = createApplication(dispatchItemReq.getApplicationNumber(), locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation()).get());
 
         for (LocationItemResp enteredLocationItem : dispatchItemReq.getItemsToDispatch()) {
-            if (enteredLocationItem.getAmount() > getActualLocationItem(enteredLocationItem.getUpc()).getAmount()) {
+            if (enteredLocationItem.getAmount() == null) {
+                enteredLocationItem.setAmount(0);
+            }
+            if (enteredLocationItem.getAmount() < 0 || enteredLocationItem.getAmount() > getActualLocationItem(enteredLocationItem.getUpc()).getAmount()) {
                 throw new ItemAmountException();
             }
         }
@@ -145,7 +148,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .findFirst().get();
     }
 
-    private Application getApplication(String applicationNumber, Location destLocation) {
+    private Application createApplication(String applicationNumber, Location destLocation) {
         User currentUser = securityService.getCurrentUser();
         return Application.builder()
                 .applicationNumber(applicationNumber)
