@@ -36,9 +36,8 @@ class Util {
   handleChange = (component, event) => {
     let name = event.target.name;
     let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue) && !value.includes('-')) {
-      value = optionalIntValue;
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
     component.setState({
       [name]: value

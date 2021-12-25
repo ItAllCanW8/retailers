@@ -31,7 +31,7 @@ export class CustomerInnerModal extends Component {
               aria-describedby='inputGroupPrepend'
               required
               autoComplete='off'
-              value={this.props.name || ''}
+              value={this.props.name}
               onChange={this.props.onChange}
             />
             <div className='invalid-feedback'>
@@ -50,7 +50,7 @@ export class CustomerInnerModal extends Component {
             id='email'
             required
             autoComplete='off'
-            value={this.props.email || ''}
+            value={this.props.email}
             onChange={this.props.onChange}
           />
           <div className='invalid-feedback'>

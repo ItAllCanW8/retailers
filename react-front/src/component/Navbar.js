@@ -35,7 +35,6 @@ export default class Navbar extends Component {
         showWarehouseManagerBoard: user.role.includes('ROLE_WAREHOUSE_MANAGER'),
         showShopManagerBoard: user.role.includes('ROLE_SHOP_MANAGER'),
         showDirectorBoard: user.role.includes('ROLE_DIRECTOR'),
-
       });
     }
   }
@@ -112,6 +111,20 @@ export default class Navbar extends Component {
                 <li className="nav-item">
                   <Link to={'/warehouse'} className="nav-link" tabIndex="-1">
                     Warehouse
+                  </Link>
+                </li>
+              )}
+              {(this.state.showShopManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/shop'} className="nav-link" tabIndex="-1">
+                    Shop
+                  </Link>
+                </li>
+              )}
+              {(this.state.showShopManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/bills'} className="nav-link" tabIndex="-1">
+                    Bills
                   </Link>
                 </li>
               )}

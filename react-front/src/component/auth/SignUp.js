@@ -101,7 +101,7 @@ class SignUp extends Component {
                 className="form-control"
                 id="name"
                 required
-                value={this.state.name || ''}
+                value={this.state.name}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -122,7 +122,7 @@ class SignUp extends Component {
                 className="form-control"
                 id="email"
                 required
-                value={this.state.email || ''}
+                value={this.state.email}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -142,7 +142,7 @@ class SignUp extends Component {
                 aria-label="Default select example"
                 id="role"
                 name="role"
-                value={this.state.role || ''}
+                value={this.state.role}
                 onChange={this.handleChange}
               >
                 <option value="SYSTEM_ADMIN">SYSTEM_ADMIN</option>
@@ -165,7 +165,7 @@ class SignUp extends Component {
                   className="form-control"
                   id="password"
                   required
-                  value={this.state.password || ''}
+                  value={this.state.password}
                   onChange={this.handleChange}
                   autoComplete="off"
                 />

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-class ApplicationsInnerModal extends Component {
+class BillInnerModal extends Component {
   render() {
+    let index;
     return <div className='modal-content'>
       <div className='modal-header'>
         <h5 className='modal-title' id='exampleModalLabel'>
-          Add application
+          Add bill
         </h5>
         <button
           type='button'
@@ -22,7 +23,7 @@ class ApplicationsInnerModal extends Component {
                 htmlFor='applicationNumber'
                 className='form-label'
               >
-                Application number
+                Bill number
               </label>
               <div className='input-group has-validation'>
                 <input
@@ -33,8 +34,8 @@ class ApplicationsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.applicationNumber}
-                  onChange={this.props.onChange}
+                  value={this.props.number}
+                  onChange={this.props.onNumberChange}
                 />
               </div>
             </div>
@@ -81,20 +82,20 @@ class ApplicationsInnerModal extends Component {
               </div>
               <div className='col mb-2'>
                 {index === 0 && (
-                  <label htmlFor={'cost' + index} className='form-label'>Cost</label>
+                  <label htmlFor={'price' + index} className='form-label'>Price</label>
                 )}
                 <div className='input-group has-validation'>
                   <input
                     type='number'
                     className='form-control'
-                    name={'cost'}
-                    id={'cost' + index}
+                    name={'price'}
+                    id={'price' + index}
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
                     min='0'
                     step='0.01'
-                    value={item.cost}
+                    value={item.price}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
@@ -126,9 +127,10 @@ class ApplicationsInnerModal extends Component {
             </button>
           </div>
         </div>
+
       </div>
     </div>;
   }
 }
 
-export default ApplicationsInnerModal;
+export default BillInnerModal;

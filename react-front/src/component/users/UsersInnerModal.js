@@ -40,7 +40,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.email || ''}
+                  value={this.props.email}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -56,7 +56,7 @@ export class UsersInnerModal extends Component {
                 aria-label='Default select example'
                 id='role'
                 name='role'
-                value={this.props.role || ''}
+                value={this.props.role}
                 onChange={this.props.onChange}
               >
                 <option value='DISPATCHER'>Dispatcher</option>
@@ -98,7 +98,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  value={this.props.name || ''}
+                  value={this.props.name}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -119,7 +119,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  value={this.props.surname || ''}
+                  value={this.props.surname}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -143,7 +143,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  value={this.props.login || ''}
+                  value={this.props.login}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -164,7 +164,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  value={this.props.birthday || ''}
+                  value={this.props.birthday}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -195,7 +195,7 @@ export class UsersInnerModal extends Component {
                   required
                   pattern='.{2}'
                   autoComplete='off'
-                  value={this.props.stateCode || ''}
+                  value={this.props.stateCode}
                   onChange={this.props.onAddressChange}
                 />
                 <div className='invalid-feedback'>
@@ -219,7 +219,7 @@ export class UsersInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.city || ''}
+                  value={this.props.city}
                   onChange={this.props.onAddressChange}
                 />
               </div>
@@ -241,7 +241,7 @@ export class UsersInnerModal extends Component {
                   id='firstLine'
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
-                  value={this.props.firstLine || ''}
+                  value={this.props.firstLine}
                   onChange={this.props.onAddressChange}
                 />
               </div>
@@ -261,7 +261,7 @@ export class UsersInnerModal extends Component {
                   id='secondLine'
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
-                  value={this.props.secondLine || ''}
+                  value={this.props.secondLine}
                   onChange={this.props.onAddressChange}
                 />
               </div>

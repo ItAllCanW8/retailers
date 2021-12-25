@@ -6,8 +6,9 @@ import ForwardInnerModal from '../applications/ForwardInnerModal';
 import Modal from '../common/Modal';
 import AuthService from '../../service/AuthService';
 import { Redirect } from 'react-router-dom';
+import LocationItems from './LocationItems';
 
-class Warehouse extends Component {
+class WarehouseItems extends Component {
   constructor(props) {
     super(props);
     this.modalRef = createRef();
@@ -164,46 +165,11 @@ class Warehouse extends Component {
             </h4>
           </div>
         </div>
-        <table className='table table-striped'>
-          <thead>
-          <tr>
-            <th scope='col' />
-            <th scope='col'>Upc</th>
-            <th scope='col'>Label</th>
-            <th scope='col'>Amount to dispatch</th>
-            <th scope='col'>Amount</th>
-          </tr>
-          </thead>
-          <tbody>
-          {this.state.locationItems && this.state.locationItems.map((item, index) => {
-            let itemsToDispatch = this.state.dispatchRequest.itemsToDispatch[index];
-            return (
-              <tr key={item.id}>
-                <th scope='row'>
-
-                </th>
-                <td>{item.upc}</td>
-                <td>{item.label}</td>
-                <td>
-                  <input
-                    type='text'
-                    className='form-control'
-                    aria-describedby='inputGroupPrepend'
-                    autoComplete='off'
-                    required
-                    pattern='[0-9]+'
-                    style={{ width: 150 }}
-                    value={itemsToDispatch && itemsToDispatch.amount}
-                    onChange={() => this.handleItemsToDispatchInput(window.event, index)}
-                  />
-                </td>
-                <td>{item.amount}</td>
-
-              </tr>
-            );
-          })}
-          </tbody>
-        </table>
+        <LocationItems
+          locationItems={this.state.locationItems}
+          itemsToDispatch={this.state.dispatchRequest.itemsToDispatch}
+          onItemsToDispatchInput={this.handleItemsToDispatchInput}
+        />
       </div>
     );
   }
@@ -211,4 +177,4 @@ class Warehouse extends Component {
 
 }
 
-export default Warehouse;
+export default WarehouseItems;

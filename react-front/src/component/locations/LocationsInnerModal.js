@@ -39,7 +39,7 @@ export class LocationsInnerModal extends Component {
                                     aria-describedby='inputGroupPrepend'
                                     required
                                     autoComplete='off'
-                                    value={this.props.identifier || ''}
+                                    value={this.props.identifier}
                                     onChange={this.props.onChange}
                                 />
                             </div>
@@ -53,7 +53,7 @@ export class LocationsInnerModal extends Component {
                                 aria-label='Default select example'
                                 id='type'
                                 name='type'
-                                value={this.props.type || ''}
+                                value={this.props.type}
                                 onChange={this.props.onChange}
                             >
                                 <option value='WAREHOUSE'>Warehouse</option>
@@ -63,7 +63,7 @@ export class LocationsInnerModal extends Component {
                     </div>
 
                     <div className='row'>
-                        <div className='col-6 mb-2'>
+                        <div className='col mb-2'>
                             <label
                                 htmlFor='totalCapacity'
                                 className='form-label'
@@ -72,41 +72,15 @@ export class LocationsInnerModal extends Component {
                             </label>
                             <div className='input-group has-validation'>
                                 <input
-                                    type='text'
+                                    type='number'
                                     className='form-control'
                                     name='totalCapacity'
                                     id='totalCapacity'
                                     aria-describedby='inputGroupPrepend'
                                     autoComplete='off'
                                     required
-                                    pattern="[0-9]+"
-                                    value={this.props.totalCapacity || ''}
-                                    onChange={this.props.onChange}
-                                />
-                                <div className='invalid-feedback'>
-                                    Input should contain a number
-                                </div>
-                            </div>
-
-                        </div>
-                        <div className='col mb-2'>
-                            <label
-                                htmlFor='availableCapacity'
-                                className='form-label'
-                            >
-                                Available capacity
-                            </label>
-                            <div className='input-group has-validation'>
-                                <input
-                                    type='text'
-                                    className='form-control'
-                                    name='availableCapacity'
-                                    id='availableCapacity'
-                                    aria-describedby='inputGroupPrepend'
-                                    autoComplete='off'
-                                    required
-                                    pattern="[0-9]+"
-                                    value={this.props.availableCapacity || ''}
+                                    min='0'
+                                    value={this.props.totalCapacity}
                                     onChange={this.props.onChange}
                                 />
                                 <div className='invalid-feedback'>
@@ -140,7 +114,7 @@ export class LocationsInnerModal extends Component {
                                     required
                                     pattern='.{2}'
                                     autoComplete='off'
-                                    value={this.props.stateCode || ''}
+                                    value={this.props.stateCode}
                                     onChange={this.props.onAddressChange}
                                 />
                                 <div className='invalid-feedback'>
@@ -164,7 +138,7 @@ export class LocationsInnerModal extends Component {
                                     aria-describedby='inputGroupPrepend'
                                     required
                                     autoComplete='off'
-                                    value={this.props.city || ''}
+                                    value={this.props.city}
                                     onChange={this.props.onAddressChange}
                                 />
                             </div>
@@ -186,7 +160,7 @@ export class LocationsInnerModal extends Component {
                                     id='firstLine'
                                     aria-describedby='inputGroupPrepend'
                                     autoComplete='off'
-                                    value={this.props.firstLine || ''}
+                                    value={this.props.firstLine}
                                     onChange={this.props.onAddressChange}
                                 />
                             </div>
@@ -206,7 +180,7 @@ export class LocationsInnerModal extends Component {
                                     id='secondLine'
                                     aria-describedby='inputGroupPrepend'
                                     autoComplete='off'
-                                    value={this.props.secondLine || ''}
+                                    value={this.props.secondLine}
                                     onChange={this.props.onAddressChange}
                                 />
                             </div>

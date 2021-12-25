@@ -33,7 +33,7 @@ class ItemsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.upc || ''}
+                  value={this.props.upc}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -53,7 +53,7 @@ class ItemsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.label || ''}
+                  value={this.props.label}
                   onChange={this.props.onChange}
                 />
               </div>
@@ -69,20 +69,17 @@ class ItemsInnerModal extends Component {
               </label>
               <div className='input-group has-validation'>
                 <input
-                  type='text'
+                  type='number'
                   className='form-control'
                   name='units'
                   id='units'
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  pattern='[0-9]+'
-                  value={this.props.units || ''}
+                  min='0'
+                  value={this.props.units}
                   onChange={this.props.onChange}
                 />
-                <div className='invalid-feedback'>
-                  Input should contain a number
-                </div>
               </div>
             </div>
           </div>
@@ -104,7 +101,7 @@ class ItemsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  value={this.props.category || ''}
+                  value={this.props.category}
                   onChange={this.props.onCategoryChange}
                 />
               </div>
