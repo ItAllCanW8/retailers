@@ -11,9 +11,12 @@ export default class Navbar extends Component {
 
     this.state = {
       currentUser: undefined,
-      showAdminBoard: false,
       showSystemAdminBoard: false,
+      showAdminBoard: false,
       showDispatcherBoard: false,
+      showWarehouseManagerBoard: false,
+      showShopManagerBoard: false,
+      showDirectorBoard: false,
       collapse: false,
     };
     this.toggle = this.toggle.bind(this);
@@ -28,18 +31,16 @@ export default class Navbar extends Component {
         currentUser: user,
         showAdminBoard: user.role.includes('ROLE_ADMIN'),
         showSystemAdminBoard: user.role.includes('ROLE_SYSTEM_ADMIN'),
-        showDispatcherBoard: user.role.includes('ROLE_DISPATCHER')
+        showDispatcherBoard: user.role.includes('ROLE_DISPATCHER'),
+        showWarehouseManagerBoard: user.role.includes('ROLE_WAREHOUSE_MANAGER'),
+        showShopManagerBoard: user.role.includes('ROLE_SHOP_MANAGER'),
+        showDirectorBoard: user.role.includes('ROLE_DIRECTOR'),
       });
     }
   }
 
   logOut() {
     localStorage.removeItem('user');
-    this.setState({
-      showAdminBoard: false,
-      showSystemAdminBoard: false,
-      currentUser: undefined,
-    });
   }
 
   toggle() {
@@ -99,10 +100,31 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
-              {showDispatcherBoard && (
+              {(showDispatcherBoard || this.state.showWarehouseManagerBoard) && (
                 <li className="nav-item">
                   <Link to={'/applications'} className="nav-link" tabIndex="-1">
                     Applications
+                  </Link>
+                </li>
+              )}
+              {(this.state.showWarehouseManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/warehouse'} className="nav-link" tabIndex="-1">
+                    Warehouse
+                  </Link>
+                </li>
+              )}
+              {(this.state.showShopManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/shop'} className="nav-link" tabIndex="-1">
+                    Shop
+                  </Link>
+                </li>
+              )}
+              {(this.state.showShopManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/bills'} className="nav-link" tabIndex="-1">
+                    Bills
                   </Link>
                 </li>
               )}

@@ -31,6 +31,8 @@ public class SecurityContextService {
         return getCurrentUser().getCustomer().getId();
     }
 
+    public Long getCurrentLocationId() { return getCurrentUser().getLocation().getId(); }
+
     public Location getCurrentLocation() {
         return getCurrentUser().getLocation();
     }

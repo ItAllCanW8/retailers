@@ -8,6 +8,7 @@ import ApplicationsInnerModal from './ApplicationsInnerModal';
 import NoAvailableSpaceInnerModal from './NoAvailableSpaceInnerModal';
 import ManagerContactsInnerModal from './ManagerContactsInnerModal';
 import ForwardInnerModal from './ForwardInnerModal';
+import AuthService from '../../service/AuthService';
 
 class Applications extends Component {
   constructor(props) {
@@ -34,13 +35,11 @@ class Applications extends Component {
         upc: '',
         amount: '',
         cost: null
-      }],
-      redirect: null
+      }]
     };
   }
 
   componentDidMount() {
-    Util.redirectIfDoesntHaveRole(this, 'ROLE_DISPATCHER');
     axios.get('locations-except-current').then(
       (response) => {
         this.setState({
@@ -88,58 +87,36 @@ class Applications extends Component {
     );
   };
 
-  handleLocationSelection = (event, id) => {
-    if (event.target.checked) {
-      this.setState({
-        ids: [...this.state.ids, id]
-      });
-    } else {
-      let array = this.state.ids;
-      let index = array.indexOf(id);
-      if (index !== -1) {
-        array.splice(index, 1);
-      }
-      this.setState({
-        ids: array
-      });
-    }
-
-  };
-
-  deleteLocations = () => {
-    axios.delete('admin/locations', {
-      data: this.state.ids
-    })
-    .then(
-      (response) => {
-        Util.showPositiveToast(this, response, this.toastRef);
-        this.setState({ ids: [] });
-        this.updateLocations();
-      }
-    );
-  };
-
   changeItem = (event, index) => {
     let name = event.target.name;
     let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue) && !value.includes('-')) {
-      value = optionalIntValue;
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
     const newItems = this.state.items;
     newItems[index][name] = value;
     this.setState({
       items: newItems
-    }, () => console.log(this.state.items));
+    });
   };
 
   addItem = () => {
     const newItems = this.state.items;
     newItems.push({ upc: '', amount: '', coast: null });
-    console.log(newItems);
     this.setState({
       ...this.state,
       items: newItems
+    });
+  };
+
+  removeItem = () => {
+    const newItems = this.state.items;
+    newItems.pop();
+    this.setState({
+      sellRequest: {
+        ...this.state.sellRequest,
+        items: newItems
+      }
     });
   };
 
@@ -153,7 +130,7 @@ class Applications extends Component {
         Util.showNegativeToast(this, error, this.toastRef);
         this.setState({
           selectedApplicationId: id
-        })
+        });
         Util.openModal(this.noAvailableSpaceModalRef);
       }
     );
@@ -163,27 +140,28 @@ class Applications extends Component {
     this.setState({
       forwardLocation: value
     });
-  }
+  };
 
   submitForwarding = (id) => {
     this.forwardModalRef.current.click();
     this.noAvailableSpaceModalRef.current.click();
-    axios.put("application/" + id + "/forward", this.state.forwardLocation).then(
+    axios.put('application/' + id + '/forward', this.state.forwardLocation).then(
       (response) => {
-      Util.showPositiveToast(this, response, this.toastRef);
-      this.updateApplications();
-    },
-    (error) => {
-      Util.showNegativeToast(this, error, this.toastRef);
-      Util.openModal(this.noAvailableSpaceModalRef);
-    }
-    )
+        Util.showPositiveToast(this, response, this.toastRef);
+        this.updateApplications();
+      },
+      (error) => {
+        Util.showNegativeToast(this, error, this.toastRef);
+        Util.openModal(this.noAvailableSpaceModalRef);
+      }
+    );
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
+    if (!AuthService.currentUserHasRole('application:get')) {
+      return <Redirect to={"/"} />;
     }
+
     return (
       <div>
         <Toast
@@ -193,16 +171,17 @@ class Applications extends Component {
         />
         <div className='row align-items-center mb-3'>
           <div className='col-auto align-items-center'>
-            <button
+            {AuthService.currentUserHasRole('ROLE_DISPATCHER') && <button
               type='button'
               className='btn btn-primary me-3'
               onClick={() => Util.openModal(this.modalRef)}
             >
               Add
-            </button>
+            </button>}
           </div>
           <div className='col align-items-center'>
-            <h4>Space available: {this.state.currentLocation.availableAmount}/{this.state.currentLocation.location.totalCapacity}</h4>
+            <h4>Space
+              available: {this.state.currentLocation.availableAmount}/{this.state.currentLocation.location.totalCapacity}</h4>
           </div>
         </div>
         <Modal ref={this.noAvailableSpaceModalRef}>
@@ -212,7 +191,7 @@ class Applications extends Component {
           />
         </Modal>
         <Modal ref={this.managerContactsModalRef}>
-          <ManagerContactsInnerModal managers={this.state.managers}/>
+          <ManagerContactsInnerModal managers={this.state.managers} />
         </Modal>
         <Modal ref={this.forwardModalRef} submit={() => this.submitForwarding(this.state.selectedApplicationId)}>
           <ForwardInnerModal
@@ -229,6 +208,7 @@ class Applications extends Component {
                                   locationIds={this.state.locationIds}
                                   status={this.state.status} items={this.state.items}
                                   addItem={this.addItem}
+                                  removeItem={this.removeItem}
                                   onItemChange={this.changeItem}
                                   onLocationChange={(value) => Util.handleLocationChange(this, value)}
                                   onChange={() => Util.handleChange(this, window.event)}

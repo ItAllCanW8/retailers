@@ -104,7 +104,7 @@ class LogIn extends Component {
                 className="form-control"
                 id="validationCustom01"
                 required
-                value={this.state.email || ''}
+                value={this.state.email}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -126,7 +126,7 @@ class LogIn extends Component {
                   className="form-control"
                   id="validationCustom02"
                   required
-                  value={this.state.password || ''}
+                  value={this.state.password}
                   onChange={this.handleChange}
                   autoComplete="off"
                 />

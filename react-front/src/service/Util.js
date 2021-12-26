@@ -15,6 +15,9 @@ class Util {
   }
 
   showNegativeToast = (component, error, toastRef) => {
+    if (error.response.data.message === '' || !error.response.data.message) {
+      error.response.data.message = 'Incorrect input!'
+    }
     component.setState({
       toastType: 'error',
       message: error.response.data.message
@@ -33,9 +36,8 @@ class Util {
   handleChange = (component, event) => {
     let name = event.target.name;
     let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue) && !value.includes('-')) {
-      value = optionalIntValue;
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
     component.setState({
       [name]: value

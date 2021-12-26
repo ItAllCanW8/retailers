@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-class ApplicationsInnerModal extends Component {
+class BillInnerModal extends Component {
   render() {
+    let index;
     return <div className='modal-content'>
       <div className='modal-header'>
         <h5 className='modal-title' id='exampleModalLabel'>
-          Add application
+          Add bill
         </h5>
         <button
           type='button'
@@ -22,7 +23,7 @@ class ApplicationsInnerModal extends Component {
                 htmlFor='applicationNumber'
                 className='form-label'
               >
-                Application number
+                Bill number
               </label>
               <div className='input-group has-validation'>
                 <input
@@ -33,20 +34,14 @@ class ApplicationsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.applicationNumber || ''}
-                  onChange={this.props.onChange}
+                  value={this.props.number}
+                  onChange={this.props.onNumberChange}
                 />
               </div>
             </div>
           </div>
           {this.props.items && this.props.items.map((item, index, arr) => (
             <div className='row' key={index}>
-              {index === arr.length - 1 && (
-                <div className='col-auto d-flex align-items-center'>
-                  <button className='btn btn-light' onClick={this.props.addItem}>+</button>
-                </div>
-              )}
-
               <div className='col-4 mb-2'>
                 {index === 0 && (
                   <label htmlFor={'upc' + index} className='form-label'>UPC</label>
@@ -61,7 +56,7 @@ class ApplicationsInnerModal extends Component {
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    value={item.upc || ''}
+                    value={item.upc}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
@@ -72,34 +67,35 @@ class ApplicationsInnerModal extends Component {
                 )}
                 <div className='input-group has-validation'>
                   <input
-                    type='text'
+                    type='number'
                     className='form-control'
                     name={'amount'}
                     id={'amount' + index}
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    pattern='[0-9]+'
-                    value={item.amount || ''}
+                    min='0'
+                    value={item.amount}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
               </div>
               <div className='col mb-2'>
                 {index === 0 && (
-                  <label htmlFor={'cost' + index} className='form-label'>Cost</label>
+                  <label htmlFor={'price' + index} className='form-label'>Price</label>
                 )}
                 <div className='input-group has-validation'>
                   <input
-                    type='text'
+                    type='number'
                     className='form-control'
-                    name={'cost'}
-                    id={'cost' + index}
+                    name={'price'}
+                    id={'price' + index}
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    pattern='[0-9]+'
-                    value={item.cost || ''}
+                    min='0'
+                    step='0.01'
+                    value={item.price}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
@@ -108,20 +104,33 @@ class ApplicationsInnerModal extends Component {
           ))}
         </div>
       </div>
-      <div className='modal-footer'>
-        <button
-          type='button'
-          className='btn btn-secondary'
-          data-bs-dismiss='modal'
-        >
-          Close
-        </button>
-        <button type='submit' className='btn btn-primary'>
-          Add
-        </button>
+      <div className='modal-footer' style={{display: 'block'}}>
+        <div className='d-flex'>
+          <div className='p-1'>
+            <button className='btn btn-light' onClick={this.props.addItem}>+</button>
+          </div>
+          <div className='me-auto p-1'>
+            <button className='btn btn-light' onClick={this.props.removeItem}>-</button>
+          </div>
+          <div className='p-1'>
+            <button
+              type='button'
+              className='btn btn-secondary'
+              data-bs-dismiss='modal'
+            >
+              Close
+            </button>
+          </div>
+          <div className='p-1'>
+            <button type='submit' className='btn btn-primary'>
+              Add
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>;
   }
 }
 
-export default ApplicationsInnerModal;
+export default BillInnerModal;

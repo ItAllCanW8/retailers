@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Table(name = "item")
 public class Item extends Identity {
 
-    @Column(name = "upc", length = 20)
+    @Column(name = "upc", length = 20, unique = true, nullable = false)
     private String upc;
 
     @Column(name = "label", length = 45)
@@ -38,8 +39,8 @@ public class Item extends Identity {
     @ToString.Exclude
     private Set<ApplicationItem> applicationAssoc;
 
-    public Item(Long id){
-        this.setId(id);
-    }
-
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    private Set<BillItem> itemAssoc;
 }

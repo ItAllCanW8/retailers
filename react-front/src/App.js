@@ -1,16 +1,19 @@
-import React, {Component} from "react";
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import LogIn from "./component/auth/LogIn";
-import Home from "./component/Home";
-import Profile from "./component/auth/Profile";
-import SystemAdmin from "./component/system-admin/SystemAdmin";
-import SignUp from "./component/auth/SignUp";
-import Navbar from "./component/Navbar";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Locations from './component/admin/Locations';
-import Users from './component/admin/Users';
-import Items from './component/admin/Items';
-import Applications from './component/employee/Applications';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import LogIn from './component/auth/LogIn';
+import Home from './component/Home';
+import Profile from './component/auth/Profile';
+import SystemAdmin from './component/customers/SystemAdmin';
+import SignUp from './component/auth/SignUp';
+import Navbar from './component/Navbar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Locations from './component/locations/Locations';
+import Users from './component/users/Users';
+import Items from './component/items/Items';
+import Applications from './component/applications/Applications';
+import WarehouseItems from './component/warehouse/WarehouseItems';
+import Bills from './component/shop/Bills';
+import ShopItems from './component/shop/ShopItems';
 
 class App extends Component {
   constructor(props) {
@@ -49,6 +52,9 @@ class App extends Component {
             <Route exact path="/users" component={Users}/>
             <Route exact path="/items" component={Items}/>
             <Route exact path="/applications" component={Applications}/>
+            <Route exact path="/warehouse" component={WarehouseItems}/>
+            <Route exact path="/shop" component={ShopItems}/>
+            <Route exact path="/bills" component={Bills}/>
           </div>
         </Switch>
       </Router>
