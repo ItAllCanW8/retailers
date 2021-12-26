@@ -14,4 +14,5 @@ public class LocationItemResp {
     private String label;
     private Integer amount;
     private Float cost;
+    private Float price;
 }

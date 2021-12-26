@@ -40,9 +40,9 @@ class BillInnerModal extends Component {
               </div>
             </div>
           </div>
-          {this.props.items && this.props.items.map((item, index, arr) => (
+          {this.props.items && this.props.items.map((itemAssoc, index, arr) => (
             <div className='row' key={index}>
-              <div className='col-4 mb-2'>
+              <div className='col-6 mb-2'>
                 {index === 0 && (
                   <label htmlFor={'upc' + index} className='form-label'>UPC</label>
                 )}
@@ -56,12 +56,12 @@ class BillInnerModal extends Component {
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    value={item.upc}
+                    value={itemAssoc.item.upc}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
               </div>
-              <div className='col-4 mb-2'>
+              <div className='col mb-2'>
                 {index === 0 && (
                   <label htmlFor={'amount' + index} className='form-label'>Amount</label>
                 )}
@@ -75,27 +75,7 @@ class BillInnerModal extends Component {
                     autoComplete='off'
                     required
                     min='0'
-                    value={item.amount}
-                    onChange={() => this.props.onItemChange(window.event, index)}
-                  />
-                </div>
-              </div>
-              <div className='col mb-2'>
-                {index === 0 && (
-                  <label htmlFor={'price' + index} className='form-label'>Price</label>
-                )}
-                <div className='input-group has-validation'>
-                  <input
-                    type='number'
-                    className='form-control'
-                    name={'price'}
-                    id={'price' + index}
-                    aria-describedby='inputGroupPrepend'
-                    autoComplete='off'
-                    required
-                    min='0'
-                    step='0.01'
-                    value={item.price}
+                    value={itemAssoc.amount}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
