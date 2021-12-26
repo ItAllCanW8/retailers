@@ -43,7 +43,9 @@ public class BillServiceImpl implements BillService {
             Item item = itemRepo.findItemByUpc(billItem.getItem().getUpc()).get();
             Long itemId = item.getId();
 
-            int locationItemAmount = locationItemRepo.getByLocationIdAndItemId(locationId, itemId).get().getAmount();
+            LocationItem locationItem = locationItemRepo.getByLocationIdAndItemId(locationId, itemId).get();
+
+            int locationItemAmount = locationItem.getAmount();
             int billItemAmount = billItem.getAmount();
 
             if (locationItemAmount < billItemAmount) {
@@ -51,6 +53,7 @@ public class BillServiceImpl implements BillService {
                 throw new ItemAmountException("Item amount to sell cannot be more than actual amount in shop");
             }
 
+            billItem.setPrice(locationItem.getPrice());
             billItem.setItem(item);
             billItem.setBill(bill);
 
