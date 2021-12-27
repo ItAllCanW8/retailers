@@ -61,8 +61,11 @@ public class LocationServiceImpl implements LocationService {
 				if (locationItemDB.get().getCost() > locationItem.getCost()) {
 					locationItem.setCost(locationItemDB.get().getCost());
 					locationItem.setPrice(locationItemDB.get().getPrice());
+					locationItem.setId(locationItemDB.get().getId());
 				}
 				locationItem.setAmount(locationItemDB.get().getAmount() + locationItem.getAmount());
+				locationItemRepository.deleteById(locationItemDB.get().getId());
+				locationItems.add(locationItem);
 			}
 		}
 
