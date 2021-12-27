@@ -36,6 +36,7 @@ public class ItemController {
 		return itemService.findItemsByCustomerId(customerId);
 	}
 
+
 	@GetMapping("/items/{id}")
 	@PreAuthorize(authorities)
 	public Item getById(@PathVariable Long id) {

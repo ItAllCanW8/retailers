@@ -68,6 +68,7 @@ public class ApplicationController {
 		} catch (ItemAmountException e) {
 			return ResponseEntity.badRequest().body(new MessageResp("Incorrect item amount input!"));
 		}
+
 		return ResponseEntity.ok(new MessageResp("Items dispatched successfully"));
 	}
 
