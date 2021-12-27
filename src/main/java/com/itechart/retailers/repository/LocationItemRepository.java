@@ -1,5 +1,6 @@
 package com.itechart.retailers.repository;
 
+import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.LocationItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,14 +15,17 @@ import java.util.Optional;
 @Repository
 public interface LocationItemRepository extends JpaRepository<LocationItem, Long> {
 
-    LocationItem getByItemUpcAndLocation(String upc, Location location);
-    List<LocationItem> findByLocation(Location location);
+	LocationItem getByItemUpcAndLocation(String upc, Location location);
 
-    Optional<LocationItem> getByLocationIdAndItemId(Long locationId, Long itemId);
+	Optional<LocationItem> findLocationItemByItemAndLocation(Item item, Location location);
 
-    @Modifying
-    @Query("update LocationItem li set li.amount = :newAmount where li.location.id = :locationId " +
-            "and li.item.id = :itemId")
-    void updateItemAmount(@Param(value = "locationId") Long locationId, @Param(value = "itemId") Long itemId,
-                          @Param(value = "newAmount") Integer newAmount);
+	List<LocationItem> findByLocation(Location location);
+
+	Optional<LocationItem> getByLocationIdAndItemId(Long locationId, Long itemId);
+
+	@Modifying
+	@Query("update LocationItem li set li.amount = :newAmount where li.location.id = :locationId " +
+			"and li.item.id = :itemId")
+	void updateItemAmount(@Param(value = "locationId") Long locationId, @Param(value = "itemId") Long itemId,
+	                      @Param(value = "newAmount") Integer newAmount);
 }

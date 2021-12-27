@@ -48,6 +48,7 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	public List<Item> findItemsByCustomerId(Long customerId) {
+
 		return itemRepository.findItemsByCustomerId(customerId);
 	}
 
