@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.Category;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.MessageResp;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.ItemService;
 import com.itechart.retailers.service.UserService;
@@ -24,16 +25,14 @@ public class ItemController {
 	private final ItemService itemService;
 	private final CategoryService categoryService;
 	private final UserService userService;
+	private final SecurityContextService securityContextService;
 
 	private final String authorities = "hasAuthority('item:get') or hasAuthority('item:post')";
 	private Long customerId;
 
 	@GetMapping("/items")
 	public List<Item> getAll() {
-		if (customerId == null) {
-			setCustomerId();
-		}
-
+		customerId = securityContextService.getCurrentCustomerId();
 		return itemService.findItemsByCustomerId(customerId);
 	}
 
@@ -46,9 +45,7 @@ public class ItemController {
 	@PostMapping("/items")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> create(@RequestBody Item item) {
-		if (customerId == null) {
-			setCustomerId();
-		}
+		customerId = securityContextService.getCurrentCustomerId();
 		itemService.create(item, customerId);
 		return ResponseEntity.ok(new MessageResp("Item added."));
 	}
@@ -59,10 +56,5 @@ public class ItemController {
 		for (Long id : ids) {
 			itemService.deleteById(id);
 		}
-	}
-
-	private void setCustomerId() {
-		String currentCustomerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-		this.customerId = userService.getByEmail(currentCustomerEmail).get().getCustomer().getId();
 	}
 }
