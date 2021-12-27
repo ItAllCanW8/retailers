@@ -65,11 +65,9 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locationItem.setAmount(locationItemDB.get().getAmount() + locationItem.getAmount());
 				locationItemRepository.deleteById(locationItemDB.get().getId());
-				locationItems.add(locationItem);
 			}
+			locationItemRepository.save(locationItem);
 		}
-
-		locationItemRepository.saveAll(locationItems);
 
 		Application application = applicationService.getById(applicationId);
 		application.setLastUpdDateTime(LocalDateTime.now());
