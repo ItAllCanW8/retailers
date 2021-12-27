@@ -100,7 +100,7 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
-              {(showDispatcherBoard || this.state.showWarehouseManagerBoard) && (
+              {(showDispatcherBoard || this.state.showWarehouseManagerBoard || this.state.showShopManagerBoard) && (
                 <li className="nav-item">
                   <Link to={'/applications'} className="nav-link" tabIndex="-1">
                     Applications

@@ -31,6 +31,7 @@ public class LocationItemServiceImpl implements LocationItemService {
                 .label(li.getItem().getLabel())
                 .amount(li.getAmount())
                 .cost(li.getCost())
+                .price(li.getPrice())
                 .build();
     }
 }

@@ -23,13 +23,11 @@ class Bills extends Component {
       bills: [],
       sellRequest: {
         number: '',
-        location: {
-          identifier: ''
-        },
         itemAssoc: [{
-          upc: '',
-          amount: 0,
-          price: 0
+          item: {
+            upc: '',
+          },
+          amount: ''
         }]
       },
       forwardLocation: '',
@@ -92,8 +90,12 @@ class Bills extends Component {
     if (!isNaN(optionalIntValue) && !value.includes('-')) {
       value = optionalIntValue;
     }
-    const newItems = this.state.sellRequest.itemAssoc;
-    newItems[index][name] = value;
+    let newItems = this.state.sellRequest.itemAssoc;
+    if (name === 'upc') {
+      newItems[index].item.upc = value;
+    } else {
+      newItems[index][name] = value;
+    }
     this.setState({
       sellRequest: {
         ...this.state.sellRequest,
@@ -104,7 +106,7 @@ class Bills extends Component {
 
   addItem = () => {
     const newItems = this.state.sellRequest.itemAssoc;
-    newItems.push({ upc: '', amount: '', coast: null });
+    newItems.push({ item : { upc: '' }, amount: '', coast: null });
     this.setState({
       sellRequest: {
         ...this.state.sellRequest,
@@ -169,9 +171,8 @@ class Bills extends Component {
           <tr>
             <th scope='col' />
             <th scope='col'>Number</th>
-            <th scope='col'>Label</th>
-            <th scope='col'>Amount to dispatch</th>
-            <th scope='col'>Amount</th>
+            <th scope='col'>Total item amount</th>
+            <th scope='col'>Total item sum</th>
           </tr>
           </thead>
           <tbody>
@@ -180,9 +181,9 @@ class Bills extends Component {
               <tr key={bill.id}>
                 <th scope='row'>
                 </th>
-                <td>bill.number</td>
-                <td></td>
-                <td></td>
+                <td>{bill.number}</td>
+                <td>{bill.totalItemAmount}</td>
+                <td>{bill.totalItemSum}</td>
               </tr>
             );
           })}
