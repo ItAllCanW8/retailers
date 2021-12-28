@@ -13,7 +13,8 @@ public interface TaxService {
 
     Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId);
 
-    void updateRentalTax(Long locationId, Float newTax);
+    boolean updateRentalTax(Long locationId, Float newTax);
 
-    void updateItemCategoryTax(Float newTax, Long customerId, Long categoryId);
+//    boolean updateItemCategoryTax(Float newTax, Long customerId, Long categoryId);
+    boolean updateItemCategoryTax(Long customerCategoryId, Float newTax);
 }
