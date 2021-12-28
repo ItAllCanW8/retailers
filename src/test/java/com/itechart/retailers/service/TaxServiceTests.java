@@ -32,6 +32,6 @@ public class TaxServiceTests {
 
     @Test
     void updateItemCategoryTax() {
-        taxService.updateItemCategoryTax(0.01f, 1L, 1L);
+        taxService.updateItemCategoryTax(1L, 0.02f);
     }
 }

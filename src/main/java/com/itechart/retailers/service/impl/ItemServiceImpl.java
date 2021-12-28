@@ -4,7 +4,6 @@ package com.itechart.retailers.service.impl;
 import com.itechart.retailers.model.entity.Category;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Item;
-import com.itechart.retailers.repository.CategoryRepository;
 import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.ItemService;

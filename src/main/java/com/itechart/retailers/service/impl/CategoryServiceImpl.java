@@ -9,6 +9,7 @@ import com.itechart.retailers.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,5 +44,10 @@ public class CategoryServiceImpl implements CategoryService {
 					.build());
 		}
 		return category;
+	}
+
+	@Override
+	public List<CustomerCategory> loadCustomerCategories(Long customerId) {
+		return customerCategoryRepository.findAllByCustomerId(customerId);
 	}
 }

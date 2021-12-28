@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.model.payload.request.DispatchItemReq;
 import com.itechart.retailers.model.payload.response.MessageResp;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.LocationService;
 import com.itechart.retailers.service.UserService;
@@ -27,15 +28,14 @@ public class ApplicationController {
 	private final LocationService locationService;
 	private final String authorities = "hasAuthority('application:get') or hasAuthority('application:post')";
 	private final UserService userService;
+	private final SecurityContextService securityContextService;
 
 	private Long customerId;
 
 	@GetMapping("/applications")
 	@PreAuthorize(authorities)
 	public List<Application> getCurrentApplications() {
-		if (customerId == null) {
-			setCustomerId();
-		}
+		customerId = securityContextService.getCurrentCustomerId();
 		return applicationService.getCurrentApplications(customerId);
 	}
 
@@ -48,9 +48,7 @@ public class ApplicationController {
 	@PostMapping("/applications")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> create(@RequestBody ApplicationReq applicationReq) throws UndefinedItemException {
-		if (customerId == null) {
-			setCustomerId();
-		}
+		customerId = securityContextService.getCurrentCustomerId();
 
 		try {
 			applicationService.save(applicationReq, customerId);
@@ -63,15 +61,14 @@ public class ApplicationController {
 	@PostMapping("/dispatch-items")
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> dispatchItems(@RequestBody DispatchItemReq dispatchItemReq) {
-		if (customerId == null) {
-			setCustomerId();
-		}
+		customerId = securityContextService.getCurrentCustomerId();
 
 		try {
 			applicationService.dispatchItems(dispatchItemReq, customerId);
 		} catch (ItemAmountException e) {
 			return ResponseEntity.badRequest().body(new MessageResp("Incorrect item amount input!"));
 		}
+
 		return ResponseEntity.ok(new MessageResp("Items dispatched successfully"));
 	}
 
@@ -102,8 +99,4 @@ public class ApplicationController {
 		applicationService.deleteById(id);
 	}
 
-	private void setCustomerId() {
-		String currentCustomerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-		this.customerId = userService.getByEmail(currentCustomerEmail).get().getCustomer().getId();
-	}
 }

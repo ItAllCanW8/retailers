@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 public class CustomerCategory extends Identity {
 
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 

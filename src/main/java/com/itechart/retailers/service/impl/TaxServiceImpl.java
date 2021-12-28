@@ -7,8 +7,8 @@ import com.itechart.retailers.repository.StateTaxRepository;
 import com.itechart.retailers.service.TaxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -37,13 +37,19 @@ public class TaxServiceImpl implements TaxService {
 
     @Override
     @Transactional
-    public void updateRentalTax(Long locationId, Float newTax) {
-        locationRepo.updateRentalTax(locationId, newTax);
+    public boolean updateRentalTax(Long locationId, Float newTax) {
+        return locationRepo.updateRentalTax(locationId, newTax) == 1;
     }
 
     @Override
     @Transactional
-    public void updateItemCategoryTax(Float newTax, Long customerId, Long categoryId) {
-        customerCategoryRepo.updateItemCategoryTax(newTax, customerId, categoryId);
+    public boolean updateItemCategoryTax(Long customerCategoryId, Float newTax) {
+        return customerCategoryRepo.updateItemCategoryTax(customerCategoryId, newTax) == 1;
     }
+
+//    @Override
+//    @Transactional
+//    public boolean updateItemCategoryTax(Float newTax, Long customerId, Long categoryId) {
+//        return customerCategoryRepo.updateItemCategoryTax(newTax, customerId, categoryId) == 1;
+//    }
 }

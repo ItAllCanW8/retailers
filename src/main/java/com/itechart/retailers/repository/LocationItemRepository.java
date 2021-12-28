@@ -1,5 +1,6 @@
 package com.itechart.retailers.repository;
 
+import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.LocationItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,9 @@ import java.util.Optional;
 public interface LocationItemRepository extends JpaRepository<LocationItem, Long> {
 
     LocationItem getByItemUpcAndLocation(String upc, Location location);
+
+    Optional<LocationItem> findLocationItemByItemAndLocation(Item item, Location location);
+
     List<LocationItem> findByLocation(Location location);
 
     Optional<LocationItem> getByLocationIdAndItemId(Long locationId, Long itemId);

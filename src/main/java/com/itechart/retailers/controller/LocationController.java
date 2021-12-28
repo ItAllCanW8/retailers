@@ -19,53 +19,53 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class LocationController {
-    private final AdminService adminService;
-    private final SecurityContextService securityService;
-    private final LocationService locationService;
-    private final LocationRepository locationRepository;
-    private final String roles = "hasRole('ADMIN')";
+	private final AdminService adminService;
+	private final SecurityContextService securityService;
+	private final LocationService locationService;
+	private final LocationRepository locationRepository;
+	private final String roles = "hasRole('ADMIN')";
 
-    @GetMapping("/locations")
-    @PreAuthorize("hasAuthority('location:get')")
-    public List<Location> getLocations() {
-        return adminService.findLocations();
-    }
+	@GetMapping("/locations")
+	@PreAuthorize("hasAuthority('location:get')")
+	public List<Location> getLocations() {
+		return adminService.findLocations();
+	}
 
-    @GetMapping("/current-location")
-    @PreAuthorize("hasAuthority('location:get')")
-    public LocationResp getCurrentLocation() {
-        return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
-    }
+	@GetMapping("/current-location")
+	@PreAuthorize("hasAuthority('location:get')")
+	public LocationResp getCurrentLocation() {
+			return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
+	}
 
-    @GetMapping("/locations-except-current")
-    @PreAuthorize("hasAuthority('location:get')")
-    public List<Location> getLocationsExceptCurrent() {
-        Long currentCustomerId = securityService.getCurrentCustomer().getId();
-        Long currentLocationId = securityService.getCurrentLocation().getId();
-        return locationRepository.findLocationsByCustomerIdAndIdNot(currentCustomerId, currentLocationId);
-    }
+	@GetMapping("/locations-except-current")
+	@PreAuthorize("hasAuthority('location:get')")
+	public List<Location> getLocationsExceptCurrent() {
+		Long currentCustomerId = securityService.getCurrentCustomer().getId();
+		Long currentLocationId = securityService.getCurrentLocation().getId();
+		return locationRepository.findLocationsByCustomerIdAndIdNot(currentCustomerId, currentLocationId);
+	}
 
-    @PostMapping("/locations")
-    @PreAuthorize(roles)
-    public ResponseEntity<?> createLocation(@RequestBody Location location) {
-        adminService.createLocation(location);
+	@PostMapping("/locations")
+	@PreAuthorize(roles)
+	public ResponseEntity<?> createLocation(@RequestBody Location location) {
+		adminService.createLocation(location);
 
-        return ResponseEntity.ok(new MessageResp("Location added."));
-    }
+		return ResponseEntity.ok(new MessageResp("Location added."));
+	}
 
-    @DeleteMapping("/locations/{id}")
-    @PreAuthorize(roles)
-    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
-        adminService.deleteLocation(id);
+	@DeleteMapping("/locations/{id}")
+	@PreAuthorize(roles)
+	public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
+		adminService.deleteLocation(id);
 
-        return ResponseEntity.ok(new MessageResp("Location deleted."));
-    }
+		return ResponseEntity.ok(new MessageResp("Location deleted."));
+	}
 
-    @DeleteMapping("/locations")
-    @PreAuthorize(roles)
-    public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
-        adminService.deleteLocations(ids);
+	@DeleteMapping("/locations")
+	@PreAuthorize(roles)
+	public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
+		adminService.deleteLocations(ids);
 
-        return ResponseEntity.ok(new MessageResp("Locations deleted."));
-    }
+		return ResponseEntity.ok(new MessageResp("Locations deleted."));
+	}
 }

@@ -8,7 +8,9 @@ import com.itechart.retailers.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,6 @@ public class LocationServiceImpl implements LocationService {
 	private final ApplicationService applicationService;
 	private final ApplicationRepository applicationRepository;
 	private final ApplicationItemRepository applicationItemRepository;
-	private final LocationRepository locationRepository;
 	private final LocationItemRepository locationItemRepository;
 	private final StateTaxRepository stateTaxRepository;
 	private final CustomerCategoryRepository customerCategoryRepository;
@@ -51,7 +52,22 @@ public class LocationServiceImpl implements LocationService {
 		Set<LocationItem> locationItems = applicationItems.stream()
 				.map(this::createLocationItem)
 				.collect(Collectors.toSet());
-		locationItemRepository.saveAll(locationItems);
+
+		for (LocationItem locationItem : locationItems) {
+			Optional<LocationItem> locationItemDB =
+					locationItemRepository.findLocationItemByItemAndLocation(locationItem.getItem(),
+							locationItem.getLocation());
+			if (locationItemDB.isPresent()) {
+				if (locationItemDB.get().getCost() > locationItem.getCost()) {
+					locationItem.setCost(locationItemDB.get().getCost());
+					locationItem.setPrice(locationItemDB.get().getPrice());
+					locationItem.setId(locationItemDB.get().getId());
+				}
+				locationItem.setAmount(locationItemDB.get().getAmount() + locationItem.getAmount());
+				locationItemRepository.deleteById(locationItemDB.get().getId());
+			}
+			locationItemRepository.save(locationItem);
+		}
 
 		Application application = applicationService.getById(applicationId);
 		application.setLastUpdDateTime(LocalDateTime.now());
@@ -66,15 +82,20 @@ public class LocationServiceImpl implements LocationService {
 			Long currentCustomerId = securityService.getCurrentCustomer().getId();
 
 			Float rentalTaxRate = ai.getApplication().getDestLocation().getRentalTaxRate();
-			StateTax stateTax = stateTaxRepository.getByStateCode(StateCode.valueOf(ai.getApplication().getDestLocation().getAddress().getStateCode()));
-			CustomerCategory customerCategory = customerCategoryRepository.findByCustomerIdAndCategoryId(currentCustomerId, ai.getItem().getCategory().getId()).get();
+			StateTax stateTax = stateTaxRepository.getByStateCode
+					(StateCode.valueOf(ai.getApplication().getDestLocation().getAddress().getStateCode()));
+			CustomerCategory customerCategory = customerCategoryRepository.
+					findByCustomerIdAndCategoryId(currentCustomerId, ai.getItem().getCategory().getId()).get();
 			Float categoryTaxRate = customerCategory.getCategoryTax();
 
 			Float itemPrice = ai.getCost() * (1 + rentalTaxRate / 100 + stateTax.getTax() / 100 + categoryTaxRate / 100);
 
-			return new LocationItem(ai.getAmount(), ai.getCost(), securityContextService.getCurrentLocation(), ai.getItem(), itemPrice);
+			return new LocationItem(ai.getAmount(), ai.getCost(),
+					securityContextService.getCurrentLocation(), ai.getItem(),
+					itemPrice);
 		} else {
-			return new LocationItem(ai.getAmount(), ai.getCost(), securityContextService.getCurrentLocation(), ai.getItem());
+			return new LocationItem(ai.getAmount(), ai.getCost(),
+					securityContextService.getCurrentLocation(), ai.getItem());
 		}
 	}
 

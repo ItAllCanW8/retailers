@@ -24,5 +24,5 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Modifying
     @Query("update Location l set l.rentalTaxRate = :newTax where l.id = :locationId")
-    void updateRentalTax(@Param(value = "locationId") Long locationId, @Param(value = "newTax") Float newTax);
+    int updateRentalTax(@Param(value = "locationId") Long locationId, @Param(value = "newTax") Float newTax);
 }
