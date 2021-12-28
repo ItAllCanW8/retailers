@@ -1,37 +1,7 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import AuthService from '../../service/AuthService';
 
 class LocationItems extends Component {
-  constructor(props) {
-    super(props);
-    this.modalRef = createRef();
-    this.toastRef = createRef();
-    this.managerContactsModalRef = createRef();
-    this.noAvailableSpaceModalRef = createRef();
-    this.forwardModalRef = createRef();
-    this.state = {
-      currentLocation: {
-        location: {},
-        availableAmount: 0
-      },
-      locationItems: [],
-      dispatchRequest: {
-        applicationNumber: '',
-        destLocation: '',
-        itemsToDispatch: [{
-          upc: 0,
-          amount: 0,
-          cost: 0,
-        }]
-      },
-      forwardLocation: '',
-      locationIds: [],
-      applications: [],
-      applicationNumber: '',
-      status: ''
-    };
-  }
-
   render() {
     let userCanDispatch = AuthService.currentUserHasRole('application:post');
     return (

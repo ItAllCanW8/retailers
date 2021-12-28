@@ -1,15 +1,13 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.CustomerCategory;
-import com.itechart.retailers.model.payload.request.UpdRentalTaxReq;
-import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.CategoryService;
-import com.itechart.retailers.service.TaxService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class CustomerCategoryController {
     private final SecurityContextService securityService;
     private final String authorities = "hasRole('DIRECTOR')";
 
-    @GetMapping("/customer-categories")
+    @GetMapping("/categories")
     @PreAuthorize(authorities)
     public List<CustomerCategory> loadCustomerCategories() {
         return categoryService.loadCustomerCategories(securityService.getCurrentCustomerId());

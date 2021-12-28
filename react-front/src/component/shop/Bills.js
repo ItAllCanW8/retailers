@@ -86,9 +86,8 @@ class Bills extends Component {
   changeItem = (event, index) => {
     let name = event.target.name;
     let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue) && !value.includes('-')) {
-      value = optionalIntValue;
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
     let newItems = this.state.sellRequest.itemAssoc;
     if (name === 'upc') {

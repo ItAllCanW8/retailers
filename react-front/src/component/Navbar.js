@@ -128,6 +128,20 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
+              {(this.state.showDirectorBoard) && (
+                <li className="nav-item">
+                  <Link to={'/taxes/rental'} className="nav-link" tabIndex="-1">
+                    Rental taxes
+                  </Link>
+                </li>
+              )}
+              {(this.state.showDirectorBoard) && (
+                <li className="nav-item">
+                  <Link to={'/taxes/category'} className="nav-link" tabIndex="-1">
+                    Category taxes
+                  </Link>
+                </li>
+              )}
             </ul>
             <div className="d-flex">
               {currentUser ? (

@@ -34,7 +34,7 @@ public class LocationController {
 	@GetMapping("/current-location")
 	@PreAuthorize("hasAuthority('location:get')")
 	public LocationResp getCurrentLocation() {
-			return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
+		return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
 	}
 
 	@GetMapping("/locations-except-current")

@@ -69,7 +69,9 @@ public class AdminServiceImpl implements AdminService {
         String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
 
-        if (roleStr.equals("DISPATCHER") || roleStr.equals("WAREHOUSE_MANAGER") || roleStr.equals("SHOP_MANAGER")) {
+        if (roleStr.equals("DIRECTOR")) {
+            user.setLocation(null);
+        } else {
             String locationIdentifier = user.getLocation().getIdentifier();
 
             user.setLocation(new Location(locationRepo.findLocationByIdentifier(locationIdentifier).get().getId()));

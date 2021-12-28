@@ -1,13 +1,18 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.payload.request.UpdCategoryTax;
-import com.itechart.retailers.model.payload.request.UpdRentalTaxReq;
+import com.itechart.retailers.model.entity.CustomerCategory;
+import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.TaxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,24 +24,15 @@ public class TaxController {
 
     @PutMapping("/taxes/rental")
     @PreAuthorize(authorities)
-    public ResponseEntity<?> updRentalTax(@RequestBody UpdRentalTaxReq updRentalTaxReq) {
-        if(taxService.updateRentalTax(updRentalTaxReq.getShopId(), updRentalTaxReq.getNewRentalTax())){
-            return ResponseEntity.ok(new MessageResp("Rental tax for selected shop updated."));
-        }
-        else{
-            return ResponseEntity.badRequest().body(new MessageResp("Error updating rental tax"));
-        }
+    public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
+        taxService.updateRentalTax(locations);
+        return ResponseEntity.ok(new MessageResp("Taxes updated."));
     }
 
     @PutMapping("/taxes/category")
     @PreAuthorize(authorities)
-    public ResponseEntity<?> updCategoryTax(@RequestBody UpdCategoryTax updCategoryTaxReq) {
-        if(taxService.updateItemCategoryTax(updCategoryTaxReq.getCustomerCategoryId(),
-                updCategoryTaxReq.getNewCategoryTax())){
-            return ResponseEntity.ok(new MessageResp("Category tax for selected category updated."));
-        }
-        else{
-            return ResponseEntity.badRequest().body(new MessageResp("Error updating category tax"));
-        }
+    public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) {
+        taxService.updateItemCategoryTaxes(categoryTaxes);
+        return ResponseEntity.ok(new MessageResp("Taxes updated."));
     }
 }

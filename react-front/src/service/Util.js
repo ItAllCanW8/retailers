@@ -61,6 +61,28 @@ class Util {
       }
     });
   };
+
+  handleCategoryTaxChange = (component, value, index) => {
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
+    }
+    const newArray = component.state.categories;
+    newArray[index].categoryTax = value;
+    component.setState({
+      categories: newArray
+    });
+  };
+
+  handleRentalTaxChange = (component, value, index) => {
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
+    }
+    const newArray = component.state.locations;
+    newArray[index].rentalTaxRate = value;
+    component.setState({
+      locations: newArray
+    });
+  };
 }
 
 export default new Util();
