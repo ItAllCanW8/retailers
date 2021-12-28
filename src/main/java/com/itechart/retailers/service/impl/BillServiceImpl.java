@@ -50,7 +50,7 @@ public class BillServiceImpl implements BillService {
 
             if (locationItemAmount < billItemAmount) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                throw new ItemAmountException("Item amount to sell cannot be more than actual amount in shop");
+                throw new ItemAmountException("Item amount to sell cannot be greater than actual amount in shop");
             }
 
             billItem.setPrice(locationItem.getPrice());

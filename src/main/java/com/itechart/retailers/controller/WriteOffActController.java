@@ -1,17 +1,17 @@
 package com.itechart.retailers.controller;
 
+import com.itechart.retailers.model.dto.WriteOffActDto;
 import com.itechart.retailers.model.entity.WriteOffAct;
 import com.itechart.retailers.model.payload.response.MessageResp;
-import com.itechart.retailers.service.UserService;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.WriteOffActService;
+import com.itechart.retailers.service.exception.ItemAmountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,24 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class WriteOffActController {
 
     private final String postAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP MANAGER')";
-    private Long locationId;
-    private final UserService userService;
+    private final String getAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP MANAGER')" +
+            " or hasAuthority('DIRECTOR')";
+
+    private final SecurityContextService securityService;
     private final WriteOffActService writeOffActService;
 
     @PostMapping("/write-off-acts")
     @PreAuthorize(postAuthorities)
     public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct){
-        setLocationIdIfNotSet();
+        Long locationId = securityService.getCurrentLocationId();
 
-        writeOffActService.save(writeOffAct, locationId);
+        try {
+            writeOffActService.save(writeOffAct, locationId);
+        } catch (ItemAmountException e){
+            return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
+        }
 
         return ResponseEntity.ok(new MessageResp("Write-off act created."));
     }
 
-    private void setLocationIdIfNotSet(){
-        if(locationId == null){
-            String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-            locationId = userService.getByEmail(currentEmail).get().getLocation().getId();
-        }
+    @GetMapping("/write-off-acts")
+    @PreAuthorize(getAuthorities)
+    public List<WriteOffActDto> loadShopBills() {
+        Long locationId = securityService.getCurrentLocationId();
+
+        return writeOffActService.loadWriteOffActs(locationId);
     }
 }

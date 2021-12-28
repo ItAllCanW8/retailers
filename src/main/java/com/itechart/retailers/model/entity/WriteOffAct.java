@@ -22,12 +22,6 @@ public class WriteOffAct extends Identity{
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
-    @Column(name = "total_amount")
-    private Long totalAmount;
-
-    @Column(name = "total_sum")
-    private Long totalSum;
-
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;

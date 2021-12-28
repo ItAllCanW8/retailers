@@ -24,4 +24,15 @@ public interface LocationItemRepository extends JpaRepository<LocationItem, Long
             "and li.item.id = :itemId")
     void updateItemAmount(@Param(value = "locationId") Long locationId, @Param(value = "itemId") Long itemId,
                           @Param(value = "newAmount") Integer newAmount);
+
+//    @Query("select ba from BankAccount ba where ba.user.id in :ids")
+//    List<BankAccount> findByUserIds(@Param("ids") Iterable<Long> ids);
+
+    List<LocationItem> findAllByLocationIdAndItemId(Long locId, Iterable<Long> itemIds);
+
+    @Query("select li.amount from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
+    List<Integer> loadStoredItemAmounts(@Param("locId") Long locId,@Param("itemIds") Iterable<Long> itemIds);
+
+    @Query("select sum(li.cost) from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
+    Float loadItemCostSum(@Param("locId") Long locId, @Param("itemIds") Iterable<Long> itemIds);
 }
