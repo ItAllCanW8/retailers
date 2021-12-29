@@ -95,9 +95,8 @@ class WarehouseItems extends Component {
 
   handleItemsToDispatchInput = (event, index) => {
     let value = event.target.value;
-    let optionalIntValue = parseInt(value);
-    if (!isNaN(optionalIntValue) && !value.includes('-')) {
-      value = optionalIntValue;
+    if (!isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
     const newItems = this.state.dispatchRequest.itemsToDispatch;
     newItems[index].amount = value;

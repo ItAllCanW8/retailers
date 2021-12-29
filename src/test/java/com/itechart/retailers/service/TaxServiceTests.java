@@ -25,13 +25,4 @@ public class TaxServiceTests {
         System.out.println(taxService.loadItemCategoryTax(1L, 1L).get());
     }
 
-    @Test
-    void updateRentalTax() {
-        taxService.updateRentalTax(28L, 0.04f);
-    }
-
-    @Test
-    void updateItemCategoryTax() {
-        taxService.updateItemCategoryTax(1L, 0.02f);
-    }
 }

@@ -14,6 +14,8 @@ import Applications from './component/applications/Applications';
 import WarehouseItems from './component/warehouse/WarehouseItems';
 import Bills from './component/shop/Bills';
 import ShopItems from './component/shop/ShopItems';
+import RentalTaxes from './component/taxes/RentalTaxes';
+import CategoryTaxes from './component/taxes/CategoryTaxes';
 
 class App extends Component {
   constructor(props) {
@@ -55,6 +57,8 @@ class App extends Component {
             <Route exact path="/warehouse" component={WarehouseItems}/>
             <Route exact path="/shop" component={ShopItems}/>
             <Route exact path="/bills" component={Bills}/>
+            <Route exact path="/taxes/rental" component={RentalTaxes}/>
+            <Route exact path="/taxes/category" component={CategoryTaxes}/>
           </div>
         </Switch>
       </Router>

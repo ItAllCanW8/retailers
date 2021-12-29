@@ -52,7 +52,8 @@ public enum RoleAuthorityMapper {
     DIRECTOR(List.of(
             "ROLE_DIRECTOR",
             "DIRECTOR",
-            "any"
+            "any",
+            "location:get"
     ));
 
     private final List<String> authorities;
