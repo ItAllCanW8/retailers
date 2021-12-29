@@ -1,9 +1,7 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.dto.BillDto;
 import com.itechart.retailers.model.dto.WriteOffActDto;
 import com.itechart.retailers.model.entity.*;
-import com.itechart.retailers.model.entity.projection.BillView;
 import com.itechart.retailers.model.entity.projection.WriteOffActView;
 import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.repository.LocationItemRepository;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,61 +36,37 @@ public class WriteOffActServiceImpl implements WriteOffActService {
         writeOffAct = writeOffActRepo.save(writeOffAct);
 
         Set<WrittenOffItem> writtenOffItems = writeOffAct.getWrittenOffItems();
-//        List<Long> ids = entities.stream()
-//                .map(Entity::getId).collect(Collectors.toList());
+        List<String> itemUpcs = new ArrayList<>();
 
-//        Set<Long> writtenOffItemIds = writtenOffItems.stream().map(WrittenOffItem::getId).collect(Collectors.toSet());
-
-        Set<String> itemUpcs = new HashSet<>();
-        List<Integer> writtenOffItemAmounts = new ArrayList<>();
-
-        for (WrittenOffItem writtenOffItem : writtenOffItems) {
+        for (WrittenOffItem writtenOffItem : writtenOffItems){
             itemUpcs.add(writtenOffItem.getItem().getUpc());
-            writtenOffItemAmounts.add(writtenOffItem.getAmount());
-            writtenOffItem.setWriteOffAct(writeOffAct);
         }
 
-        List<Long> itemIds = itemRepo.findItemIdsByUpc(itemUpcs);
+        List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
 
-        writtenOffItems.forEach(writtenOffItem -> writtenOffItem.setItem(new Item(itemIds)));
+        for (WrittenOffItem writtenOffItem : writtenOffItems){
+            String itemUpc = writtenOffItem.getItem().getUpc();
 
-//        List<LocationItem> storedItems = locationItemRepo.findAllByLocationIdAndItemId(locationId, itemIds);
-        List<Integer> storedItemAmounts = locationItemRepo.loadStoredItemAmounts(locationId, itemIds);
+            LocationItem locationItem = locationItems.stream()
+                    .filter(li -> itemUpc.equals(li.getItem().getUpc()))
+                    .findAny()
+                    .orElse(null);
 
-        int counter = 0;
-
-        for (int i = 0; i < writtenOffItems.size(); i++){
-            int storedAmount = storedItemAmounts.get(i);
-            int writtenOffAmount = writtenOffItemAmounts.get(i);
+            int storedAmount = locationItem.getAmount();
+            int writtenOffAmount = writtenOffItem.getAmount();
 
             if(storedAmount < writtenOffAmount){
                 throw new ItemAmountException("Item amount to write-off cannot be greater than actual amount in shop");
             }
 
-            locationItemRepo.updateItemAmount(locationId, itemIds.get(i), storedAmount - writtenOffAmount);
+            Long itemId = locationItem.getItem().getId();
+
+            locationItemRepo.updateItemAmount(locationId, itemId,
+                    storedAmount - writtenOffAmount);
 
             writtenOffItem.setWriteOffAct(writeOffAct);
             writtenOffItem.setItem(new Item(itemId));
         }
-
-//        for (WrittenOffItem writtenOffItem : writtenOffItems) {
-//            Integer writtenOffAmount = writtenOffItem.getAmount();
-////            Long itemId = itemRepo.findItemByUpc(writtenOffItem.getItem().getUpc()).get().getId();
-//
-////            LocationItem storedItem = locationItemRepo.getByLocationIdAndItemId(locationId, itemId).get();
-//
-//            int storedAmount = storedItem.getAmount();
-//
-//            if (storedAmount < writtenOffAmount) {
-//                throw new ItemAmountException("Item amount to write-off cannot be greater than actual amount in shop");
-//            }
-//
-//            locationItemRepo.updateItemAmount(locationId, itemId, storedAmount - writtenOffAmount);
-//
-//            writtenOffItem.setWriteOffAct(writeOffAct);
-//            writtenOffItem.setItem(new Item(itemId));
-////            writeOffItemRepo.save(writtenOffItem);
-//        }
 
         writeOffItemRepo.saveAll(writtenOffItems);
 
