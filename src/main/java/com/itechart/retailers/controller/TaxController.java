@@ -30,7 +30,7 @@ public class TaxController {
             taxService.updateRentalTax(locations);
             return ResponseEntity.ok(new MessageResp("Taxes updated."));
         } catch (IncorrectTaxException incorrectTaxException){
-            return ResponseEntity.badRequest().body("Tax must be positive or zero");
+            return ResponseEntity.badRequest().body("Tax must not be negative");
         }
 
     }
@@ -42,7 +42,7 @@ public class TaxController {
             taxService.updateItemCategoryTaxes(categoryTaxes);
             return ResponseEntity.ok(new MessageResp("Taxes updated."));
         } catch (IncorrectTaxException incorrectTaxException){
-            return ResponseEntity.badRequest().body("Tax must be positive or zero");
+            return ResponseEntity.badRequest().body("Tax must not be negative");
         }
     }
 }
