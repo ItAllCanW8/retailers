@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.CustomerCategory;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.TaxService;
+import com.itechart.retailers.service.exception.IncorrectTaxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,14 +26,23 @@ public class TaxController {
     @PutMapping("/taxes/rental")
     @PreAuthorize(authorities)
     public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
-        taxService.updateRentalTax(locations);
-        return ResponseEntity.ok(new MessageResp("Taxes updated."));
+        try {
+            taxService.updateRentalTax(locations);
+            return ResponseEntity.ok(new MessageResp("Taxes updated."));
+        } catch (IncorrectTaxException incorrectTaxException){
+            return ResponseEntity.badRequest().body("Tax must not be negative");
+        }
+
     }
 
     @PutMapping("/taxes/category")
     @PreAuthorize(authorities)
     public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) {
-        taxService.updateItemCategoryTaxes(categoryTaxes);
-        return ResponseEntity.ok(new MessageResp("Taxes updated."));
+        try {
+            taxService.updateItemCategoryTaxes(categoryTaxes);
+            return ResponseEntity.ok(new MessageResp("Taxes updated."));
+        } catch (IncorrectTaxException incorrectTaxException){
+            return ResponseEntity.badRequest().body("Tax must not be negative");
+        }
     }
 }

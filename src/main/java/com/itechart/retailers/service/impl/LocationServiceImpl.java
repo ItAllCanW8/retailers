@@ -77,25 +77,25 @@ public class LocationServiceImpl implements LocationService {
 		applicationItemRepository.deleteAll(application.getItemAssoc());
 	}
 
-	private LocationItem createLocationItem(ApplicationItem ai) {
-		if (ai.getApplication().getDestLocation().getType().equals("OFFLINE_SHOP")) {
+	private LocationItem createLocationItem(ApplicationItem applicationItem) {
+		if ("OFFLINE_SHOP".equals(applicationItem.getApplication().getDestLocation().getType())) {
 			Long currentCustomerId = securityService.getCurrentCustomer().getId();
 
-			Float rentalTaxRate = ai.getApplication().getDestLocation().getRentalTaxRate();
+			Float rentalTaxRate = applicationItem.getApplication().getDestLocation().getRentalTaxRate();
 			StateTax stateTax = stateTaxRepository.getByStateCode
-					(StateCode.valueOf(ai.getApplication().getDestLocation().getAddress().getStateCode()));
+					(StateCode.valueOf(applicationItem.getApplication().getDestLocation().getAddress().getStateCode()));
 			CustomerCategory customerCategory = customerCategoryRepository.
-					findByCustomerIdAndCategoryId(currentCustomerId, ai.getItem().getCategory().getId()).get();
+					findByCustomerIdAndCategoryId(currentCustomerId, applicationItem.getItem().getCategory().getId()).get();
 			Float categoryTaxRate = customerCategory.getCategoryTax();
 
-			Float itemPrice = ai.getCost() * (1 + rentalTaxRate / 100 + stateTax.getTax() / 100 + categoryTaxRate / 100);
+			Float itemPrice = applicationItem.getCost() * (1f + rentalTaxRate * 0.01f + stateTax.getTax() * 0.01f + categoryTaxRate * 0.01f);
 
-			return new LocationItem(ai.getAmount(), ai.getCost(),
-					securityContextService.getCurrentLocation(), ai.getItem(),
+			return new LocationItem(applicationItem.getAmount(), applicationItem.getCost(),
+					securityContextService.getCurrentLocation(), applicationItem.getItem(),
 					itemPrice);
 		} else {
-			return new LocationItem(ai.getAmount(), ai.getCost(),
-					securityContextService.getCurrentLocation(), ai.getItem());
+			return new LocationItem(applicationItem.getAmount(), applicationItem.getCost(),
+					securityContextService.getCurrentLocation(), applicationItem.getItem());
 		}
 	}
 

@@ -6,6 +6,7 @@ import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.BillService;
 import com.itechart.retailers.service.exception.ItemAmountException;
+import com.itechart.retailers.service.exception.UndefinedItemException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,30 +19,32 @@ import java.util.List;
 @RequestMapping("/api")
 public class BillController {
 
-    private final BillService billService;
-    private final SecurityContextService securityService;
-    private final String roles = "hasRole('SHOP_MANAGER')";
+	private final BillService billService;
+	private final SecurityContextService securityService;
+	private final String roles = "hasRole('SHOP_MANAGER')";
 
-    @PostMapping("/bills")
-    @PreAuthorize(roles)
-    public ResponseEntity<?> createBill(@RequestBody Bill bill) {
-        Long shopManagerId = securityService.getCurrentUserId();
-        Long locationId = securityService.getCurrentLocationId();
+	@PostMapping("/bills")
+	@PreAuthorize(roles)
+	public ResponseEntity<?> createBill(@RequestBody Bill bill) {
+		Long shopManagerId = securityService.getCurrentUserId();
+		Long locationId = securityService.getCurrentLocationId();
 
-        try {
-            billService.createBill(bill, locationId, shopManagerId);
-        } catch (ItemAmountException e){
-            return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
-        }
+		try {
+			billService.createBill(bill, locationId, shopManagerId);
+		} catch (ItemAmountException e) {
+			return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
+		} catch (UndefinedItemException undefinedItemException) {
+			return ResponseEntity.badRequest().body("Item is not found");
+		}
 
-        return ResponseEntity.ok(new MessageResp("Bill created."));
-    }
+		return ResponseEntity.ok(new MessageResp("Bill created."));
+	}
 
-    @GetMapping("/bills")
-    @PreAuthorize(roles)
-    public List<BillDto> loadShopBills() {
-        Long locationId = securityService.getCurrentLocationId();
+	@GetMapping("/bills")
+	@PreAuthorize(roles)
+	public List<BillDto> loadShopBills() {
+		Long locationId = securityService.getCurrentLocationId();
 
-        return billService.loadShopBills(locationId);
-    }
+		return billService.loadShopBills(locationId);
+	}
 }
