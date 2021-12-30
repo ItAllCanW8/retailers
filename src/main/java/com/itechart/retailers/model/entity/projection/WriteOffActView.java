@@ -1,6 +1,7 @@
 package com.itechart.retailers.model.entity.projection;
 
 import com.itechart.retailers.model.entity.Item;
+import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.WrittenOffItem;
 
 import java.time.LocalDateTime;
@@ -17,4 +18,6 @@ public interface WriteOffActView {
     Item getItem();
 
     Set<WrittenOffItem> getWrittenOffItems();
+
+    Location getLocation();
 }

@@ -3,7 +3,6 @@ package com.itechart.retailers.service.impl;
 import com.itechart.retailers.model.dto.WriteOffActDto;
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.model.entity.projection.WriteOffActView;
-import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.repository.LocationItemRepository;
 import com.itechart.retailers.repository.WriteOffActRepository;
 import com.itechart.retailers.repository.WrittenOffItemRepository;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -22,16 +22,17 @@ public class WriteOffActServiceImpl implements WriteOffActService {
     private final WriteOffActRepository writeOffActRepo;
     private final WrittenOffItemRepository writeOffItemRepo;
     private final LocationItemRepository locationItemRepo;
-    private final ItemRepository itemRepo;
 
     @Override
-    public List<WriteOffAct> findAll() {
-        return null;
+    public List<WriteOffActDto> loadCustomerWriteOffActs(Long customerId) {
+        List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByCustomerId(customerId);
+        return convertViewsToDtos(writeOffActViews);
     }
 
     @Transactional(rollbackFor = ItemAmountException.class)
     @Override
     public WriteOffAct save(WriteOffAct writeOffAct, Long locationId) throws ItemAmountException {
+        writeOffAct.setDateTime(LocalDateTime.now());
         writeOffAct.setLocation(new Location(locationId));
         writeOffAct = writeOffActRepo.save(writeOffAct);
 
@@ -74,8 +75,12 @@ public class WriteOffActServiceImpl implements WriteOffActService {
     }
 
     @Override
-    public List<WriteOffActDto> loadWriteOffActs(Long locationId) {
+    public List<WriteOffActDto> loadLocalWriteOffActs(Long locationId) {
         List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByLocationId(locationId);
+        return convertViewsToDtos(writeOffActViews);
+    }
+
+    private List<WriteOffActDto> convertViewsToDtos(List<WriteOffActView> writeOffActViews){
         List<WriteOffActDto> writeOffActDtos = new ArrayList<>(writeOffActViews.size());
 
         for (WriteOffActView writeOffActView : writeOffActViews) {
@@ -86,11 +91,10 @@ public class WriteOffActServiceImpl implements WriteOffActService {
 
             for (WrittenOffItem writtenOffItem : writtenOffItems) {
                 totalItemAmount += writtenOffItem.getAmount();
-
                 itemIds.add(writtenOffItem.getItem().getId());
             }
 
-            float totalItemSum = locationItemRepo.loadItemCostSum(locationId, itemIds);
+            float totalItemSum = locationItemRepo.loadItemCostSum(writeOffActView.getLocation().getId(), itemIds);
 
             writeOffActDtos.add(WriteOffActDto.builder()
                     .identifier(writeOffActView.getIdentifier())

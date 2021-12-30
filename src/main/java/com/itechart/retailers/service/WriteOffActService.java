@@ -7,9 +7,9 @@ import com.itechart.retailers.service.exception.ItemAmountException;
 import java.util.List;
 
 public interface WriteOffActService {
-    List<WriteOffAct> findAll();
+    List<WriteOffActDto> loadCustomerWriteOffActs(Long customerId);
 
     WriteOffAct save(WriteOffAct writeOffAct, Long locationId) throws ItemAmountException;
 
-    List<WriteOffActDto> loadWriteOffActs(Long locationId);
+    List<WriteOffActDto> loadLocalWriteOffActs(Long locationId);
 }

@@ -18,9 +18,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class WriteOffActController {
 
-    private final String postAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP MANAGER')";
-    private final String getAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP MANAGER')" +
-            " or hasAuthority('DIRECTOR')";
+    private final String postAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')";
+    private final String getLocalAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')" +
+            " or hasAuthority('WAREHOUSE_MANAGER')";
+    private final String getAllAuthorities = "hasAuthority('DIRECTOR')";
 
     private final SecurityContextService securityService;
     private final WriteOffActService writeOffActService;
@@ -39,11 +40,15 @@ public class WriteOffActController {
         return ResponseEntity.ok(new MessageResp("Write-off act created."));
     }
 
-    @GetMapping("/write-off-acts")
-    @PreAuthorize(getAuthorities)
-    public List<WriteOffActDto> loadShopBills() {
-        Long locationId = securityService.getCurrentLocationId();
+    @GetMapping("/local-write-off-acts")
+    @PreAuthorize(getLocalAuthorities)
+    public List<WriteOffActDto> loadLocationWriteOffActs() {
+        return writeOffActService.loadLocalWriteOffActs(securityService.getCurrentLocationId());
+    }
 
-        return writeOffActService.loadWriteOffActs(locationId);
+    @GetMapping("/write-off-acts")
+    @PreAuthorize(getAllAuthorities)
+    public List<WriteOffActDto> loadAllWriteOffActs() {
+        return writeOffActService.loadCustomerWriteOffActs(securityService.getCurrentCustomerId());
     }
 }
