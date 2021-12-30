@@ -7,6 +7,7 @@ import com.itechart.retailers.repository.CustomerCategoryRepository;
 import com.itechart.retailers.repository.LocationRepository;
 import com.itechart.retailers.repository.StateTaxRepository;
 import com.itechart.retailers.service.TaxService;
+import com.itechart.retailers.service.exception.IncorrectTaxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,40 +18,51 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TaxServiceImpl implements TaxService {
-    private final StateTaxRepository stateTaxRepo;
-    private final LocationRepository locationRepo;
-    private final CustomerCategoryRepository customerCategoryRepo;
+	private final StateTaxRepository stateTaxRepo;
+	private final LocationRepository locationRepo;
+	private final CustomerCategoryRepository customerCategoryRepo;
 
-    @Override
-    public Optional<Float> loadStateTax(StateCode stateCode) {
-        return Optional.of(stateTaxRepo.getByStateCode(stateCode).getTax());
-    }
+	@Override
+	public Optional<Float> loadStateTax(StateCode stateCode) {
+		return Optional.of(stateTaxRepo.getByStateCode(stateCode).getTax());
+	}
 
-    @Override
-    @Transactional
-    public Optional<Float> loadRentalTax(Long locationId) {
-        return Optional.of(locationRepo.getById(locationId).getRentalTaxRate());
-    }
+	@Override
+	@Transactional
+	public Optional<Float> loadRentalTax(Long locationId) {
+		return Optional.of(locationRepo.getById(locationId).getRentalTaxRate());
+	}
 
-    @Override
-    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) {
-        return Optional.of(customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId).get()
-                .getCategoryTax());
-    }
+	@Override
+	public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) {
+		return Optional.of(customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId).get()
+				.getCategoryTax());
+	}
 
-    @Override
-    @Transactional
-    public void updateRentalTax(List<Location> locations) {
-        for (Location location : locations) {
-            locationRepo.updateRentalTax(location.getId(), location.getRentalTaxRate());
-        }
-    }
+	@Override
+	@Transactional
+	public void updateRentalTax(List<Location> locations) throws IncorrectTaxException {
+		for (Location location : locations) {
+			Float rentalTaxRate = location.getRentalTaxRate();
+			if (rentalTaxRate < 0) {
+				throw new IncorrectTaxException();
+			} else {
+				locationRepo.updateRentalTax(location.getId(), rentalTaxRate);
+			}
+		}
+	}
 
-    @Override
-    @Transactional
-    public void updateItemCategoryTaxes(List<CustomerCategory> customerCategories) {
-        for (CustomerCategory customerCategory : customerCategories) {
-            customerCategoryRepo.updateItemCategoryTax(customerCategory.getId(), customerCategory.getCategoryTax());
-        }
-    }
+	@Override
+	@Transactional
+	public void updateItemCategoryTaxes(List<CustomerCategory> customerCategories) throws IncorrectTaxException {
+		for (CustomerCategory customerCategory : customerCategories) {
+			Float categoryTaxRate = customerCategory.getCategoryTax();
+			if (categoryTaxRate < 0) {
+				throw new IncorrectTaxException();
+			} else {
+				customerCategoryRepo.updateItemCategoryTax(customerCategory.getId(), categoryTaxRate);
+			}
+
+		}
+	}
 }
