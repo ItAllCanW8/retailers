@@ -13,13 +13,11 @@ import com.itechart.retailers.service.exception.UndefinedItemException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class BillServiceImpl implements BillService {
 
     private final BillRepository billRepo;
     private final BillItemRepository billItemRepo;
-    private final ItemRepository itemRepo;
     private final LocationItemRepository locationItemRepo;
 
     @Override
