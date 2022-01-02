@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,4 @@ public interface LocationItemRepository extends JpaRepository<LocationItem, Long
 
     @Query("select sum(li.cost) from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
     Float loadItemCostSum(@Param("locId") Long locId, @Param("itemIds") Iterable<Long> itemIds);
-
-    @Query("select sum(li.cost) from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
-    Float loadItemCostSumm(@Param("itemIds") Iterable<Long> itemIds);
 }

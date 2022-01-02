@@ -31,10 +31,8 @@ public class BillController {
 
 		try {
 			billService.createBill(bill, locationId, shopManagerId);
-		} catch (ItemAmountException e) {
+		} catch (ItemAmountException | UndefinedItemException e) {
 			return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
-		} catch (UndefinedItemException undefinedItemException) {
-			return ResponseEntity.badRequest().body("Item is not found");
 		}
 
 		return ResponseEntity.ok(new MessageResp("Bill created."));
