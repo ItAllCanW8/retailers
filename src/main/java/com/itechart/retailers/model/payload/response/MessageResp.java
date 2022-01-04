@@ -6,6 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MessageResp {
-
     String message;
 }

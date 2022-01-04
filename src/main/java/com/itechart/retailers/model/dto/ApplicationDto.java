@@ -8,7 +8,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class ApplicationDto {
-
     private String applicationNumber;
     private String itemsTotal;
     private String unitsTotal;

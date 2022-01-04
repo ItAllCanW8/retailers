@@ -13,7 +13,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LocationItemServiceImpl implements LocationItemService {
-
 	private final SecurityContextService securityService;
 	private final LocationItemRepository locationItemRepository;
 

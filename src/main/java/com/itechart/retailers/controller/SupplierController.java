@@ -28,7 +28,6 @@ public class SupplierController {
     public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier) {
         supplier.setActive(true);
         adminService.createSupplier(supplier);
-
         return ResponseEntity.ok(new MessageResp("Supplier created."));
     }
 
@@ -36,7 +35,6 @@ public class SupplierController {
     @PreAuthorize(roles)
     public ResponseEntity<?> updateSupplierStatus(@PathVariable Long id, @RequestBody boolean isActive) {
         adminService.updateSupplierStatus(id, isActive);
-
         return ResponseEntity.ok(new MessageResp("Status updated."));
     }
 }

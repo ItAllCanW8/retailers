@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SecurityContextService {
-
     private final UserRepository userRepository;
 
     public User getCurrentUser() {

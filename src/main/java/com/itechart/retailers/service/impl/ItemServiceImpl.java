@@ -1,6 +1,5 @@
 package com.itechart.retailers.service.impl;
 
-
 import com.itechart.retailers.model.entity.Category;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Item;
@@ -16,7 +15,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-
 	private final ItemRepository itemRepository;
 	private final CategoryService categoryService;
 

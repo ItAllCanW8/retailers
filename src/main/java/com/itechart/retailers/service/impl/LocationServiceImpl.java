@@ -8,7 +8,6 @@ import com.itechart.retailers.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
-
 	private final SecurityContextService securityContextService;
 	private final ApplicationService applicationService;
 	private final ApplicationRepository applicationRepository;
@@ -25,7 +23,6 @@ public class LocationServiceImpl implements LocationService {
 	private final LocationItemRepository locationItemRepository;
 	private final StateTaxRepository stateTaxRepository;
 	private final CustomerCategoryRepository customerCategoryRepository;
-
 	private final SecurityContextService securityService;
 
 	@Override
@@ -48,11 +45,9 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public void acceptApplication(Long applicationId) {
 		Set<ApplicationItem> applicationItems = applicationRepository.getById(applicationId).getItemAssoc();
-
 		Set<LocationItem> locationItems = applicationItems.stream()
 				.map(this::createLocationItem)
 				.collect(Collectors.toSet());
-
 		for (LocationItem locationItem : locationItems) {
 			Optional<LocationItem> locationItemDB =
 					locationItemRepository.findLocationItemByItemAndLocation(locationItem.getItem(),
@@ -68,7 +63,6 @@ public class LocationServiceImpl implements LocationService {
 			}
 			locationItemRepository.save(locationItem);
 		}
-
 		Application application = applicationService.getById(applicationId);
 		application.setLastUpdDateTime(LocalDateTime.now());
 		application.setLastUpdBy(securityContextService.getCurrentUser());
@@ -80,16 +74,16 @@ public class LocationServiceImpl implements LocationService {
 	private LocationItem createLocationItem(ApplicationItem applicationItem) {
 		if ("OFFLINE_SHOP".equals(applicationItem.getApplication().getDestLocation().getType())) {
 			Long currentCustomerId = securityService.getCurrentCustomer().getId();
-
 			Float rentalTaxRate = applicationItem.getApplication().getDestLocation().getRentalTaxRate();
 			StateTax stateTax = stateTaxRepository.getByStateCode
 					(StateCode.valueOf(applicationItem.getApplication().getDestLocation().getAddress().getStateCode()));
 			CustomerCategory customerCategory = customerCategoryRepository.
 					findByCustomerIdAndCategoryId(currentCustomerId, applicationItem.getItem().getCategory().getId()).get();
 			Float categoryTaxRate = customerCategory.getCategoryTax();
-
-			Float itemPrice = applicationItem.getCost() * (1f + rentalTaxRate * 0.01f + stateTax.getTax() * 0.01f + categoryTaxRate * 0.01f);
-
+			Float convertRate = 0.01f;
+			Float itemPrice = applicationItem.getCost() * (1f + rentalTaxRate * convertRate
+					+ stateTax.getTax() * convertRate
+					+ categoryTaxRate * convertRate);
 			return new LocationItem(applicationItem.getAmount(), applicationItem.getCost(),
 					securityContextService.getCurrentLocation(), applicationItem.getItem(),
 					itemPrice);
@@ -98,5 +92,4 @@ public class LocationServiceImpl implements LocationService {
 					securityContextService.getCurrentLocation(), applicationItem.getItem());
 		}
 	}
-
 }

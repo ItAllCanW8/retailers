@@ -49,7 +49,6 @@ public class LocationController {
 	@PreAuthorize(roles)
 	public ResponseEntity<?> createLocation(@RequestBody Location location) {
 		adminService.createLocation(location);
-
 		return ResponseEntity.ok(new MessageResp("Location added."));
 	}
 
@@ -57,7 +56,6 @@ public class LocationController {
 	@PreAuthorize(roles)
 	public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
 		adminService.deleteLocation(id);
-
 		return ResponseEntity.ok(new MessageResp("Location deleted."));
 	}
 
@@ -65,7 +63,6 @@ public class LocationController {
 	@PreAuthorize(roles)
 	public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
 		adminService.deleteLocations(ids);
-
 		return ResponseEntity.ok(new MessageResp("Locations deleted."));
 	}
 }

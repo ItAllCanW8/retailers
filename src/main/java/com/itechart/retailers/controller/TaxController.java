@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class TaxController {
-
     private final TaxService taxService;
     private final String authorities = "hasRole('DIRECTOR')";
 
@@ -32,7 +31,6 @@ public class TaxController {
         } catch (IncorrectTaxException incorrectTaxException){
             return ResponseEntity.badRequest().body("Tax must not be negative");
         }
-
     }
 
     @PutMapping("/taxes/category")

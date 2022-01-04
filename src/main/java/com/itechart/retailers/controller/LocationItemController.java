@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class LocationItemController {
-
     private final LocationItemService locationItemService;
 
     @GetMapping("/current-location-items")

@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class WriteOffActController {
-
     private final String postAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')";
     private final String getLocalAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')" +
             " or hasAuthority('WAREHOUSE_MANAGER')";
@@ -30,13 +29,11 @@ public class WriteOffActController {
     @PreAuthorize(postAuthorities)
     public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct){
         Long locationId = securityService.getCurrentLocationId();
-
         try {
             writeOffActService.save(writeOffAct, locationId);
         } catch (ItemAmountException e){
             return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
         }
-
         return ResponseEntity.ok(new MessageResp("Write-off act created."));
     }
 

@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/api/system-admin")
 @RequiredArgsConstructor
 public class SystemAdminController {
-
     private final UserService userService;
     private final RoleService roleService;
     private final CustomerService customerService;

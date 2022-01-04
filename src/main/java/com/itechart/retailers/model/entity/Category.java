@@ -1,6 +1,5 @@
 package com.itechart.retailers.model.entity;
 
-
 import lombok.*;
 
 import javax.persistence.Column;

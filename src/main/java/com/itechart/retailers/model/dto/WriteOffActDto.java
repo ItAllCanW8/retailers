@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WriteOffActDto {
-
     private String identifier;
     private Long totalItemAmount;
     private Float totalItemSum;

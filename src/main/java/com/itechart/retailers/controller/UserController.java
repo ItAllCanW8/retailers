@@ -40,7 +40,6 @@ public class UserController {
         user.setPassword(passwordEncoder.encode("1111"));
         user.setActive(true);
         adminService.createUser(user);
-
         return ResponseEntity.ok(new MessageResp("User created."));
     }
 
@@ -48,7 +47,6 @@ public class UserController {
     @PreAuthorize(roles)
     public ResponseEntity<?> updateUserStatus(@PathVariable Long id, @RequestBody boolean isActive) {
         adminService.updateUserStatus(id, isActive);
-
         return ResponseEntity.ok(new MessageResp("Statuses updated."));
     }
 }

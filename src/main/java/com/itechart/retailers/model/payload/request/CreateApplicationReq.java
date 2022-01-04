@@ -10,7 +10,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class CreateApplicationReq {
-
     private String applicationNumber;
     private String status;
     private String itemsTotal;

@@ -11,5 +11,4 @@ public class PasswordGenerator {
                 .build();
         return pwdGenerator.generate(length);
     }
-
 }

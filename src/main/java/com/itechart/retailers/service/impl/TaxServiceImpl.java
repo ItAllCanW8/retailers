@@ -62,7 +62,6 @@ public class TaxServiceImpl implements TaxService {
 			} else {
 				customerCategoryRepo.updateItemCategoryTax(customerCategory.getId(), categoryTaxRate);
 			}
-
 		}
 	}
 }

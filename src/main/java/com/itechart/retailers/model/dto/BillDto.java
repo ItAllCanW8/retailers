@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BillDto {
-
     private String number;
     private Long totalItemAmount;
     private Float totalItemSum;

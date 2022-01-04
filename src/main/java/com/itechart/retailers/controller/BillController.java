@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class BillController {
-
 	private final BillService billService;
 	private final SecurityContextService securityService;
 	private final String roles = "hasRole('SHOP_MANAGER')";
@@ -28,13 +27,11 @@ public class BillController {
 	public ResponseEntity<?> createBill(@RequestBody Bill bill) {
 		Long shopManagerId = securityService.getCurrentUserId();
 		Long locationId = securityService.getCurrentLocationId();
-
 		try {
 			billService.createBill(bill, locationId, shopManagerId);
 		} catch (ItemAmountException | UndefinedItemException e) {
 			return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
 		}
-
 		return ResponseEntity.ok(new MessageResp("Bill created."));
 	}
 
@@ -42,7 +39,6 @@ public class BillController {
 	@PreAuthorize(roles)
 	public List<BillDto> loadShopBills() {
 		Long locationId = securityService.getCurrentLocationId();
-
 		return billService.loadShopBills(locationId);
 	}
 }

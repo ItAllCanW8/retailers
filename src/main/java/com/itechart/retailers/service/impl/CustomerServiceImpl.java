@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -43,7 +42,6 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.getById(customerId);
         customer.setActive(active);
         customerRepository.save(customer);
-
         if (!active) {
             List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
             customerUsers.forEach(user -> user.setActive(false));

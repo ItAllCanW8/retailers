@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ProfileController {
-
     private final UserService userService;
 
     @GetMapping("/profile")

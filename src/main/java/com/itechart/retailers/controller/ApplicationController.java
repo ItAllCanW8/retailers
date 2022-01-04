@@ -7,14 +7,12 @@ import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.LocationService;
-import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +21,9 @@ import java.util.List;
 @RequestMapping("api")
 @RequiredArgsConstructor
 public class ApplicationController {
-
 	private final ApplicationService applicationService;
 	private final LocationService locationService;
 	private final String authorities = "hasAuthority('application:get') or hasAuthority('application:post')";
-	private final UserService userService;
 	private final SecurityContextService securityContextService;
 
 	private Long customerId;
@@ -49,7 +45,6 @@ public class ApplicationController {
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> create(@RequestBody ApplicationReq applicationReq) throws UndefinedItemException {
 		customerId = securityContextService.getCurrentCustomerId();
-
 		try {
 			applicationService.save(applicationReq, customerId);
 		} catch (UndefinedItemException e) {
@@ -62,13 +57,11 @@ public class ApplicationController {
 	@PreAuthorize(authorities)
 	public ResponseEntity<?> dispatchItems(@RequestBody DispatchItemReq dispatchItemReq) {
 		customerId = securityContextService.getCurrentCustomerId();
-
 		try {
 			applicationService.dispatchItems(dispatchItemReq, customerId);
 		} catch (ItemAmountException e) {
 			return ResponseEntity.badRequest().body(new MessageResp("Incorrect item amount input!"));
 		}
-
 		return ResponseEntity.ok(new MessageResp("Items dispatched successfully"));
 	}
 
@@ -98,5 +91,4 @@ public class ApplicationController {
 	public void deleteById(@PathVariable Long id) {
 		applicationService.deleteById(id);
 	}
-
 }

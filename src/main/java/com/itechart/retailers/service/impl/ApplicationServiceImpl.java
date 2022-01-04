@@ -7,9 +7,7 @@ import com.itechart.retailers.model.payload.response.LocationItemResp;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
-import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.LocationItemService;
-import com.itechart.retailers.service.TaxService;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
-
 	private final ApplicationRepository applicationRepository;
 	private final LocationRepository locationRepository;
 	private final SecurityContextService securityService;
@@ -47,13 +44,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public void save(ApplicationReq applicationReq, Long customerId) throws UndefinedItemException {
 		Set<Optional<Item>> optionalItems = applicationReq.getItems().stream()
 				.map(ai -> itemRepository.findItemByUpc(ai.getUpc())).collect(Collectors.toSet());
-
 		for (Optional<Item> item : optionalItems) {
 			if (item.isEmpty()) {
 				throw new UndefinedItemException();
 			}
 		}
-
 		Application application = createApplication(applicationReq.getApplicationNumber(), securityService.getCurrentLocation());
 
 		Set<ApplicationItem> itemsAssoc = applicationReq.getItems().stream()
@@ -64,6 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 						.cost(ai.getCost())
 						.build())
 				.collect(Collectors.toSet());
+
 		Customer customer = new Customer();
 		customer.setId(customerId);
 		application.setCustomer(customer);
@@ -117,9 +113,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Transactional
 	public void dispatchItems(DispatchItemReq dispatchItemReq, Long customerId) throws ItemAmountException {
 		Location location = locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation()).get();
-
 		Application application = createApplication(dispatchItemReq.getApplicationNumber(), location);
-
 		Customer customer = new Customer();
 		customer.setId(customerId);
 
@@ -146,7 +140,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 						.cost(ai.getCost())
 						.build())
 				.collect(Collectors.toSet());
-
 		application.setCustomer(customer);
 		applicationRepository.save(application);
 		applicationItemRepository.saveAll(itemsAssoc);
@@ -171,6 +164,4 @@ public class ApplicationServiceImpl implements ApplicationService {
 				.lastUpdDateTime(LocalDateTime.now())
 				.build();
 	}
-
-
 }

@@ -15,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class CustomerCategoryController {
-
     private final CategoryService categoryService;
     private final SecurityContextService securityService;
     private final String authorities = "hasRole('DIRECTOR')";

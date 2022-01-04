@@ -8,8 +8,8 @@ import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,7 +17,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
-
     private final SecurityContextService securityService;
     private final LocationRepository locationRepo;
     private final UserRepository userRepo;
@@ -62,10 +61,8 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public boolean createUser(User user) {
         user.setCustomer(new Customer(securityService.getCurrentCustomerId()));
-
         Long addressId = addressRepo.save(user.getAddress()).getId();
         user.setAddress(new Address(addressId));
-
         String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
 
@@ -76,7 +73,6 @@ public class AdminServiceImpl implements AdminService {
 
             user.setLocation(new Location(locationRepo.findLocationByIdentifier(locationIdentifier).get().getId()));
         }
-
         return userRepo.save(user).getId() != null;
     }
 
@@ -90,18 +86,13 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public boolean createSupplier(Supplier supplier) {
         supplierRepo.save(supplier);
-
         Set<Warehouse> warehouses = supplier.getWarehouses();
-
         for (Warehouse wh : warehouses) {
             wh.setSupplier(supplier);
             addressRepo.save(wh.getAddress());
         }
-
         warehouseRepo.saveAll(warehouses);
-
         customerRepo.findById(securityService.getCurrentCustomerId()).get().getSuppliers().add(supplier);
-
         return true;
     }
 

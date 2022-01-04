@@ -30,7 +30,6 @@ import java.util.Date;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthorizationController {
-
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;

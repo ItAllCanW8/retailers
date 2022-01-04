@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CustomerResp {
-
     private Customer customer;
     private String email;
-
 }

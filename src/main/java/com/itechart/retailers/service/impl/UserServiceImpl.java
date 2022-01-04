@@ -20,7 +20,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final RoleRepository roleRepository;
@@ -98,16 +97,15 @@ public class UserServiceImpl implements UserService {
         Customer customer = customerRepository.getById(customerId);
         customer.setActive(status);
         customerRepository.save(customer);
-
-        if (!status) {
-            List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
-            customerUsers.forEach(user -> user.setActive(false));
-            userRepository.saveAll(customerUsers);
-        } else {
+        if (status) {
             Role role = roleRepository.getByRole("ADMIN");
             User user = userRepository.getByRoleAndCustomerId(role, customerId);
             user.setActive(true);
             userRepository.save(user);
+        } else {
+            List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
+            customerUsers.forEach(user -> user.setActive(false));
+            userRepository.saveAll(customerUsers);
         }
     }
 

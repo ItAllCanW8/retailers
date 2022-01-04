@@ -18,7 +18,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class WriteOffActServiceImpl implements WriteOffActService {
-
     private final WriteOffActRepository writeOffActRepo;
     private final WrittenOffItemRepository writeOffItemRepo;
     private final LocationItemRepository locationItemRepo;
@@ -38,39 +37,29 @@ public class WriteOffActServiceImpl implements WriteOffActService {
 
         Set<WrittenOffItem> writtenOffItems = writeOffAct.getWrittenOffItems();
         List<String> itemUpcs = new ArrayList<>();
-
         for (WrittenOffItem writtenOffItem : writtenOffItems){
             itemUpcs.add(writtenOffItem.getItem().getUpc());
         }
 
         List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
-
         for (WrittenOffItem writtenOffItem : writtenOffItems){
             String itemUpc = writtenOffItem.getItem().getUpc();
-
             LocationItem locationItem = locationItems.stream()
                     .filter(li -> itemUpc.equals(li.getItem().getUpc()))
                     .findAny()
                     .orElse(null);
-
             int storedAmount = locationItem.getAmount();
             int writtenOffAmount = writtenOffItem.getAmount();
-
             if(storedAmount < writtenOffAmount){
                 throw new ItemAmountException("Item amount to write-off cannot be greater than actual amount in shop");
             }
-
             Long itemId = locationItem.getItem().getId();
-
             locationItemRepo.updateItemAmount(locationId, itemId,
                     storedAmount - writtenOffAmount);
-
             writtenOffItem.setWriteOffAct(writeOffAct);
             writtenOffItem.setItem(new Item(itemId));
         }
-
         writeOffItemRepo.saveAll(writtenOffItems);
-
         return writeOffAct;
     }
 
@@ -82,20 +71,17 @@ public class WriteOffActServiceImpl implements WriteOffActService {
 
     private List<WriteOffActDto> convertViewsToDtos(List<WriteOffActView> writeOffActViews){
         List<WriteOffActDto> writeOffActDtos = new ArrayList<>(writeOffActViews.size());
-
         for (WriteOffActView writeOffActView : writeOffActViews) {
             Set<WrittenOffItem> writtenOffItems = writeOffActView.getWrittenOffItems();
             Set<Long> itemIds = new HashSet<>(writtenOffItems.size());
 
             long totalItemAmount = 0;
-
             for (WrittenOffItem writtenOffItem : writtenOffItems) {
                 totalItemAmount += writtenOffItem.getAmount();
                 itemIds.add(writtenOffItem.getItem().getId());
             }
 
             float totalItemSum = locationItemRepo.loadItemCostSum(writeOffActView.getLocation().getId(), itemIds);
-
             writeOffActDtos.add(WriteOffActDto.builder()
                     .identifier(writeOffActView.getIdentifier())
                     .dateTime(writeOffActView.getDateTime())
@@ -103,7 +89,6 @@ public class WriteOffActServiceImpl implements WriteOffActService {
                     .totalItemSum(totalItemSum)
                     .build());
         }
-
         return writeOffActDtos;
     }
 }

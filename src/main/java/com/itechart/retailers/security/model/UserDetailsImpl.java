@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
     private String username;
     private String email;
     private String password;
