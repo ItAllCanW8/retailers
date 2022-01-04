@@ -6,6 +6,7 @@ import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
+import com.itechart.retailers.service.exception.UndefinedItemException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,11 +28,11 @@ public class WriteOffActController {
 
     @PostMapping("/write-off-acts")
     @PreAuthorize(postAuthorities)
-    public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct){
+    public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct) {
         Long locationId = securityService.getCurrentLocationId();
         try {
             writeOffActService.save(writeOffAct, locationId);
-        } catch (ItemAmountException e){
+        } catch (ItemAmountException e) {
             return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
         }
         return ResponseEntity.ok(new MessageResp("Write-off act created."));
@@ -41,6 +42,7 @@ public class WriteOffActController {
     @PreAuthorize(getLocalAuthorities)
     public List<WriteOffActDto> loadLocationWriteOffActs() {
         return writeOffActService.loadLocalWriteOffActs(securityService.getCurrentLocationId());
+
     }
 
     @GetMapping("/write-off-acts")
