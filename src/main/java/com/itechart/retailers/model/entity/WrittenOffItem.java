@@ -12,7 +12,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "written_off_item")
-public class WrittenOffItem extends Identity{
+public class WrittenOffItem extends Identity {
 
     @Column(name = "amount")
     private Integer amount;

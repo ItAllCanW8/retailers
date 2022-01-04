@@ -15,34 +15,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.itechart.retailers.controller.constant.Message.NEGATIVE_TAX_MSG;
+import static com.itechart.retailers.controller.constant.Message.TAXES_UPDATED_MSG;
+import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class TaxController {
 
-    private final TaxService taxService;
-    private final String authorities = "hasRole('DIRECTOR')";
+    public static final String PUT_RENTAL_TAXES_MAPPING = "/taxes/rental";
+    private static final String AUTHORITIES = "hasRole('" + DIRECTOR_ROLE + "')";
+    public static final String PUT_CATEGORY_TAXES_MAPPING = "/taxes/category";
 
-    @PutMapping("/taxes/rental")
-    @PreAuthorize(authorities)
+    private final TaxService taxService;
+
+    @PutMapping(PUT_RENTAL_TAXES_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
         try {
             taxService.updateRentalTax(locations);
-            return ResponseEntity.ok(new MessageResp("Taxes updated."));
-        } catch (IncorrectTaxException incorrectTaxException){
-            return ResponseEntity.badRequest().body("Tax must not be negative");
+            return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
+        } catch (IncorrectTaxException incorrectTaxException) {
+            return ResponseEntity.badRequest().body(new MessageResp(NEGATIVE_TAX_MSG));
         }
 
     }
 
-    @PutMapping("/taxes/category")
-    @PreAuthorize(authorities)
+    @PutMapping(PUT_CATEGORY_TAXES_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) {
         try {
             taxService.updateItemCategoryTaxes(categoryTaxes);
-            return ResponseEntity.ok(new MessageResp("Taxes updated."));
-        } catch (IncorrectTaxException incorrectTaxException){
-            return ResponseEntity.badRequest().body("Tax must not be negative");
+            return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
+        } catch (IncorrectTaxException incorrectTaxException) {
+            return ResponseEntity.badRequest().body(NEGATIVE_TAX_MSG);
         }
     }
 }

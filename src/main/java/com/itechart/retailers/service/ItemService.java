@@ -7,20 +7,20 @@ import java.util.Optional;
 
 public interface ItemService {
 
-	List<Item> findAll();
+    List<Item> findAll();
 
-	Item save(Item item);
+    Item save(Item item);
 
-	Item getById(Long itemId);
+    Item getById(Long itemId);
 
-	void delete(Item item);
+    void delete(Item item);
 
-	void deleteById(Long id);
+    void deleteById(Long id);
 
-	List<Item> findItemsByCustomerId(Long customerId);
+    List<Item> findItemsByCustomerId();
 
-	Optional<Item> findItemByUpc(String upc);
+    Optional<Item> findItemByUpc(String upc);
 
-	void create(Item item, Long customerId);
+    void create(Item item);
 
 }

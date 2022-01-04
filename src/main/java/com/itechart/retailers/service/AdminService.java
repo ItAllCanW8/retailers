@@ -6,12 +6,9 @@ import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface AdminService {
-
-    List<Location> findLocations();
 
     boolean createLocation(Location location);
 
@@ -19,7 +16,7 @@ public interface AdminService {
 
     void deleteLocations(Set<Long> ids);
 
-    List<UserView> findEmployees();
+    List<UserView> getUsers();
 
     boolean createUser(User user);
 
@@ -30,6 +27,4 @@ public interface AdminService {
     List<Supplier> findSuppliers();
 
     void updateSupplierStatus(Long id, boolean isActive);
-
-    Optional<Long> findCustomerId(String adminEmail);
 }

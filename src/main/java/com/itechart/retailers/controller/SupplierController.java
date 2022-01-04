@@ -1,5 +1,6 @@
 package com.itechart.retailers.controller;
 
+import com.itechart.retailers.controller.constant.Message;
 import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.AdminService;
@@ -10,33 +11,37 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.itechart.retailers.security.constant.Authority.ADMIN_ROLE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class SupplierController {
-    private final AdminService adminService;
-    private final String roles = "hasRole('ADMIN')";
+    public static final String GET_SUPPLIERS_MAPPING = "/suppliers";
+    public static final String POST_SUPPLIERS_MAPPING = "/suppliers";
+    public static final String PUT_SUPPLIERS_MAPPING = "/suppliers/{id}";
+    private final static String AUTHORITIES = "hasRole('" + ADMIN_ROLE + "')";
 
-    @GetMapping("/suppliers")
-    @PreAuthorize(roles)
+    private final AdminService adminService;
+
+    @GetMapping(GET_SUPPLIERS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public List<Supplier> getSuppliers() {
         return adminService.findSuppliers();
     }
 
-    @PostMapping("/suppliers")
-    @PreAuthorize(roles)
+    @PostMapping(POST_SUPPLIERS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier) {
         supplier.setActive(true);
         adminService.createSupplier(supplier);
-
-        return ResponseEntity.ok(new MessageResp("Supplier created."));
+        return ResponseEntity.ok(new MessageResp(Message.SUPPLIER_CREATED_MSG));
     }
 
-    @PutMapping("/suppliers/{id}")
-    @PreAuthorize(roles)
+    @PutMapping(PUT_SUPPLIERS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public ResponseEntity<?> updateSupplierStatus(@PathVariable Long id, @RequestBody boolean isActive) {
         adminService.updateSupplierStatus(id, isActive);
-
-        return ResponseEntity.ok(new MessageResp("Status updated."));
+        return ResponseEntity.ok(new MessageResp(Message.STATUS_UPDATED_MSG));
     }
 }

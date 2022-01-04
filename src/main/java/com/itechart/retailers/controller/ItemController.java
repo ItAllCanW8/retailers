@@ -1,61 +1,55 @@
 package com.itechart.retailers.controller;
 
-import com.itechart.retailers.model.entity.Category;
-import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.MessageResp;
-import com.itechart.retailers.security.service.SecurityContextService;
-import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.ItemService;
-import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+
+import static com.itechart.retailers.controller.constant.Message.ITEM_ADDED_MSG;
+import static com.itechart.retailers.security.constant.Authority.ITEM_GET_AUTHORITY;
+import static com.itechart.retailers.security.constant.Authority.ITEM_POST_AUTHORITY;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ItemController {
 
-	private final ItemService itemService;
-	private final CategoryService categoryService;
-	private final UserService userService;
-	private final SecurityContextService securityContextService;
+    public static final String GET_ITEMS_MAPPING = "/items";
+    public static final String POST_ITEMS_MAPPING = "/items";
+    public static final String DELETE_ITEMS_MAPPING = "/items";
+    public static final String GET_ITEM_BY_ID_MAPPING = "/items/{id}";
+    private static final String AUTHORITIES = "hasAuthority('" + ITEM_GET_AUTHORITY + "') "
+            + "or hasAuthority('" + ITEM_POST_AUTHORITY + "')";
 
-	private final String authorities = "hasAuthority('item:get') or hasAuthority('item:post')";
-	private Long customerId;
+    private final ItemService itemService;
 
-	@GetMapping("/items")
-	public List<Item> getAll() {
-		customerId = securityContextService.getCurrentCustomerId();
-		return itemService.findItemsByCustomerId(customerId);
-	}
+    @GetMapping(GET_ITEMS_MAPPING)
+    public List<Item> getAll() {
+        return itemService.findItemsByCustomerId();
+    }
 
+    @GetMapping(GET_ITEM_BY_ID_MAPPING)
+    @PreAuthorize(AUTHORITIES)
+    public Item getById(@PathVariable Long id) {
+        return itemService.getById(id);
+    }
 
-	@GetMapping("/items/{id}")
-	@PreAuthorize(authorities)
-	public Item getById(@PathVariable Long id) {
-		return itemService.getById(id);
-	}
+    @PostMapping(POST_ITEMS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
+    public ResponseEntity<?> create(@RequestBody Item item) {
+        itemService.create(item);
+        return ResponseEntity.ok(new MessageResp(ITEM_ADDED_MSG));
+    }
 
-	@PostMapping("/items")
-	@PreAuthorize(authorities)
-	public ResponseEntity<?> create(@RequestBody Item item) {
-		customerId = securityContextService.getCurrentCustomerId();
-		itemService.create(item, customerId);
-		return ResponseEntity.ok(new MessageResp("Item added."));
-	}
-
-	@DeleteMapping("/items")
-	@PreAuthorize(authorities)
-	public void deleteById(@RequestBody Set<Long> ids) {
-		for (Long id : ids) {
-			itemService.deleteById(id);
-		}
-	}
+    @DeleteMapping(DELETE_ITEMS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
+    public void deleteById(@RequestBody Set<Long> ids) {
+        ids.forEach(itemService::deleteById);
+    }
 }

@@ -1,9 +1,10 @@
 package com.itechart.retailers.service.exception;
 
-public class ItemAmountException extends Exception{
+public class ItemAmountException extends Exception {
     public ItemAmountException() {
         super();
     }
+
     public ItemAmountException(Throwable cause) {
         super(cause);
     }

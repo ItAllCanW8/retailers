@@ -16,11 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    public static final String USER_NOT_EXISTS_MSG = "User with %s email does not exist";
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("NOT EXISTS"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_EXISTS_MSG, email)));
         return new UserDetailsImpl(
                 user.getName(),
                 user.getEmail(),

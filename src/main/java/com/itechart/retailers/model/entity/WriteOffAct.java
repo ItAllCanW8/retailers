@@ -14,7 +14,7 @@ import java.util.Set;
 @ToString
 @Table(name = "write_off_act")
 @Entity
-public class WriteOffAct extends Identity{
+public class WriteOffAct extends Identity {
 
     @Column(name = "identifier", nullable = false, unique = true)
     private String identifier;

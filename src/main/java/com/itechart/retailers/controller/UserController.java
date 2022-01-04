@@ -1,54 +1,50 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.User;
-import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.itechart.retailers.controller.constant.Message.STATUSES_UPDATED_MSG;
+import static com.itechart.retailers.controller.constant.Message.USER_CREATED_MSG;
+import static com.itechart.retailers.security.constant.Authority.USER_GET_AUTHORITY;
+import static com.itechart.retailers.security.constant.Authority.USER_POST_AUTHORITY;
 
 @RestController
 @RequestMapping("api")
 @RequiredArgsConstructor
 public class UserController {
-    private final PasswordEncoder passwordEncoder;
+    public static final String GET_USERS_MAPPING = "/users";
+    public static final String POST_USERS_MAPPING = "/users";
+    public static final String PUT_USERS_MAPPING = "/users/{id}";
     private final AdminService adminService;
     private final UserService userService;
-    private final String roles = "hasRole('ADMIN')";
+    private static final String GET_AUTHORITIES = "hasAuthority('" + USER_GET_AUTHORITY + "')";
+    private static final String POST_AUTHORITIES = "hasAuthority('" + USER_POST_AUTHORITY + "')";
 
-    @GetMapping("/users")
-    @PreAuthorize(roles)
-    public List<UserView> getUsers() {
-        return adminService.findEmployees();
+    @GetMapping(GET_USERS_MAPPING)
+    @PreAuthorize(GET_AUTHORITIES)
+    public List<User> getUsers(@RequestParam(required = false) String role) {
+        return userService.getUsers(role);
     }
 
-    @GetMapping("/managers")
-    @PreAuthorize("hasRole('DISPATCHER')")
-    public List<User> getManagers() {
-        return userService.getUsersByRoleNameInCurrentCustomer("WAREHOUSE_MANAGER");
-    }
-
-    @PostMapping("/users")
-    @PreAuthorize(roles)
+    @PostMapping(POST_USERS_MAPPING)
+    @PreAuthorize(POST_AUTHORITIES)
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode("1111"));
-        user.setActive(true);
         adminService.createUser(user);
-
-        return ResponseEntity.ok(new MessageResp("User created."));
+        return ResponseEntity.ok(new MessageResp(USER_CREATED_MSG));
     }
 
-    @PutMapping("/users/{id}")
-    @PreAuthorize(roles)
+    @PutMapping(PUT_USERS_MAPPING)
+    @PreAuthorize(POST_AUTHORITIES)
     public ResponseEntity<?> updateUserStatus(@PathVariable Long id, @RequestBody boolean isActive) {
         adminService.updateUserStatus(id, isActive);
-
-        return ResponseEntity.ok(new MessageResp("Statuses updated."));
+        return ResponseEntity.ok(new MessageResp(STATUSES_UPDATED_MSG));
     }
 }

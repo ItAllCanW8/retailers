@@ -26,8 +26,8 @@ class RentalTaxes extends Component {
     axios.get('/locations').then(
       (response) => {
         this.setState({
-          locations: response.data
-        });
+          locations: response.data.filter(location => location.type === 'OFFLINE_SHOP')
+        }, () => console.log(this.state));
       }
     );
   };
@@ -75,8 +75,7 @@ class RentalTaxes extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.state.locations && this.state.locations.map((location, index) => {
-            if (location.type === 'OFFLINE_SHOP') return (
+          {this.state.locations && this.state.locations.map((location, index) => (
               <tr key={location.id}>
                 <th scope='row'>
 
@@ -97,8 +96,7 @@ class RentalTaxes extends Component {
                   />
                 </td>
               </tr>
-            );
-          })}
+          ))}
           </tbody>
         </table>
       </div>

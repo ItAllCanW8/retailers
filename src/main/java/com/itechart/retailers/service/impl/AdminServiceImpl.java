@@ -7,11 +7,11 @@ import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -26,11 +26,7 @@ public class AdminServiceImpl implements AdminService {
     private final WarehouseRepository warehouseRepo;
     private final SupplierRepository supplierRepo;
     private final CustomerRepository customerRepo;
-
-    @Override
-    public List<Location> findLocations() {
-        return locationRepo.findLocationsByCustomerId(securityService.getCurrentCustomerId());
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -54,13 +50,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserView> findEmployees() {
+    public List<UserView> getUsers() {
         return userRepo.findUserViewsByCustomerId(securityService.getCurrentCustomerId());
     }
 
     @Override
     @Transactional
     public boolean createUser(User user) {
+        // TODO: Password generation
+        user.setPassword(passwordEncoder.encode("1111"));
+        user.setActive(true);
         user.setCustomer(new Customer(securityService.getCurrentCustomerId()));
 
         Long addressId = addressRepo.save(user.getAddress()).getId();
@@ -114,10 +113,5 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public void updateSupplierStatus(Long id, boolean isActive) {
         supplierRepo.changeSupplierStatus(id, isActive);
-    }
-
-    @Override
-    public Optional<Long> findCustomerId(String adminEmail) {
-        return Optional.of(userRepo.findByEmail(adminEmail).get().getCustomer().getId());
     }
 }

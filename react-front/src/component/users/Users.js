@@ -70,10 +70,10 @@ class Users extends Component {
 
   changeUserStatus = (id) => {
     let map = this.state.users.map(user =>
-      user.id === id ? {...user, isActive: !user.isActive} : user
+      user.id === id ? {...user, active: !user.active} : user
     );
     this.setState({ users: map });
-    axios.put('/users/' + id, map.find(user => user.id === id).isActive, {
+    axios.put('/users/' + id, map.find(user => user.id === id).active, {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -134,21 +134,21 @@ class Users extends Component {
           {this.state.users && this.state.users.map((user) => (
             <tr key={user.id}>
               <th scope='row'>
-                <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  name="status"
-                  id="flexSwitchCheckChecked"
-                  onChange={() => this.changeUserStatus(user.id)}
-                  checked={user.isActive}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor="flexSwitchCheckChecked"
-                />
-                </div>
+                {user.role.role !== 'ADMIN' && <div className='form-check form-switch'>
+                  <input
+                    className='form-check-input'
+                    type='checkbox'
+                    role='switch'
+                    name='status'
+                    id='flexSwitchCheckChecked'
+                    onChange={() => this.changeUserStatus(user.id)}
+                    checked={user.active}
+                  />
+                  <label
+                    className='form-check-label'
+                    htmlFor='flexSwitchCheckChecked'
+                  />
+                </div>}
               </th>
               <td>{user.email}</td>
               <td>{user.role.role}</td>

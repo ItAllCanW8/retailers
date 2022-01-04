@@ -128,6 +128,13 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
               )}
+              {(this.state.showShopManagerBoard) && (
+                <li className="nav-item">
+                  <Link to={'/write-off-acts'} className="nav-link" tabIndex="-1">
+                    Write off acts
+                  </Link>
+                </li>
+              )}
               {(this.state.showDirectorBoard) && (
                 <li className="nav-item">
                   <Link to={'/taxes/rental'} className="nav-link" tabIndex="-1">

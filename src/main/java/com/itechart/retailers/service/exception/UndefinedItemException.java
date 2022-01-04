@@ -4,6 +4,7 @@ public class UndefinedItemException extends Exception {
     public UndefinedItemException() {
         super();
     }
+
     public UndefinedItemException(Throwable cause) {
         super(cause);
     }

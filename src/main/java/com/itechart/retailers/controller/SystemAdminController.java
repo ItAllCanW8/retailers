@@ -17,24 +17,26 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.itechart.retailers.controller.constant.Message.CUSTOMER_REGISTERED_MSG;
+import static com.itechart.retailers.controller.constant.Message.EMAIL_TAKEN_MSG;
+import static com.itechart.retailers.security.constant.Authority.SYSTEM_ADMIN_ROLE;
+
 @RestController
 @RequestMapping("/api/system-admin")
 @RequiredArgsConstructor
 public class SystemAdminController {
 
+    private static final String AUTHORITIES = "hasRole('" + SYSTEM_ADMIN_ROLE + "')";
+
     private final UserService userService;
     private final RoleService roleService;
     private final CustomerService customerService;
-
     private final PasswordEncoder passwordEncoder;
-
-    private final String authorities = "hasRole('SYSTEM_ADMIN')";
-
 
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody SignUpReq signUpReq) {
         if (userService.existsByEmail(signUpReq.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResp("Error: Email is already taken!"));
+            return ResponseEntity.badRequest().body(new MessageResp(EMAIL_TAKEN_MSG));
         }
 
         Customer customer = customerService.save(Customer.builder()
@@ -52,17 +54,17 @@ public class SystemAdminController {
                 .customer(customer)
                 .build());
 
-        return ResponseEntity.ok(new MessageResp("Customer registered successfully!"));
+        return ResponseEntity.ok(new MessageResp(CUSTOMER_REGISTERED_MSG));
     }
 
     @PostMapping("{id}")
-    @PreAuthorize(authorities)
+    @PreAuthorize(AUTHORITIES)
     public void updateUserStatus(@PathVariable Long id, @RequestBody Boolean state) {
         userService.changeUserStatus(id, state);
     }
 
     @GetMapping
-    @PreAuthorize(authorities)
+    @PreAuthorize(AUTHORITIES)
     public List<CustomerResp> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
         return customerService.findByParams(isOnlyActive).stream()
                 .map(customer -> new CustomerResp(customer,

@@ -5,7 +5,6 @@ import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.model.entity.projection.BillView;
 import com.itechart.retailers.repository.BillItemRepository;
 import com.itechart.retailers.repository.BillRepository;
-import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.repository.LocationItemRepository;
 import com.itechart.retailers.service.BillService;
 import com.itechart.retailers.service.exception.ItemAmountException;
@@ -43,7 +42,7 @@ public class BillServiceImpl implements BillService {
 
         List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
 
-        for (BillItem billItem : billItems){
+        for (BillItem billItem : billItems) {
             String itemUpc = billItem.getItem().getUpc();
 
             LocationItem locationItem = locationItems.stream()
@@ -54,7 +53,7 @@ public class BillServiceImpl implements BillService {
             int locationItemAmount = locationItem.getAmount();
             int billItemAmount = billItem.getAmount();
 
-            if(locationItemAmount < billItemAmount){
+            if (locationItemAmount < billItemAmount) {
                 throw new ItemAmountException("Item amount to sell cannot be greater than actual amount in shop!");
             }
 

@@ -40,14 +40,22 @@ class Applications extends Component {
   }
 
   componentDidMount() {
-    axios.get('locations-except-current').then(
+    axios.get('locations', {
+      params: {
+        exceptCurrent: true
+      }
+    }).then(
       (response) => {
         this.setState({
           locationIds: response.data.map(location => location.identifier)
         });
       }
     );
-    axios.get('managers').then(
+    axios.get('users', {
+      params: {
+        role: 'WAREHOUSE_MANAGER'
+      }
+    }).then(
       (response) => {
         this.setState({
           managers: response.data
@@ -131,7 +139,9 @@ class Applications extends Component {
         this.setState({
           selectedApplicationId: id
         });
-        Util.openModal(this.noAvailableSpaceModalRef);
+        if (this.state.currentLocation.location.type !== 'OFFLINE_SHOP') {
+          Util.openModal(this.noAvailableSpaceModalRef);
+        }
       }
     );
   };
@@ -241,7 +251,7 @@ class Applications extends Component {
                 )}
               </th>
               <td>{application.applicationNumber}</td>
-              <td>{application.srcLocation && application.srcLocation.identifier}</td>
+              <td>{application.srcLocation === null ? "[External supply]" : application.srcLocation.identifier}</td>
               <td>{application.destLocation.identifier}</td>
               <td>{application.lastUpdDateTime}</td>
               <td>{application.lastUpdBy.name}</td>

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "bill_item")
-public class BillItem extends Identity{
+public class BillItem extends Identity {
 
     @Column(name = "amount")
     private Integer amount;

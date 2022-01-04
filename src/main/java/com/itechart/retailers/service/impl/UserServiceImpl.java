@@ -112,7 +112,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsersByRoleNameInCurrentCustomer(String roleName) {
+    public List<User> getUsers(String roleName) {
+        if (roleName == null) {
+            return userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId());
+        }
+
         Role role = roleRepository.findByRole(roleName).get();
         return userRepository.findUsersByRoleAndCustomer(role, securityService.getCurrentCustomer());
     }

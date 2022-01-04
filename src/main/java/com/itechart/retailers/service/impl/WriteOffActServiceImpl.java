@@ -6,9 +6,9 @@ import com.itechart.retailers.model.entity.projection.WriteOffActView;
 import com.itechart.retailers.repository.LocationItemRepository;
 import com.itechart.retailers.repository.WriteOffActRepository;
 import com.itechart.retailers.repository.WrittenOffItemRepository;
+import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
-import com.itechart.retailers.service.exception.UndefinedItemException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +24,19 @@ public class WriteOffActServiceImpl implements WriteOffActService {
     private final WriteOffActRepository writeOffActRepo;
     private final WrittenOffItemRepository writeOffItemRepo;
     private final LocationItemRepository locationItemRepo;
+    private final SecurityContextService securityService;
 
     @Override
-    public List<WriteOffActDto> loadCustomerWriteOffActs(Long customerId) {
-        List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByCustomerId(customerId);
+    public List<WriteOffActDto> loadCustomerWriteOffActs() {
+        Long currentCustomerId = securityService.getCurrentCustomerId();
+        List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByCustomerId(currentCustomerId);
         return convertViewsToDtos(writeOffActViews);
     }
 
     @Transactional(rollbackFor = ItemAmountException.class)
     @Override
-    public WriteOffAct save(WriteOffAct writeOffAct, Long locationId) throws ItemAmountException {
+    public WriteOffAct save(WriteOffAct writeOffAct) throws ItemAmountException {
+        Long locationId = securityService.getCurrentLocationId();
         writeOffAct.setDateTime(LocalDateTime.now());
         writeOffAct.setLocation(new Location(locationId));
         writeOffAct = writeOffActRepo.save(writeOffAct);
@@ -76,8 +79,9 @@ public class WriteOffActServiceImpl implements WriteOffActService {
     }
 
     @Override
-    public List<WriteOffActDto> loadLocalWriteOffActs(Long locationId) {
-        List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByLocationId(locationId);
+    public List<WriteOffActDto> loadLocalWriteOffActs() {
+        Long currentLocationId = securityService.getCurrentLocationId();
+        List<WriteOffActView> writeOffActViews = writeOffActRepo.findAllByLocationId(currentLocationId);
         return convertViewsToDtos(writeOffActViews);
     }
 

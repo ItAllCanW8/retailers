@@ -32,6 +32,6 @@ public interface UserService {
 
     void changeUserStatus(Long customerId, boolean status);
 
-    List<User> getUsersByRoleNameInCurrentCustomer(String roleName);
+    List<User> getUsers(String roleName);
 
 }

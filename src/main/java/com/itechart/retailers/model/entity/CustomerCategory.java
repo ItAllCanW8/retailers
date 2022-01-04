@@ -15,15 +15,15 @@ import javax.persistence.*;
 @Table(name = "customer_category")
 public class CustomerCategory extends Identity {
 
-	@ManyToOne
-	@JsonIgnore
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-	@Column(name = "category_tax")
-	private Float categoryTax;
+    @Column(name = "category_tax")
+    private Float categoryTax;
 }
