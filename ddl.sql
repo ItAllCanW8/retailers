@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `retailers`.`address` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`address` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `state_code` VARCHAR(2) NULL DEFAULT NULL,
-  `city` VARCHAR(255) NULL DEFAULT NULL,
-  `first_line` VARCHAR(255) NULL DEFAULT NULL,
+  `state_code` VARCHAR(2) NOT NULL,
+  `city` VARCHAR(255) NOT NULL,
+  `first_line` VARCHAR(255) NOT NULL,
   `second_line` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
@@ -44,13 +44,13 @@ DROP TABLE IF EXISTS `retailers`.`customer` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`customer` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `registration_date` DATE NULL DEFAULT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
+  `name` VARCHAR(255) NOT NULL,
+  `registration_date` DATE NOT NULL,
+  `active` BIT(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -63,10 +63,10 @@ DROP TABLE IF EXISTS `retailers`.`location` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`location` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `identifier` VARCHAR(255) NOT NULL,
-  `type` VARCHAR(45) NULL DEFAULT NULL,
-  `total_capacity` INT NULL DEFAULT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `total_capacity` INT NOT NULL,
   `rental_tax_rate` FLOAT NULL DEFAULT '0',
-  `address_id` BIGINT NULL DEFAULT NULL,
+  `address_id` BIGINT NOT NULL,
   `customer_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
@@ -113,14 +113,14 @@ DROP TABLE IF EXISTS `retailers`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`user` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `surname` VARCHAR(255) NULL DEFAULT NULL,
   `birthday` DATE NULL DEFAULT NULL,
   `email` VARCHAR(255) NOT NULL,
   `login` VARCHAR(255) NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
-  `role_id` BIGINT NULL DEFAULT NULL,
+  `active` BIT(1) NOT NULL DEFAULT b'1',
+  `role_id` BIGINT NOT NULL,
   `address_id` BIGINT NULL DEFAULT NULL,
   `location_id` BIGINT NULL DEFAULT NULL,
   `customer_id` BIGINT NULL DEFAULT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`user` (
     FOREIGN KEY (`role_id`)
     REFERENCES `retailers`.`role` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 31
+AUTO_INCREMENT = 32
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -163,14 +163,14 @@ DROP TABLE IF EXISTS `retailers`.`application` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`application` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `application_number` VARCHAR(45) NOT NULL,
-  `reg_date_time` DATETIME NULL DEFAULT NULL,
+  `reg_date_time` DATETIME NOT NULL,
   `last_upd_date_time` DATETIME NULL DEFAULT NULL,
-  `status` VARCHAR(45) NULL DEFAULT NULL,
+  `status` VARCHAR(45) NOT NULL,
   `source_location` BIGINT NULL DEFAULT NULL,
-  `destination_location` BIGINT NULL DEFAULT NULL,
-  `created_by` BIGINT NULL DEFAULT NULL,
+  `destination_location` BIGINT NOT NULL,
+  `created_by` BIGINT NOT NULL,
   `last_upd_by` BIGINT NULL DEFAULT NULL,
-  `customer_id` BIGINT NULL DEFAULT NULL,
+  `customer_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `application_number_UNIQUE` (`application_number` ASC) VISIBLE,
@@ -216,9 +216,10 @@ DROP TABLE IF EXISTS `retailers`.`category` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`category` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4
@@ -233,19 +234,23 @@ DROP TABLE IF EXISTS `retailers`.`item` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`item` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `upc` VARCHAR(20) NOT NULL,
-  `label` VARCHAR(45) NULL DEFAULT NULL,
-  `units` INT NULL DEFAULT NULL,
-  `category_id` BIGINT NULL DEFAULT NULL,
+  `label` VARCHAR(45) NOT NULL,
+  `units` INT NOT NULL,
+  `category_id` BIGINT NOT NULL,
   `customer_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `upc_UNIQUE` (`upc` ASC) VISIBLE,
   INDEX `fk_category_id_idx` (`category_id` ASC) VISIBLE,
+  INDEX `fk_item_customer_idx` (`customer_id` ASC) VISIBLE,
   CONSTRAINT `fk_category_id`
     FOREIGN KEY (`category_id`)
     REFERENCES `retailers`.`category` (`id`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_item_customer`
+    FOREIGN KEY (`customer_id`)
+    REFERENCES `retailers`.`customer` (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb4
@@ -259,10 +264,10 @@ DROP TABLE IF EXISTS `retailers`.`application_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`application_item` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `cost` FLOAT NULL DEFAULT NULL,
-  `application_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
+  `amount` INT NOT NULL,
+  `cost` FLOAT NOT NULL,
+  `application_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   INDEX `fk_application_item_application_idx` (`application_id` ASC) VISIBLE,
@@ -290,9 +295,9 @@ DROP TABLE IF EXISTS `retailers`.`bill` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`bill` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `number` VARCHAR(45) NOT NULL,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
-  `shop_manager_id` BIGINT NULL DEFAULT NULL,
+  `date_time` DATETIME NOT NULL,
+  `location_id` BIGINT NOT NULL,
+  `shop_manager_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `number_UNIQUE` (`number` ASC) VISIBLE,
@@ -309,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`bill` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 40
+AUTO_INCREMENT = 54
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -321,10 +326,10 @@ DROP TABLE IF EXISTS `retailers`.`bill_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`bill_item` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `price` FLOAT NULL DEFAULT NULL,
-  `bill_id` BIGINT NULL DEFAULT NULL,
-  `item_id` BIGINT NULL DEFAULT NULL,
+  `amount` INT NOT NULL,
+  `price` FLOAT NOT NULL,
+  `bill_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   INDEX `fk_bills_idx` (`bill_id` ASC) VISIBLE,
@@ -340,7 +345,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`bill_item` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 24
+AUTO_INCREMENT = 40
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -353,8 +358,8 @@ DROP TABLE IF EXISTS `retailers`.`customer_category` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`customer_category` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `category_tax` FLOAT NULL DEFAULT '0',
-  `customer_id` BIGINT NULL DEFAULT NULL,
-  `category_id` BIGINT NULL DEFAULT NULL,
+  `customer_id` BIGINT NOT NULL,
+  `category_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   INDEX `fk_customer_category_category_idx` (`category_id` ASC) VISIBLE,
@@ -382,9 +387,9 @@ DROP TABLE IF EXISTS `retailers`.`supplier` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`supplier` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `identifier` VARCHAR(255) NOT NULL,
-  `active` BIT(1) NULL DEFAULT b'1',
+  `active` BIT(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `identifier_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `identifier` (`identifier` ASC) VISIBLE)
@@ -449,7 +454,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`location_item` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -461,8 +466,8 @@ DROP TABLE IF EXISTS `retailers`.`state_tax` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`state_tax` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `state_code` VARCHAR(2) NULL DEFAULT NULL,
-  `tax` FLOAT NULL DEFAULT NULL,
+  `state_code` VARCHAR(2) NOT NULL,
+  `tax` FLOAT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `state_code_UNIQUE` (`state_code` ASC) VISIBLE)
@@ -479,11 +484,12 @@ DROP TABLE IF EXISTS `retailers`.`warehouse` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`warehouse` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
-  `address_id` BIGINT NULL DEFAULT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `address_id` BIGINT NOT NULL,
   `supplier_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE,
   INDEX `fk_warehouse_address_idx` (`address_id` ASC) VISIBLE,
   INDEX `fk_warehouse_supplier_idx` (`supplier_id` ASC) VISIBLE,
   CONSTRAINT `fk_warehouse_address`
@@ -510,10 +516,8 @@ DROP TABLE IF EXISTS `retailers`.`write_off_act` ;
 CREATE TABLE IF NOT EXISTS `retailers`.`write_off_act` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `identifier` VARCHAR(255) NOT NULL,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `total_amount` BIGINT NULL DEFAULT NULL,
-  `total_sum` BIGINT NULL DEFAULT NULL,
-  `location_id` BIGINT NULL DEFAULT NULL,
+  `date_time` DATETIME NOT NULL,
+  `location_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `identifier_UNIQUE` (`identifier` ASC) VISIBLE,
@@ -524,6 +528,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`write_off_act` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 61
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -535,8 +540,8 @@ DROP TABLE IF EXISTS `retailers`.`written_off_item` ;
 
 CREATE TABLE IF NOT EXISTS `retailers`.`written_off_item` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT NULL DEFAULT NULL,
-  `reason` VARCHAR(45) NULL DEFAULT NULL,
+  `amount` INT NOT NULL,
+  `reason` VARCHAR(45) NOT NULL,
   `write_off_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
@@ -554,6 +559,7 @@ CREATE TABLE IF NOT EXISTS `retailers`.`written_off_item` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 105
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 

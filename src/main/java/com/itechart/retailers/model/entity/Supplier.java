@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,8 @@ public class Supplier extends Identity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "identifier", nullable = false, unique = true)
+    @NotNull
+    @Column(name = "identifier", unique = true)
     private String identifier;
 
     @Column(name = "active")

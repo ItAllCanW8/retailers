@@ -1,4 +1,4 @@
-package com.itechart.retailers.model;
+package com.itechart.retailers.model.enumeration;
 
 public enum StateCode {
     AK,

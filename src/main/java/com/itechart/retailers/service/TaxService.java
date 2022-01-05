@@ -1,7 +1,7 @@
 package com.itechart.retailers.service;
 
 
-import com.itechart.retailers.model.StateCode;
+import com.itechart.retailers.model.enumeration.StateCode;
 import com.itechart.retailers.model.entity.CustomerCategory;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.service.exception.IncorrectTaxException;

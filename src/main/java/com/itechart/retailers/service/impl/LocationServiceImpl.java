@@ -1,6 +1,6 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.StateCode;
+import com.itechart.retailers.model.enumeration.StateCode;
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;

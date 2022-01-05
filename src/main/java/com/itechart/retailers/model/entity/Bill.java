@@ -3,6 +3,7 @@ package com.itechart.retailers.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +17,8 @@ import java.util.List;
 @Table(name = "bill")
 public class Bill extends Identity {
 
-    @Column(name = "number", unique = true, length = 45, nullable = false)
+    @NotNull
+    @Column(name = "number", unique = true, length = 45)
     private String number;
 
     @Column(name = "date_time")

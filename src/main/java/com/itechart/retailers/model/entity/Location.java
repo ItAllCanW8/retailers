@@ -17,10 +17,6 @@ import java.util.Set;
 @Table(name = "location")
 public class Location extends Identity {
 
-    public Location(Long id) {
-        this.setId(id);
-    }
-
     @Column(name = "identifier", nullable = false, unique = true)
     private String identifier;
 
@@ -52,4 +48,8 @@ public class Location extends Identity {
     @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<LocationItem> itemAssoc;
+
+    public Location(Long id) {
+        this.setId(id);
+    }
 }

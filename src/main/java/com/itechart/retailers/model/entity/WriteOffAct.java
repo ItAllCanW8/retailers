@@ -3,6 +3,7 @@ package com.itechart.retailers.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,7 +17,8 @@ import java.util.Set;
 @Entity
 public class WriteOffAct extends Identity {
 
-    @Column(name = "identifier", nullable = false, unique = true)
+    @NotNull
+    @Column(name = "identifier", unique = true)
     private String identifier;
 
     @Column(name = "date_time")

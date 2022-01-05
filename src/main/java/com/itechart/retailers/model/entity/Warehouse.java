@@ -3,6 +3,7 @@ package com.itechart.retailers.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Builder
 @NoArgsConstructor
@@ -14,7 +15,8 @@ import javax.persistence.*;
 @Table(name = "warehouse")
 public class Warehouse extends Identity {
 
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", length = 45, unique = true)
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, orphanRemoval = true)

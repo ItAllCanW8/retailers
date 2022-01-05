@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.itechart.retailers.model.enumeration.WriteOffReason;
 import lombok.*;
 
 import javax.persistence.*;
