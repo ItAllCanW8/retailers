@@ -14,31 +14,38 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.itechart.retailers.controller.constant.Message.BILL_CREATED_MSG;
+import static com.itechart.retailers.security.constant.Authority.SHOP_MANAGER_ROLE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class BillController {
-	private final BillService billService;
-	private final SecurityContextService securityService;
-	private final String roles = "hasRole('SHOP_MANAGER')";
 
-	@PostMapping("/bills")
-	@PreAuthorize(roles)
-	public ResponseEntity<?> createBill(@RequestBody Bill bill) {
-		Long shopManagerId = securityService.getCurrentUserId();
-		Long locationId = securityService.getCurrentLocationId();
-		try {
-			billService.createBill(bill, locationId, shopManagerId);
-		} catch (ItemAmountException | UndefinedItemException e) {
-			return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
-		}
-		return ResponseEntity.ok(new MessageResp("Bill created."));
-	}
+    public static final String POST_BILLS_MAPPING = "/bills";
+    public static final String GET_BILLS_MAPPING = "/bills";
+    private static final String AUTHORITIES = "hasRole('" + SHOP_MANAGER_ROLE + "')";
 
-	@GetMapping("/bills")
-	@PreAuthorize(roles)
-	public List<BillDto> loadShopBills() {
-		Long locationId = securityService.getCurrentLocationId();
-		return billService.loadShopBills(locationId);
-	}
+    private final BillService billService;
+    private final SecurityContextService securityService;
+
+    @PostMapping(POST_BILLS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
+    public ResponseEntity<?> createBill(@RequestBody Bill bill) {
+        Long shopManagerId = securityService.getCurrentUserId();
+        Long locationId = securityService.getCurrentLocationId();
+        try {
+            billService.createBill(bill, locationId, shopManagerId);
+        } catch (ItemAmountException | UndefinedItemException e) {
+            return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
+        }
+        return ResponseEntity.ok(new MessageResp(BILL_CREATED_MSG));
+    }
+
+    @GetMapping(GET_BILLS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
+    public List<BillDto> loadShopBills() {
+        Long locationId = securityService.getCurrentLocationId();
+        return billService.loadShopBills(locationId);
+    }
 }

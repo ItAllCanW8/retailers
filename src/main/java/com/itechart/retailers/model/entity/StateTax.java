@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.itechart.retailers.model.enumeration.StateCode;
 import lombok.*;
 
 import javax.persistence.*;

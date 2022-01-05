@@ -17,74 +17,83 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class BillServiceImpl implements BillService {
-	private final BillRepository billRepo;
-	private final BillItemRepository billItemRepo;
-	private final LocationItemRepository locationItemRepo;
 
-	@Override
-	@Transactional(rollbackFor = {ItemAmountException.class, UndefinedItemException.class})
-	public Bill createBill(Bill bill, Long locationId, Long shopManagerId) throws ItemAmountException, UndefinedItemException {
-		bill.setRegDateTime(LocalDateTime.now());
-		bill.setLocation(new Location(locationId));
-		bill.setShopManager(new User(shopManagerId));
-		bill = billRepo.save(bill);
+    private final BillRepository billRepo;
+    private final BillItemRepository billItemRepo;
+    private final LocationItemRepository locationItemRepo;
 
-		List<BillItem> billItems = bill.getItemAssoc();
-		List<String> itemUpcs = new ArrayList<>();
-		billItems.forEach(billItem -> itemUpcs.add(billItem.getItem().getUpc()));
+    @Override
+    @Transactional(rollbackFor = {ItemAmountException.class, UndefinedItemException.class})
+    public Bill createBill(Bill bill, Long locationId, Long shopManagerId) throws ItemAmountException, UndefinedItemException {
+        bill.setRegDateTime(LocalDateTime.now());
+        bill.setLocation(new Location(locationId));
+        bill.setShopManager(new User(shopManagerId));
 
-		List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
-		for (BillItem billItem : billItems) {
-			String itemUpc = billItem.getItem().getUpc();
+        bill = billRepo.save(bill);
 
-			LocationItem locationItem = locationItems.stream()
-					.filter(li -> itemUpc.equals(li.getItem().getUpc()))
-					.findAny()
-					.orElseThrow(() -> new UndefinedItemException("There is no item with upc " + itemUpc + " in shop!"));
+        List<BillItem> billItems = bill.getItemAssoc();
+        List<String> itemUpcs = new ArrayList<>();
 
-			int locationItemAmount = locationItem.getAmount();
-			int billItemAmount = billItem.getAmount();
+        billItems.forEach(billItem -> itemUpcs.add(billItem.getItem().getUpc()));
 
-			if (locationItemAmount < billItemAmount) {
-				throw new ItemAmountException("Item amount to sell cannot be greater than actual amount in shop!");
-			}
+        List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
 
-			locationItem.setAmount(locationItemAmount - billItemAmount);
-			locationItemRepo.save(locationItem);
+        for (BillItem billItem : billItems) {
+            String itemUpc = billItem.getItem().getUpc();
 
-			billItem.setPrice(locationItem.getPrice());
-			billItem.setBill(bill);
-			billItem.setItem(new Item(locationItem.getItem().getId()));
-		}
-		billItemRepo.saveAll(billItems);
-		return bill;
-	}
+            LocationItem locationItem = locationItems.stream()
+                    .filter(li -> itemUpc.equals(li.getItem().getUpc()))
+                    .findAny()
+                    .orElseThrow(() -> new UndefinedItemException("There is no item with upc " + itemUpc + " in shop!"));
 
-	@Override
-	public List<BillDto> loadShopBills(Long shopId) {
-		List<BillView> billViews = billRepo.findAllByLocationId(shopId);
-		List<BillDto> billDtos = new ArrayList<>(billViews.size());
+            int locationItemAmount = locationItem.getAmount();
+            int billItemAmount = billItem.getAmount();
 
-		for (BillView billView : billViews) {
-			long totalItemAmount = 0;
-			float totalItemSum = 0;
-			for (BillItem item : billView.getItemAssoc()) {
-				int itemAmount = item.getAmount();
+            if (locationItemAmount < billItemAmount) {
+                throw new ItemAmountException("Item amount to sell cannot be greater than actual amount in shop!");
+            }
 
-				totalItemAmount += itemAmount;
-				totalItemSum += item.getPrice() * itemAmount;
-			}
+            locationItem.setAmount(locationItemAmount - billItemAmount);
+            locationItemRepo.save(locationItem);
 
-			billDtos.add(BillDto.builder()
-					.number(billView.getNumber())
-					.regDateTime(billView.getRegDateTime())
-					.totalItemAmount(totalItemAmount)
-					.totalItemSum(totalItemSum)
-					.build());
-		}
-		return billDtos;
-	}
+            billItem.setPrice(locationItem.getPrice());
+            billItem.setBill(bill);
+            billItem.setItem(new Item(locationItem.getItem().getId()));
+        }
+
+        billItemRepo.saveAll(billItems);
+
+        return bill;
+    }
+
+    @Override
+    public List<BillDto> loadShopBills(Long shopId) {
+        List<BillView> billViews = billRepo.findAllByLocationId(shopId);
+        List<BillDto> billDtos = new ArrayList<>(billViews.size());
+
+        for (BillView billView : billViews) {
+            long totalItemAmount = 0;
+            float totalItemSum = 0;
+
+            for (BillItem item : billView.getItemAssoc()) {
+                int itemAmount = item.getAmount();
+
+                totalItemAmount += itemAmount;
+                totalItemSum += item.getPrice() * itemAmount;
+            }
+
+            billDtos.add(BillDto.builder()
+                    .number(billView.getNumber())
+                    .regDateTime(billView.getRegDateTime())
+                    .totalItemAmount(totalItemAmount)
+                    .totalItemSum(totalItemSum)
+                    .build());
+        }
+
+        return billDtos;
+    }
 }

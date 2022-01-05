@@ -40,7 +40,11 @@ class WarehouseItems extends Component {
   }
 
   componentDidMount() {
-    axios.get('locations-except-current').then(
+    axios.get('locations', {
+      params: {
+        exceptCurrent: true
+      }
+    }).then(
       (response) => {
         this.setState({
           locationIds: response.data.map(location => location.identifier)

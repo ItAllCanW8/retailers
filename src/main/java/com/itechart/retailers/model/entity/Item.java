@@ -43,7 +43,7 @@ public class Item extends Identity {
     @ToString.Exclude
     private Set<BillItem> itemAssoc;
 
-    public Item(Long id){
+    public Item(Long id) {
         this.setId(id);
     }
 }

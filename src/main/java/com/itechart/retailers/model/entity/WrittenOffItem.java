@@ -1,5 +1,6 @@
 package com.itechart.retailers.model.entity;
 
+import com.itechart.retailers.model.enumeration.WriteOffReason;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "written_off_item")
-public class WrittenOffItem extends Identity{
+public class WrittenOffItem extends Identity {
 
     @Column(name = "amount")
     private Integer amount;

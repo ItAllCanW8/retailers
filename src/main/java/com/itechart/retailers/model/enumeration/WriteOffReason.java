@@ -1,4 +1,4 @@
-package com.itechart.retailers.model.entity;
+package com.itechart.retailers.model.enumeration;
 
 public enum WriteOffReason {
     DAMAGED,

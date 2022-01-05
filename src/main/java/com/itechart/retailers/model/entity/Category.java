@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Builder
 @NoArgsConstructor
@@ -16,7 +17,8 @@ import javax.persistence.Table;
 @Table(name = "category")
 public class Category extends Identity {
 
-    @Column(name = "name", nullable = false, length = 45, unique = true)
+    @NotNull
+    @Column(name = "name", length = 45, unique = true)
     private String name;
 
 }

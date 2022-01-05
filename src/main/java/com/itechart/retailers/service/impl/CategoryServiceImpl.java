@@ -15,38 +15,39 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
-	private final CategoryRepository categoryRepository;
-	private final CustomerCategoryRepository customerCategoryRepository;
 
-	@Override
-	public Category saveIfNotExists(Category category, Long customerId) {
-		Optional<Category> categoryDB = categoryRepository.findByName(category.getName());
-		if (categoryDB.isPresent()) {
-			category = categoryDB.get();
-			Optional<CustomerCategory> customerCategory =
-					customerCategoryRepository.findByCustomerIdAndCategoryId(customerId, category.getId());
-			if (customerCategory.isEmpty()) {
-				Customer customer = new Customer();
-				customer.setId(customerId);
-				customerCategoryRepository.save(CustomerCategory.builder()
-						.customer(customer)
-						.category(category)
-						.build());
-			}
-		} else {
-			Customer customer = new Customer();
-			customer.setId(customerId);
-			category = categoryRepository.save(category);
-			customerCategoryRepository.save(CustomerCategory.builder()
-					.category(category)
-					.customer(customer)
-					.build());
-		}
-		return category;
-	}
+    private final CategoryRepository categoryRepository;
+    private final CustomerCategoryRepository customerCategoryRepository;
 
-	@Override
-	public List<CustomerCategory> loadCustomerCategories(Long customerId) {
-		return customerCategoryRepository.findAllByCustomerId(customerId);
-	}
+    @Override
+    public Category saveIfNotExists(Category category, Long customerId) {
+        Optional<Category> categoryDB = categoryRepository.findByName(category.getName());
+        if (categoryDB.isPresent()) {
+            category = categoryDB.get();
+            Optional<CustomerCategory> customerCategory =
+                    customerCategoryRepository.findByCustomerIdAndCategoryId(customerId, category.getId());
+            if (customerCategory.isEmpty()) {
+                Customer customer = new Customer();
+                customer.setId(customerId);
+                customerCategoryRepository.save(CustomerCategory.builder()
+                        .customer(customer)
+                        .category(category)
+                        .build());
+            }
+        } else {
+            Customer customer = new Customer();
+            customer.setId(customerId);
+            category = categoryRepository.save(category);
+            customerCategoryRepository.save(CustomerCategory.builder()
+                    .category(category)
+                    .customer(customer)
+                    .build());
+        }
+        return category;
+    }
+
+    @Override
+    public List<CustomerCategory> loadCustomerCategories(Long customerId) {
+        return customerCategoryRepository.findAllByCustomerId(customerId);
+    }
 }

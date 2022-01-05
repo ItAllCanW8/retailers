@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-class BillInnerModal extends Component {
+class WriteOffActInnerModal extends Component {
   render() {
     return <div className='modal-content'>
       <div className='modal-header'>
         <h5 className='modal-title' id='exampleModalLabel'>
-          Add bill
+          Add write-off act
         </h5>
         <button
           type='button'
@@ -19,29 +19,29 @@ class BillInnerModal extends Component {
           <div className='row'>
             <div className='col mb-2'>
               <label
-                htmlFor='applicationNumber'
+                htmlFor='identifier'
                 className='form-label'
               >
-                Bill number
+                Identifier
               </label>
               <div className='input-group has-validation'>
                 <input
                   type='text'
                   className='form-control'
-                  name='applicationNumber'
-                  id='applicationNumber'
+                  name='identifier'
+                  id='identifier'
                   aria-describedby='inputGroupPrepend'
                   required
                   autoComplete='off'
-                  value={this.props.number}
-                  onChange={this.props.onNumberChange}
+                  value={this.props.identifier}
+                  onChange={this.props.onIdentifierChange}
                 />
               </div>
             </div>
           </div>
-          {this.props.items && this.props.items.map((itemAssoc, index, arr) => (
+          {this.props.writtenOffItems && this.props.writtenOffItems.map((writtenOffItem, index, arr) => (
             <div className='row' key={index}>
-              <div className='col-6 mb-2'>
+              <div className='col-4 mb-2'>
                 {index === 0 && (
                   <label htmlFor={'upc' + index} className='form-label'>UPC</label>
                 )}
@@ -55,12 +55,12 @@ class BillInnerModal extends Component {
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    value={itemAssoc.item.upc}
+                    value={writtenOffItem.item.upc}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
                 </div>
               </div>
-              <div className='col mb-2'>
+              <div className='col-4 mb-2'>
                 {index === 0 && (
                   <label htmlFor={'amount' + index} className='form-label'>Amount</label>
                 )}
@@ -74,9 +74,29 @@ class BillInnerModal extends Component {
                     autoComplete='off'
                     required
                     min='0'
-                    value={itemAssoc.amount}
+                    value={writtenOffItem.amount}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
+                </div>
+              </div>
+              <div className='col-4 mb-2'>
+                {index === 0 && (
+                  <label htmlFor={'reason' + index} className='form-label'>Reason</label>
+                )}
+                <div className='input-group has-validation'>
+                  <select
+                    className='form-select'
+                    aria-label='Default select example'
+                    id={'reason' + index}
+                    name={'reason'}
+                    value={this.props.role}
+                    onChange={() => this.props.onItemChange(window.event, index)}
+                  >
+                    <option value='DAMAGED'>Damaged</option>
+                    <option value='STOLEN'>Stolen</option>
+                    <option value='LOST'>Lost</option>
+                    <option value='SPOILED'>Spoiled</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -112,4 +132,4 @@ class BillInnerModal extends Component {
   }
 }
 
-export default BillInnerModal;
+export default WriteOffActInnerModal;

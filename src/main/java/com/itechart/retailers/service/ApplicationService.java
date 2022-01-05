@@ -14,10 +14,10 @@ import java.util.List;
 
 public interface ApplicationService {
 
-    List<Application> getCurrentApplications(Long customerId);
+    List<Application> getCurrentApplications();
 
     @Transactional
-    void save(ApplicationReq applicationDto, Long customerId) throws UndefinedItemException;
+    void save(ApplicationReq applicationDto) throws UndefinedItemException;
 
     Application getById(Long id);
 
@@ -31,6 +31,6 @@ public interface ApplicationService {
 
     void forwardApplication(Long id, String locationIdentifier) throws UndefinedLocationException;
 
-    void dispatchItems(DispatchItemReq dispatchItemReq, Long customerId) throws ItemAmountException;
+    void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException;
 
 }

@@ -10,14 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.itechart.retailers.security.constant.Authority.LOCATION_GET_AUTHORITY;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class LocationItemController {
+
+    public static final String GET_CURRENT_LOCATION_ITEMS_MAPPING = "/current-location-items";
+    public static final String AUTHORITIES = "hasAuthority('" + LOCATION_GET_AUTHORITY + "')";
     private final LocationItemService locationItemService;
 
-    @GetMapping("/current-location-items")
-    @PreAuthorize("hasAuthority('location:get')")
+    @GetMapping(GET_CURRENT_LOCATION_ITEMS_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public List<LocationItemResp> getCurrentLocation() {
         return locationItemService.getCurrentLocationItems();
     }

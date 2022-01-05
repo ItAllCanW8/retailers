@@ -11,16 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class CustomerCategoryController {
+
+    public static final String GET_CATEGORIES_MAPPING = "/categories";
+    private static final String AUTHORITIES = "hasRole('" + DIRECTOR_ROLE + "')";
+
     private final CategoryService categoryService;
     private final SecurityContextService securityService;
-    private final String authorities = "hasRole('DIRECTOR')";
 
-    @GetMapping("/categories")
-    @PreAuthorize(authorities)
+    @GetMapping(GET_CATEGORIES_MAPPING)
+    @PreAuthorize(AUTHORITIES)
     public List<CustomerCategory> loadCustomerCategories() {
         return categoryService.loadCustomerCategories(securityService.getCurrentCustomerId());
     }

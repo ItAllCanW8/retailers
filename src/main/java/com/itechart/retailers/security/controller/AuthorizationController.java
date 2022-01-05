@@ -26,36 +26,44 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Date;
 
+import static com.itechart.retailers.controller.constant.Message.INCORRECT_EMAIL_OR_PASSWORD_MSG;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthorizationController {
+
+    private static final String POST_LOGIN_MAPPING = "/login";
+    private static final String EMAIL_CLAIM = "email";
+    private static final String ROLE_CLAIM = "role";
+    private static final String NAME_CLAIM = "name";
+    private static final String SECRET_KEY = "secret";
+
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/login")
+    @PostMapping(POST_LOGIN_MAPPING)
     public ResponseEntity<?> authenticate(@RequestBody LogInReq requestDto) {
         Authentication authentication;
 
         try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
         } catch (AuthenticationException e) {
-            return ResponseEntity.badRequest().body(new MessageResp("Incorrect email or password!"));
+            return ResponseEntity.badRequest().body(new MessageResp(INCORRECT_EMAIL_OR_PASSWORD_MSG));
         }
 
         UserDetailsImpl authenticatedUser = (UserDetailsImpl) authentication.getPrincipal();
-
         String accessToken = JWT.create()
                 .withSubject(authenticatedUser.getEmail())
                 .withExpiresAt(new Date(Long.MAX_VALUE))
-//                .withExpiresAt(new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000))
                 .withIssuer(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
-                .withClaim("email", authenticatedUser.getEmail())
-                .withClaim("role", authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
-                .withClaim("name", authenticatedUser.getUsername())
-                .sign(Algorithm.HMAC256("secret"));
+                .withClaim(EMAIL_CLAIM, authenticatedUser.getEmail())
+                .withClaim(ROLE_CLAIM, authenticatedUser.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toList())
+                .withClaim(NAME_CLAIM, authenticatedUser.getUsername())
+                .sign(Algorithm.HMAC256(SECRET_KEY));
 
         return ResponseEntity.ok(new UserAuthenticationResp(accessToken));
     }

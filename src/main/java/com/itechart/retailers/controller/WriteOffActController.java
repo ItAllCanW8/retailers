@@ -3,7 +3,6 @@ package com.itechart.retailers.controller;
 import com.itechart.retailers.model.dto.WriteOffActDto;
 import com.itechart.retailers.model.entity.WriteOffAct;
 import com.itechart.retailers.model.payload.response.MessageResp;
-import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
@@ -14,40 +13,42 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.itechart.retailers.controller.constant.Message.WRITE_OFF_ACT_CREATED_MSG;
+import static com.itechart.retailers.security.constant.Authority.WRITE_OFF_ACT_GET_AUTHORITY;
+import static com.itechart.retailers.security.constant.Authority.WRITE_OFF_ACT_POST_AUTHORITY;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class WriteOffActController {
-    private final String postAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')";
-    private final String getLocalAuthorities = "hasAuthority('DISPATCHER') or hasAuthority('SHOP_MANAGER')" +
-            " or hasAuthority('WAREHOUSE_MANAGER')";
-    private final String getAllAuthorities = "hasAuthority('DIRECTOR')";
+    public static final String POST_WRITE_OFF_ACTS_MAPPING = "/write-off-acts";
+    public static final String GET_WRITE_OFF_ACTS_MAPPING = "/write-off-acts";
+    public static final String GET_LOCAL_WRITE_OFF_ACTS_MAPPING = "/local-write-off-acts";
+    public static final String POST_AUTHORITY = "hasAuthority('" + WRITE_OFF_ACT_POST_AUTHORITY + "')";
+    public static final String GET_AUTHORITY = "hasAuthority('" + WRITE_OFF_ACT_GET_AUTHORITY + "')";
 
-    private final SecurityContextService securityService;
     private final WriteOffActService writeOffActService;
 
-    @PostMapping("/write-off-acts")
-    @PreAuthorize(postAuthorities)
+    @PostMapping(POST_WRITE_OFF_ACTS_MAPPING)
+    @PreAuthorize(POST_AUTHORITY)
     public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct) {
-        Long locationId = securityService.getCurrentLocationId();
         try {
-            writeOffActService.save(writeOffAct, locationId);
+            writeOffActService.save(writeOffAct);
         } catch (ItemAmountException e) {
             return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
         }
-        return ResponseEntity.ok(new MessageResp("Write-off act created."));
+        return ResponseEntity.ok(new MessageResp(WRITE_OFF_ACT_CREATED_MSG));
     }
 
-    @GetMapping("/local-write-off-acts")
-    @PreAuthorize(getLocalAuthorities)
+    @GetMapping(GET_LOCAL_WRITE_OFF_ACTS_MAPPING)
+    @PreAuthorize(GET_AUTHORITY)
     public List<WriteOffActDto> loadLocationWriteOffActs() {
-        return writeOffActService.loadLocalWriteOffActs(securityService.getCurrentLocationId());
-
+        return writeOffActService.loadLocalWriteOffActs();
     }
 
-    @GetMapping("/write-off-acts")
-    @PreAuthorize(getAllAuthorities)
+    @GetMapping(GET_WRITE_OFF_ACTS_MAPPING)
+    @PreAuthorize(GET_AUTHORITY)
     public List<WriteOffActDto> loadAllWriteOffActs() {
-        return writeOffActService.loadCustomerWriteOffActs(securityService.getCurrentCustomerId());
+        return writeOffActService.loadCustomerWriteOffActs();
     }
 }

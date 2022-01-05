@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface CustomerCategoryRepository extends JpaRepository<CustomerCategory, Long> {
 
-	Optional<CustomerCategory> findByCustomerIdAndCategoryId(Long customerId, Long categoryId);
+    Optional<CustomerCategory> findByCustomerIdAndCategoryId(Long customerId, Long categoryId);
 
-	@Modifying
-	@Query("update CustomerCategory cc set cc.categoryTax = :newTax where cc.id = :customerCategoryId")
-	int updateItemCategoryTax(Long customerCategoryId, Float newTax);
+    @Modifying
+    @Query("update CustomerCategory cc set cc.categoryTax = :newTax where cc.id = :customerCategoryId")
+    int updateItemCategoryTax(Long customerCategoryId, Float newTax);
 
-	List<CustomerCategory> findAllByCustomerId(Long customerId);
+    List<CustomerCategory> findAllByCustomerId(Long customerId);
 }

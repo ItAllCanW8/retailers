@@ -1,6 +1,6 @@
 package com.itechart.retailers.service;
 
-import com.itechart.retailers.model.entity.StateCode;
+import com.itechart.retailers.model.enumeration.StateCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
