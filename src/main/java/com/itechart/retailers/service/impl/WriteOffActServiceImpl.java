@@ -110,7 +110,7 @@ public class WriteOffActServiceImpl implements WriteOffActService {
 
                 int itemAmount = writtenOffItem.getAmount();
                 totalItemAmount += itemAmount;
-                totalItemSum += itemAmount * locationItem.getPrice();
+                totalItemSum += itemAmount * locationItem.getCost();
             }
 
             writeOffActDtos.add(WriteOffActDto.builder()
