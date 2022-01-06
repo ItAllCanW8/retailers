@@ -3,7 +3,6 @@ package com.itechart.retailers.repository;
 import com.itechart.retailers.model.entity.Category;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.CustomerCategory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,9 @@ class CustomerCategoryRepositoryTest {
 
     @Autowired
     private CustomerCategoryRepository underTest;
-    @Autowired
+    @Mock
     private CustomerRepository customerRepository;
-    @Autowired
+    @Mock
     private CategoryRepository categoryRepository;
 
     @Test
@@ -39,7 +38,7 @@ class CustomerCategoryRepositoryTest {
                 .name("Bread")
                 .build();
         category = categoryRepository.save(category);
-//
+
         CustomerCategory customerCategory = CustomerCategory.builder()
                 .category(category)
                 .customer(customer)
@@ -50,9 +49,5 @@ class CustomerCategoryRepositoryTest {
         int result = underTest.updateItemCategoryTax(customerCategory.getId(), newTax);
         //then
         assertThat(result).isEqualTo(1);
-
-        System.out.println(underTest.findByCustomerIdAndCategoryId(customer.getId(), category.getId()).get().getCategoryTax());
-
-//        assertThat(underTest.findById(customerCategory.getId()).get().getCategoryTax()).isEqualTo(newTax);
     }
 }
