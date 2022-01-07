@@ -42,7 +42,6 @@ class CustomerCategoryRepositoryTest {
         CustomerCategory customerCategory = CustomerCategory.builder()
                 .category(category)
                 .customer(customer)
-                .categoryTax(0.0f)
                 .build();
         customerCategory = underTest.save(customerCategory);
         //when
