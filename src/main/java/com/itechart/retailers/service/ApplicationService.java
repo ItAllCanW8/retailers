@@ -8,7 +8,6 @@ import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.UndefinedItemException;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -16,8 +15,7 @@ public interface ApplicationService {
 
     List<Application> getCurrentApplications();
 
-    @Transactional
-    void save(ApplicationReq applicationDto) throws UndefinedItemException;
+    Application save(ApplicationReq applicationDto) throws UndefinedItemException;
 
     Application getById(Long id);
 

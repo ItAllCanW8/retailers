@@ -58,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void create(Item item) {
+    public Item create(Item item) {
         Long customerId = securityService.getCurrentCustomerId();
         Category category = categoryService.saveIfNotExists(
                 item.getCategory(), customerId);
@@ -66,6 +66,7 @@ public class ItemServiceImpl implements ItemService {
         customer.setId(customerId);
         item.setCustomer(customer);
         item.setCategory(category);
-        save(item);
+
+        return save(item);
     }
 }

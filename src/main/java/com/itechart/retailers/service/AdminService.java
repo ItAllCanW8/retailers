@@ -4,13 +4,14 @@ import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
+import com.itechart.retailers.service.exception.UndefinedLocationException;
 
 import java.util.List;
 import java.util.Set;
 
 public interface AdminService {
 
-    boolean createLocation(Location location);
+    Location createLocation(Location location);
 
     void deleteLocation(Long id);
 
@@ -18,11 +19,11 @@ public interface AdminService {
 
     List<UserView> getUsers();
 
-    boolean createUser(User user);
+    User createUser(User user) throws UndefinedLocationException;
 
     void updateUserStatus(Long id, boolean isActive);
 
-    boolean createSupplier(Supplier supplier);
+    Supplier createSupplier(Supplier supplier);
 
     List<Supplier> findSuppliers();
 

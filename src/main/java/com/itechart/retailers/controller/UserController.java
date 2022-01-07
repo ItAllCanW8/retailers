@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.UserService;
+import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,11 @@ public class UserController {
     @PostMapping(POST_USERS_MAPPING)
     @PreAuthorize(POST_AUTHORITIES)
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        adminService.createUser(user);
+        try {
+            adminService.createUser(user);
+        } catch (UndefinedLocationException e) {
+            return ResponseEntity.badRequest().body(new MessageResp(e.getMessage()));
+        }
         return ResponseEntity.ok(new MessageResp(USER_CREATED_MSG));
     }
 

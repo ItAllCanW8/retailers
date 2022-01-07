@@ -21,6 +21,6 @@ public interface ItemService {
 
     Optional<Item> findItemByUpc(String upc);
 
-    void create(Item item);
+    Item create(Item item);
 
 }

@@ -42,7 +42,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public void save(ApplicationReq applicationReq) throws UndefinedItemException {
+    public Application save(ApplicationReq applicationReq) throws UndefinedItemException {
         Set<Optional<Item>> optionalItems = applicationReq.getItems().stream()
                 .map(ai -> itemRepository.findItemByUpc(ai.getUpc())).collect(Collectors.toSet());
 
@@ -65,8 +65,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         Customer customer = new Customer();
         customer.setId(securityService.getCurrentCustomerId());
         application.setCustomer(customer);
-        applicationRepository.save(application);
         applicationItemRepository.saveAll(itemsAssoc);
+
+        return applicationRepository.save(application);
     }
 
     @Override

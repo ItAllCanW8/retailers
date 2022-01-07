@@ -6,11 +6,12 @@ import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.RoleService;
+import com.itechart.retailers.service.exception.UndefinedLocationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -30,11 +31,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public boolean createLocation(Location location) {
+    public Location createLocation(Location location){
         addressRepo.save(location.getAddress());
         location.setCustomer(new Customer(securityService.getCurrentCustomerId()));
-
-        return locationRepo.save(location).getId() != null;
+        return locationRepo.save(location);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public boolean createUser(User user) {
+    public User createUser(User user) throws UndefinedLocationException {
         // TODO: Password generation
         user.setPassword(passwordEncoder.encode("1111"));
         user.setActive(true);
@@ -72,11 +72,11 @@ public class AdminServiceImpl implements AdminService {
             user.setLocation(null);
         } else {
             String locationIdentifier = user.getLocation().getIdentifier();
-
-            user.setLocation(new Location(locationRepo.findLocationByIdentifier(locationIdentifier).get().getId()));
+            Location location = locationRepo.findLocationByIdentifier(locationIdentifier)
+                    .orElseThrow(UndefinedLocationException::new);
+            user.setLocation(new Location(location.getId()));
         }
-
-        return userRepo.save(user).getId() != null;
+        return userRepo.save(user);
     }
 
     @Override
@@ -87,21 +87,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public boolean createSupplier(Supplier supplier) {
-        supplierRepo.save(supplier);
-
+    public Supplier createSupplier(Supplier supplier) {
+        supplier = supplierRepo.save(supplier);
         Set<Warehouse> warehouses = supplier.getWarehouses();
 
         for (Warehouse wh : warehouses) {
             wh.setSupplier(supplier);
             addressRepo.save(wh.getAddress());
         }
-
         warehouseRepo.saveAll(warehouses);
-
         customerRepo.findById(securityService.getCurrentCustomerId()).get().getSuppliers().add(supplier);
 
-        return true;
+        return supplier;
     }
 
     @Override
