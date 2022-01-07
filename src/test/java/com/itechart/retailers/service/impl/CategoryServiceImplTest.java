@@ -6,14 +6,11 @@ import com.itechart.retailers.model.entity.CustomerCategory;
 import com.itechart.retailers.repository.CategoryRepository;
 import com.itechart.retailers.repository.CustomerCategoryRepository;
 import com.itechart.retailers.service.CategoryService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
