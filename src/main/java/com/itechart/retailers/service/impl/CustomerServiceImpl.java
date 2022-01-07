@@ -2,11 +2,18 @@ package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.response.CustomerPageResp;
+import com.itechart.retailers.model.payload.response.CustomerResp;
 import com.itechart.retailers.repository.CustomerRepository;
 import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.service.CustomerService;
+import com.itechart.retailers.service.RoleService;
+import com.itechart.retailers.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +25,11 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserService userService;
+    private final RoleService roleService;
+
+    @Value("${pagination.pageSize}")
+    private Integer pageSize;
 
     @Override
     public Customer save(Customer customer) {
@@ -25,12 +37,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> findByParams(Boolean isOnlyActive) {
-        if (isOnlyActive == null) {
-            return customerRepository.findByOrderByIdDesc();
+    public CustomerPageResp findByParams(Boolean onlyActive, Integer page) {
+        Page<Customer> customers;
+        if (onlyActive == null) {
+            customers = customerRepository.findByOrderByIdDesc(PageRequest.of(page, pageSize));
         } else {
-            return customerRepository.findByIsActiveOrderByIdDesc(isOnlyActive);
+            customers = customerRepository.findByIsActiveOrderByIdDesc(onlyActive, PageRequest.of(page, pageSize));
         }
+        return new CustomerPageResp(customers.getContent().stream()
+                .map(customer -> new CustomerResp(customer,
+                        userService.getByRoleAndCustomerId(roleService.getByRole("ADMIN"),
+                                customer.getId()).getEmail()))
+                .toList(), customers.getTotalPages());
     }
 
     @Override
