@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
+
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -68,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
         String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
 
-        if (roleStr.equals("DIRECTOR")) {
+        if (roleStr.equals(DIRECTOR_ROLE)) {
             user.setLocation(null);
         } else {
             String locationIdentifier = user.getLocation().getIdentifier();
