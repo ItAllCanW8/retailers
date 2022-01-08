@@ -54,14 +54,9 @@ public class AdminServiceImpl implements AdminService {
 		locationRepo.deleteAllByIdInBatch(ids);
 	}
 
-	@Override
-	public List<UserView> getUsers() {
-		return userRepo.findUserViewsByCustomerId(securityService.getCurrentCustomerId());
-	}
-
     @Override
     @Transactional
-    public User createUser(User user) throws LocationNotFoundException {
+    public User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse {
         // TODO: Password generation
 	    Customer customer = new Customer(securityService.getCurrentCustomerId());
 	    user.setCustomer(customer);

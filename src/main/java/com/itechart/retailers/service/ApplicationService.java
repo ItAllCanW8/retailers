@@ -4,9 +4,11 @@ import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.model.payload.request.DispatchItemReq;
+import com.itechart.retailers.service.exception.DispatchItemException;
 import com.itechart.retailers.service.exception.ItemAmountException;
-import com.itechart.retailers.service.exception.UndefinedItemException;
-import com.itechart.retailers.service.exception.UndefinedLocationException;
+import com.itechart.retailers.service.exception.ItemNotFoundException;
+import com.itechart.retailers.service.exception.LocationNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

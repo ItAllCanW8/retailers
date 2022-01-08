@@ -5,6 +5,7 @@ import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.model.payload.response.UserPageResp;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.UserService;
+import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
 import com.itechart.retailers.service.exception.RoleNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,13 @@ public class UserController {
     public UserPageResp getUsers(
             @RequestParam(required = false) String role,
             @RequestParam(required = false) Integer page
-    ) {
+    ) throws RoleNotFoundException {
         return userService.getUsers(role, page);
     }
 
     @PostMapping(POST_USERS_MAPPING)
     @PreAuthorize(POST_AUTHORITIES)
-    public ResponseEntity<?> createUser(@RequestBody User user) throws MailIsAlreadyInUse {
+    public ResponseEntity<?> createUser(@RequestBody User user) throws MailIsAlreadyInUse, LocationNotFoundException {
         adminService.createUser(user);
         return ResponseEntity.ok(new MessageResp(USER_CREATED_MSG));
     }

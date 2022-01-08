@@ -11,7 +11,6 @@ import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
-import com.itechart.retailers.service.exception.RoleNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -33,11 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Value("${pagination.pageSize}")
     private Integer pageSize;
-
-	@Override
-	public List<User> findAll() {
-		return userRepository.findAll();
-	}
 
 	@Override
 	public User save(User user) {

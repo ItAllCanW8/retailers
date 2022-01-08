@@ -86,7 +86,7 @@ class SystemAdmin extends Component {
     const value = event.target.value;
     this.setState({
       params: {
-        ...this.state.params,
+        page: 0,
         onlyActive: value === 'Only active' || (value === 'All' && null)
       }
     }, () => this.updateCustomers());
