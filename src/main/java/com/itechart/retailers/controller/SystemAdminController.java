@@ -3,7 +3,7 @@ package com.itechart.retailers.controller;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.request.SignUpReq;
-import com.itechart.retailers.model.payload.response.CustomerResp;
+import com.itechart.retailers.model.payload.response.CustomerPageResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.CustomerService;
 import com.itechart.retailers.service.RoleService;
@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static com.itechart.retailers.controller.constant.Message.CUSTOMER_REGISTERED_MSG;
 import static com.itechart.retailers.controller.constant.Message.EMAIL_TAKEN_MSG;
@@ -65,12 +64,11 @@ public class SystemAdminController {
 
     @GetMapping
     @PreAuthorize(AUTHORITIES)
-    public List<CustomerResp> getCustomers(@RequestParam(required = false) Boolean isOnlyActive) {
-        return customerService.findByParams(isOnlyActive).stream()
-                .map(customer -> new CustomerResp(customer,
-                        userService.getByRoleAndCustomerId(roleService.getByRole("ADMIN"),
-                                customer.getId()).getEmail()))
-                .toList();
+    public CustomerPageResp getCustomers(
+            @RequestParam(required = false) Boolean isOnlyActive,
+            @RequestParam(required = false) Integer page
+    ) {
+        return customerService.findByParams(isOnlyActive, page);
     }
 /*
 	@PostMapping

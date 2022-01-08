@@ -32,7 +32,7 @@ public class UserController {
 
     @GetMapping(GET_USERS_MAPPING)
     @PreAuthorize(GET_AUTHORITIES)
-    public List<User> getUsers(@RequestParam(required = false) String role) throws RoleNotFoundException {
+    public List<User> getUsers(@RequestParam(required = false) String role) {
         return userService.getUsers(role);
     }
 

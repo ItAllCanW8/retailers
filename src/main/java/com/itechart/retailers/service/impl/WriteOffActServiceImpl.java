@@ -58,7 +58,7 @@ public class WriteOffActServiceImpl implements WriteOffActService {
             LocationItem locationItem = locationItems.stream()
                     .filter(li -> itemUpc.equals(li.getItem().getUpc()))
                     .findAny()
-                    .orElse(null);
+                    .orElseThrow();
 
             int storedAmount = locationItem.getAmount();
             int writtenOffAmount = writtenOffItem.getAmount();
@@ -104,8 +104,7 @@ public class WriteOffActServiceImpl implements WriteOffActService {
                 LocationItem locationItem = locationItems.stream()
                         .filter(li -> writtenOffItem.getItem().getId().equals(li.getItem().getId()))
                         .findAny()
-                        .orElse(null);
-// TODO:                       .orElseThrow(() -> new UndefinedItemException());
+                        .orElseThrow();
 
                 int itemAmount = writtenOffItem.getAmount();
                 totalItemAmount += itemAmount;

@@ -5,6 +5,7 @@ import com.itechart.retailers.model.entity.Supplier;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.service.exception.LocationIdentifierAlreadyExists;
+import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 public interface AdminService {
 
-    boolean createLocation(Location location) throws LocationIdentifierAlreadyExists;
+    Location createLocation(Location location);
 
     void deleteLocation(Long id);
 
@@ -20,7 +21,7 @@ public interface AdminService {
 
     List<UserView> getUsers();
 
-    boolean createUser(User user) throws MailIsAlreadyInUse;
+    User createUser(User user) throws LocationNotFoundException;
 
     void updateUserStatus(Long id, boolean isActive);
 

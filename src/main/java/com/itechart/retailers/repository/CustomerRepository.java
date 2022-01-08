@@ -1,10 +1,10 @@
 package com.itechart.retailers.repository;
 
 import com.itechart.retailers.model.entity.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
@@ -14,8 +14,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     //Optional<Customer> findByAdminEmail(String email);
 
-    List<Customer> findByOrderByIdDesc();
+    Page<Customer> findByOrderByIdDesc(Pageable pageable);
 
-    List<Customer> findByIsActiveOrderByIdDesc(Boolean isActive);
+    Page<Customer> findByIsActiveOrderByIdDesc(Boolean isActive, Pageable pageable);
 
 }

@@ -19,7 +19,7 @@ export class ControlButtons extends Component {
               name="radioOption"
               id="inlineRadio1"
               value="All"
-              checked={this.props.radioOption === 'All'}
+              checked={this.props.onlyActive === null}
               onChange={this.props.onChange}
             />
             <label className="form-check-label" htmlFor="inlineRadio1">
@@ -33,7 +33,7 @@ export class ControlButtons extends Component {
               name="radioOption"
               id="inlineRadio2"
               value="Only active"
-              checked={this.props.radioOption === 'Only active'}
+              checked={this.props.onlyActive === true}
               onChange={this.props.onChange}
             />
             <label className="form-check-label" htmlFor="inlineRadio2">
@@ -47,7 +47,7 @@ export class ControlButtons extends Component {
               name="radioOption"
               id="inlineRadio3"
               value="Only inactive"
-              checked={this.props.radioOption === 'Only inactive'}
+              checked={this.props.onlyActive === false}
               onChange={this.props.onChange}
             />
             <label className="form-check-label" htmlFor="inlineRadio3">

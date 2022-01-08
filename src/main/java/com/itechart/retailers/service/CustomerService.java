@@ -1,14 +1,13 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Customer;
-
-import java.util.List;
+import com.itechart.retailers.model.payload.response.CustomerPageResp;
 
 public interface CustomerService {
 
     Customer save(Customer customer);
 
-    List<Customer> findByParams(Boolean isOnlyActive);
+    CustomerPageResp findByParams(Boolean isOnlyActive, Integer page);
 
     Customer getById(Long id);
 

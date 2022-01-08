@@ -9,6 +9,7 @@ import { CustomerInnerModal } from './CustomerInnerModal';
 import Modal from '../common/Modal';
 import Util from '../../service/Util';
 import AuthService from '../../service/AuthService';
+import Pagination from '../common/Pagination';
 
 class SystemAdmin extends Component {
   constructor(props) {
@@ -16,9 +17,12 @@ class SystemAdmin extends Component {
     this.modalRef = createRef();
     this.toastRef = createRef();
     this.state = {
+      params: {
+        page: 0,
+        onlyActive: null
+      },
       name: '',
       email: '',
-      radioOption: 'All',
       isFetching: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -32,19 +36,12 @@ class SystemAdmin extends Component {
     this.updateCustomers();
   }
 
-  updateCustomers(params) {
-    axios.get('system-admin', { params: params }).then(
+  updateCustomers() {
+    axios.get('system-admin', { params: this.state.params }).then(
       (response) => {
         this.setState({
           ...this.state,
           content: response.data,
-          isFetching: false,
-        });
-      },
-      (error) => {
-        this.setState({
-          ...this.state,
-          content: error.response.data.message,
           isFetching: false,
         });
       }
@@ -88,11 +85,20 @@ class SystemAdmin extends Component {
   radioChange = (event) => {
     const value = event.target.value;
     this.setState({
-      radioOption: value,
-    });
-    this.updateCustomers({
-      isOnlyActive: value === 'Only active' || (value === 'All' && null),
-    });
+      params: {
+        ...this.state.params,
+        onlyActive: value === 'Only active' || (value === 'All' && null)
+      }
+    }, () => this.updateCustomers());
+  };
+
+  toPage = (page) => {
+    this.setState({
+      params: {
+        ...this.state.params,
+        page: page
+      }
+    }, () => this.updateCustomers());
   };
 
   render() {
@@ -107,18 +113,24 @@ class SystemAdmin extends Component {
           message={this.state.message}
           ref={this.toastRef}
         />
-        <ControlButtons
-          onClick={this.openModal}
-          radioOption={this.state.radioOption}
-          onChange={this.radioChange}
-        />
         <Modal
           ref={this.modalRef}
           submit={this.submit}
         >
           <CustomerInnerModal name={this.state.name} email={this.state.email} onChange={this.handleChange}/>
         </Modal>
-        {!this.state.isFetching && <Customers content={this.state.content} />}
+        <ControlButtons
+          onClick={this.openModal}
+          onlyActive={this.state.params.onlyActive}
+          onChange={this.radioChange}
+        />
+
+        {!this.state.isFetching && <Customers content={this.state.content && this.state.content.customers} />}
+        <Pagination
+          currentPage={this.state.params.page}
+          totalPages={this.state.content && this.state.content.totalPages}
+          toPage={this.toPage}
+        />
       </div>
     );
   }
