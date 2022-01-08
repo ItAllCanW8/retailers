@@ -20,27 +20,21 @@ import static com.itechart.retailers.security.constant.Authority.DEFAULT_AUTHORI
 @RequiredArgsConstructor
 public class ProfileController {
 
-    public static final String AUTHORITIES = "hasAuthority('" + DEFAULT_AUTHORITY + "')";
+	public static final String AUTHORITIES = "hasAuthority('" + DEFAULT_AUTHORITY + "')";
 
-    private final UserService userService;
+	private final UserService userService;
 
-    @GetMapping("/profile")
-    @PreAuthorize(AUTHORITIES)
-    public User getProfile() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.getByEmail(email).get();
-    }
+	@GetMapping("/profile")
+	@PreAuthorize(AUTHORITIES)
+	public User getProfile() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.getByEmail(email).get();
+	}
 
-    @PutMapping("/profile")
-    @PreAuthorize(AUTHORITIES)
-    public ResponseEntity<?> updateProfile(@RequestBody ProfileReq profileReq) {
-        try {
-            userService.update(profileReq.getUser(), profileReq.getCurrentPassword(), profileReq.getNewPassword());
-        } catch (IncorrectPasswordException e) {
-            return ResponseEntity.badRequest().body(new MessageResp(INCORRECT_CURRENT_PASSWORD_MSG));
-        } catch (EmptyPasswordException e) {
-            return ResponseEntity.badRequest().body(new MessageResp(EMPTY_PASSWORD_MSG));
-        }
-        return ResponseEntity.ok(new MessageResp(PROFILE_UPDATED_MSG));
-    }
+	@PutMapping("/profile")
+	@PreAuthorize(AUTHORITIES)
+	public ResponseEntity<?> updateProfile(@RequestBody ProfileReq profileReq) throws EmptyPasswordException, IncorrectPasswordException {
+		userService.update(profileReq.getUser(), profileReq.getCurrentPassword(), profileReq.getNewPassword());
+		return ResponseEntity.ok(new MessageResp(PROFILE_UPDATED_MSG));
+	}
 }

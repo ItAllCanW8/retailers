@@ -7,6 +7,7 @@ import com.itechart.retailers.repository.CustomerCategoryRepository;
 import com.itechart.retailers.repository.LocationRepository;
 import com.itechart.retailers.repository.StateTaxRepository;
 import com.itechart.retailers.service.TaxService;
+import com.itechart.retailers.service.exception.CustomerCategoryNotFoundException;
 import com.itechart.retailers.service.exception.IncorrectTaxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,14 @@ public class TaxServiceImpl implements TaxService {
     }
 
     @Override
-    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) {
-        return Optional.of(customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId).get()
-                .getCategoryTax());
+    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) throws CustomerCategoryNotFoundException {
+        Optional<CustomerCategory> optionalCustomerCategory = customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId);
+        if (optionalCustomerCategory.isPresent()) {
+            return Optional.of(optionalCustomerCategory.get()
+                    .getCategoryTax());
+        } else {
+            throw new CustomerCategoryNotFoundException();
+        }
     }
 
     @Override
@@ -62,7 +68,6 @@ public class TaxServiceImpl implements TaxService {
             } else {
                 customerCategoryRepo.updateItemCategoryTax(customerCategory.getId(), categoryTaxRate);
             }
-
         }
     }
 }

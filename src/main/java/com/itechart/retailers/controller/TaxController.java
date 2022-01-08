@@ -24,32 +24,28 @@ import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
 @RequestMapping("/api")
 public class TaxController {
 
-    public static final String PUT_RENTAL_TAXES_MAPPING = "/taxes/rental";
-    private static final String AUTHORITIES = "hasRole('" + DIRECTOR_ROLE + "')";
-    public static final String PUT_CATEGORY_TAXES_MAPPING = "/taxes/category";
+	public static final String PUT_RENTAL_TAXES_MAPPING = "/taxes/rental";
+	private static final String AUTHORITIES = "hasRole('" + DIRECTOR_ROLE + "')";
+	public static final String PUT_CATEGORY_TAXES_MAPPING = "/taxes/category";
 
-    private final TaxService taxService;
+	private final TaxService taxService;
 
-    @PutMapping(PUT_RENTAL_TAXES_MAPPING)
-    @PreAuthorize(AUTHORITIES)
-    public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
-        try {
-            taxService.updateRentalTax(locations);
-            return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
-        } catch (IncorrectTaxException incorrectTaxException) {
-            return ResponseEntity.badRequest().body(new MessageResp(NEGATIVE_TAX_MSG));
-        }
+	@PutMapping(PUT_RENTAL_TAXES_MAPPING)
+	@PreAuthorize(AUTHORITIES)
+	public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
+		try {
+			taxService.updateRentalTax(locations);
+			return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
+		} catch (IncorrectTaxException incorrectTaxException) {
+			return ResponseEntity.badRequest().body(new MessageResp(NEGATIVE_TAX_MSG));
+		}
 
-    }
+	}
 
-    @PutMapping(PUT_CATEGORY_TAXES_MAPPING)
-    @PreAuthorize(AUTHORITIES)
-    public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) {
-        try {
-            taxService.updateItemCategoryTaxes(categoryTaxes);
-            return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
-        } catch (IncorrectTaxException incorrectTaxException) {
-            return ResponseEntity.badRequest().body(NEGATIVE_TAX_MSG);
-        }
-    }
+	@PutMapping(PUT_CATEGORY_TAXES_MAPPING)
+	@PreAuthorize(AUTHORITIES)
+	public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) throws IncorrectTaxException {
+		taxService.updateItemCategoryTaxes(categoryTaxes);
+		return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
+	}
 }

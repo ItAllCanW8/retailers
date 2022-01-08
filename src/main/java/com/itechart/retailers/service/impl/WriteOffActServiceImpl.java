@@ -76,7 +76,6 @@ public class WriteOffActServiceImpl implements WriteOffActService {
             writtenOffItem.setItem(new Item(itemId));
         }
         writeOffItemRepo.saveAll(writtenOffItems);
-
         return writeOffAct;
     }
 

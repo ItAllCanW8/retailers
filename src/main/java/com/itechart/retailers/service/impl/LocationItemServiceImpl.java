@@ -13,12 +13,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LocationItemServiceImpl implements LocationItemService {
-
     private final SecurityContextService securityService;
     private final LocationItemRepository locationItemRepository;
 
     @Override
-    public List<LocationItemResp> getCurrentLocationItems(/*Boolean isAllItemsShown*/) {
+    public List<LocationItemResp> getCurrentLocationItems() {
         List<LocationItem> locationItems = locationItemRepository.findByLocation(securityService.getCurrentLocation());
         return locationItems.stream()
                 .map(this::getLocationItemResp)

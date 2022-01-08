@@ -42,14 +42,14 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.getById(customerId);
         customer.setActive(active);
         customerRepository.save(customer);
-        if (!active) {
-            List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
-            customerUsers.forEach(user -> user.setActive(false));
-            userRepository.saveAll(customerUsers);
-        } else {
+        if (active) {
             User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole("ADMIN"), customerId);
             user.setActive(true);
             userRepository.save(user);
+        } else {
+            List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
+            customerUsers.forEach(user -> user.setActive(false));
+            userRepository.saveAll(customerUsers);
         }
     }
 }

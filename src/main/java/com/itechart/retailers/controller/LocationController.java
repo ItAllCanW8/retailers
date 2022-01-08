@@ -6,6 +6,7 @@ import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.LocationService;
+import com.itechart.retailers.service.exception.LocationIdentifierAlreadyExists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,47 +24,47 @@ import static com.itechart.retailers.security.constant.Authority.LOCATION_GET_AU
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class LocationController {
-    public static final String GET_LOCATIONS_MAPPING = "/locations";
-    public static final String POST_LOCATIONS_MAPPING = "/locations";
-    public static final String GET_CURRENT_LOCATION_MAPPING = "/current-location";
-    public static final String DELETE_LOCATION_MAPPING = "/locations/{id}";
-    public static final String GET_LOCATION_AUTHORITY = "hasAuthority('" + LOCATION_GET_AUTHORITY + "')";
-    private final String POST_LOCATION_AUTHORITY = "hasRole('" + ADMIN_ROLE + "')";
+	public static final String GET_LOCATIONS_MAPPING = "/locations";
+	public static final String POST_LOCATIONS_MAPPING = "/locations";
+	public static final String GET_CURRENT_LOCATION_MAPPING = "/current-location";
+	public static final String DELETE_LOCATION_MAPPING = "/locations/{id}";
+	public static final String GET_LOCATION_AUTHORITY = "hasAuthority('" + LOCATION_GET_AUTHORITY + "')";
+	private final String POST_LOCATION_AUTHORITY = "hasRole('" + ADMIN_ROLE + "')";
 
-    private final AdminService adminService;
-    private final SecurityContextService securityService;
-    private final LocationService locationService;
+	private final AdminService adminService;
+	private final SecurityContextService securityService;
+	private final LocationService locationService;
 
-    @GetMapping(GET_LOCATIONS_MAPPING)
-    @PreAuthorize(GET_LOCATION_AUTHORITY)
-    public List<Location> getLocations(@RequestParam(required = false) Boolean exceptCurrent) {
-        return locationService.getLocations(exceptCurrent);
-    }
+	@GetMapping(GET_LOCATIONS_MAPPING)
+	@PreAuthorize(GET_LOCATION_AUTHORITY)
+	public List<Location> getLocations(@RequestParam(required = false) Boolean exceptCurrent) {
+		return locationService.getLocations(exceptCurrent);
+	}
 
-    @GetMapping(GET_CURRENT_LOCATION_MAPPING)
-    @PreAuthorize(GET_LOCATION_AUTHORITY)
-    public LocationResp getCurrentLocation() {
-        return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
-    }
+	@GetMapping(GET_CURRENT_LOCATION_MAPPING)
+	@PreAuthorize(GET_LOCATION_AUTHORITY)
+	public LocationResp getCurrentLocation() {
+		return new LocationResp(securityService.getCurrentLocation(), locationService.getCurrentAvailableCapacity());
+	}
 
-    @PostMapping(POST_LOCATIONS_MAPPING)
-    @PreAuthorize(POST_LOCATION_AUTHORITY)
-    public ResponseEntity<?> createLocation(@RequestBody Location location) {
-        adminService.createLocation(location);
-        return ResponseEntity.ok(new MessageResp(LOCATION_ADDED_MSG));
-    }
+	@PostMapping(POST_LOCATIONS_MAPPING)
+	@PreAuthorize(POST_LOCATION_AUTHORITY)
+	public ResponseEntity<?> createLocation(@RequestBody Location location) throws LocationIdentifierAlreadyExists {
+		adminService.createLocation(location);
+		return ResponseEntity.ok(new MessageResp(LOCATION_ADDED_MSG));
+	}
 
-    @DeleteMapping(DELETE_LOCATION_MAPPING)
-    @PreAuthorize(POST_LOCATION_AUTHORITY)
-    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
-        adminService.deleteLocation(id);
-        return ResponseEntity.ok(new MessageResp(LOCATION_DELETED_MSG));
-    }
+	@DeleteMapping(DELETE_LOCATION_MAPPING)
+	@PreAuthorize(POST_LOCATION_AUTHORITY)
+	public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
+		adminService.deleteLocation(id);
+		return ResponseEntity.ok(new MessageResp(LOCATION_DELETED_MSG));
+	}
 
-    @DeleteMapping(POST_LOCATIONS_MAPPING)
-    @PreAuthorize(POST_LOCATION_AUTHORITY)
-    public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
-        adminService.deleteLocations(ids);
-        return ResponseEntity.ok(new MessageResp(LOCATION_DELETED_MSG));
-    }
+	@DeleteMapping(POST_LOCATIONS_MAPPING)
+	@PreAuthorize(POST_LOCATION_AUTHORITY)
+	public ResponseEntity<?> deleteLocations(@RequestBody Set<Long> ids) {
+		adminService.deleteLocations(ids);
+		return ResponseEntity.ok(new MessageResp(LOCATION_DELETED_MSG));
+	}
 }

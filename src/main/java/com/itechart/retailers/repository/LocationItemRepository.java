@@ -15,23 +15,26 @@ import java.util.Optional;
 @Repository
 public interface LocationItemRepository extends JpaRepository<LocationItem, Long> {
 
-    LocationItem getByItemUpcAndLocation(String upc, Location location);
+	LocationItem getByItemUpcAndLocation(String upc, Location location);
 
-    Optional<LocationItem> findLocationItemByItemAndLocation(Item item, Location location);
+	Optional<LocationItem> findLocationItemByItemAndLocation(Item item, Location location);
 
-    List<LocationItem> findByLocation(Location location);
+	List<LocationItem> findByLocation(Location location);
 
-    Optional<LocationItem> getByLocationIdAndItemId(Long locationId, Long itemId);
+	Optional<LocationItem> getByLocationIdAndItemId(Long locationId, Long itemId);
 
-    @Modifying
-    @Query("update LocationItem li set li.amount = :newAmount where li.location.id = :locationId " +
-            "and li.item.id = :itemId")
-    void updateItemAmount(@Param(value = "locationId") Long locationId, @Param(value = "itemId") Long itemId,
-                          @Param(value = "newAmount") Integer newAmount);
+	@Modifying
+	@Query("update LocationItem li set li.amount = :newAmount where li.location.id = :locationId " +
+			"and li.item.id = :itemId")
+	void updateItemAmount(@Param(value = "locationId") Long locationId, @Param(value = "itemId") Long itemId,
+	                      @Param(value = "newAmount") Integer newAmount);
 
-    @Query("select li from LocationItem li where li.location.id = :locId and li.item.upc in :itemUpcs")
-    List<LocationItem> findAllByLocationIdAndItemUpc(@Param("locId") Long locId, @Param("itemUpcs") Iterable<String> itemUpcs);
+	@Query("select li from LocationItem li where li.location.id = :locId and li.item.upc in :itemUpcs")
+	List<LocationItem> findAllByLocationIdAndItemUpc(@Param("locId") Long locId, @Param("itemUpcs") Iterable<String> itemUpcs);
 
-    @Query("select li from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
-    List<LocationItem> findAllByLocationIdAndItemId(@Param("locId") Long locId, @Param("itemIds") Iterable<Long> itemIds);
+	@Query("select li from LocationItem li where li.location.id = :locId and li.item.id in :itemIds")
+	List<LocationItem> findAllByLocationIdAndItemId(@Param("locId") Long locId, @Param("itemIds") Iterable<Long> itemIds);
+
+	Optional<LocationItem> findByLocationAndItemUpc(Location location, String itemUpc);
+
 }

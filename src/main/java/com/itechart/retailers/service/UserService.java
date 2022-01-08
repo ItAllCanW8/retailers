@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
+import com.itechart.retailers.service.exception.RoleNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,6 @@ public interface UserService {
 
     void changeUserStatus(Long customerId, boolean status);
 
-    List<User> getUsers(String roleName);
+    List<User> getUsers(String roleName) throws RoleNotFoundException;
 
 }

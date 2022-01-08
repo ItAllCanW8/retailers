@@ -40,4 +40,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.customer.id = ?1 and u.isActive = ?2")
     List<User> findUsersByCustomerIdAndActive(Long customerId, boolean status);
 
+    Optional<User> findUserByEmailAndCustomerId(String email, Long customerId);
+
 }

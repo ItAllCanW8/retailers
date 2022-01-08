@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
     private final CategoryRepository categoryRepository;
     private final CustomerCategoryRepository customerCategoryRepository;
 
