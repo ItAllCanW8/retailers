@@ -3,16 +3,13 @@ package com.itechart.retailers.service.impl;
 import com.itechart.retailers.model.entity.*;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
-import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.RoleService;
 import com.itechart.retailers.service.exception.UndefinedLocationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,7 +22,7 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceImplTest {
@@ -64,19 +61,7 @@ class AdminServiceImplTest {
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
         verify(locationRepo).save(locationArgumentCaptor.capture());
         assertThat(locationArgumentCaptor.getValue()).isEqualTo(location);
-    }
-
-    @Test
-    void deleteLocation() {
-
-    }
-
-    @Test
-    void deleteLocations() {
-    }
-
-    @Test
-    void getUsers() {
+        verifyNoMoreInteractions(addressRepo, securityService, locationRepo);
     }
 
     @Test
@@ -103,6 +88,7 @@ class AdminServiceImplTest {
         verify(roleService).save(roleStr);
         assertThat(user.getLocation() == null).isTrue();
         verify(userRepo).save(user);
+        verifyNoMoreInteractions(addressRepo, securityService, roleService, userRepo);
     }
 
     @Test
@@ -125,10 +111,7 @@ class AdminServiceImplTest {
         underTest.createUser(user);
         //then
         verify(locationRepo).findLocationByIdentifier(locIdentifier);
-    }
-
-    @Test
-    void updateUserStatus() {
+        verifyNoMoreInteractions(addressRepo, locationRepo);
     }
 
     @Test
@@ -163,13 +146,6 @@ class AdminServiceImplTest {
         verify(supplierRepo).save(supplier);
         verify(warehouseRepo).saveAll(warehouses);
         verify(customerRepo).findById(customerId);
-    }
-
-    @Test
-    void findSuppliers() {
-    }
-
-    @Test
-    void updateSupplierStatus() {
+        verifyNoMoreInteractions(supplierRepo, warehouseRepo, customerRepo, addressRepo, securityService);
     }
 }

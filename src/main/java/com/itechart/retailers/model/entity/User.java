@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 @Builder
@@ -68,5 +69,20 @@ public class User extends Identity {
 
     public User(Long id) {
         this.setId(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return email != null ? email.hashCode() : 0;
     }
 }
