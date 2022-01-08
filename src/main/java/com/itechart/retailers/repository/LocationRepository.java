@@ -2,6 +2,8 @@ package com.itechart.retailers.repository;
 
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Location;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +18,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     List<Location> findLocationsByCustomer(Customer customer);
 
-    List<Location> findLocationsByCustomerId(Long customerId);
+    Page<Location> findLocationsByCustomerId(Long customerId, Pageable pageable);
 
     List<Location> findLocationsByCustomerIdAndIdNot(Long customerId, Long id);
 

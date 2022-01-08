@@ -7,6 +7,7 @@ import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.service.exception.LocationIdentifierAlreadyExists;
 import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
+import com.itechart.retailers.service.exception.UndefinedLocationException;
 
 import java.util.List;
 import java.util.Set;

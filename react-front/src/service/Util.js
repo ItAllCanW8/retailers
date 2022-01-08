@@ -83,6 +83,15 @@ class Util {
       locations: newArray
     });
   };
+
+  toPage = (component, callback, page) => {
+    component.setState({
+      params: {
+        ...component.state.params,
+        page: page
+      }
+    }, callback);
+  };
 }
 
 export default new Util();

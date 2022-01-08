@@ -2,6 +2,7 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResp;
+import com.itechart.retailers.model.payload.response.UserPageResp;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
@@ -10,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.itechart.retailers.controller.constant.Message.STATUSES_UPDATED_MSG;
 import static com.itechart.retailers.controller.constant.Message.USER_CREATED_MSG;
@@ -32,8 +31,11 @@ public class UserController {
 
     @GetMapping(GET_USERS_MAPPING)
     @PreAuthorize(GET_AUTHORITIES)
-    public List<User> getUsers(@RequestParam(required = false) String role) {
-        return userService.getUsers(role);
+    public UserPageResp getUsers(
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Integer page
+    ) {
+        return userService.getUsers(role, page);
     }
 
     @PostMapping(POST_USERS_MAPPING)

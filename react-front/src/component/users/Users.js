@@ -6,6 +6,7 @@ import Util from '../../service/Util';
 import axios from 'axios';
 import { UsersInnerModal } from './UsersInnerModal';
 import AuthService from '../../service/AuthService';
+import Pagination from '../common/Pagination';
 
 class Users extends Component {
   constructor(props) {
@@ -13,6 +14,9 @@ class Users extends Component {
     this.modalRef = createRef();
     this.toastRef = createRef();
     this.state = {
+      params: {
+        page: 0
+      },
       users: [],
       ids: [],
       locationIds: [],
@@ -46,10 +50,10 @@ class Users extends Component {
   }
 
   updateUsers = () => {
-    axios.get('/users').then(
+    axios.get('/users', { params: this.state.params }).then(
       (response) => {
         this.setState({
-          users: response.data
+          content: response.data
         });
       }
     );
@@ -69,10 +73,15 @@ class Users extends Component {
   };
 
   changeUserStatus = (id) => {
-    let map = this.state.users.map(user =>
+    let map = this.state.content.users.map(user =>
       user.id === id ? {...user, active: !user.active} : user
     );
-    this.setState({ users: map });
+    this.setState({
+      content: {
+        ...this.state.content,
+        users: map
+      }
+    });
     axios.put('/users/' + id, map.find(user => user.id === id).active, {
       headers: {
         'Content-Type': 'application/json',
@@ -131,7 +140,7 @@ class Users extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.state.users && this.state.users.map((user) => (
+          {this.state.content && this.state.content.users && this.state.content.users.map((user) => (
             <tr key={user.id}>
               <th scope='row'>
                 {user.role.role !== 'ADMIN' && <div className='form-check form-switch'>
@@ -160,6 +169,11 @@ class Users extends Component {
           ))}
           </tbody>
         </table>
+        <Pagination
+          currentPage={this.state.params.page}
+          totalPages={this.state.content && this.state.content.totalPages}
+          toPage={(page) => Util.toPage(this, this.updateUsers, page)}
+        />
       </div>
     );
   }

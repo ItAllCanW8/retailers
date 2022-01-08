@@ -4,6 +4,8 @@ import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.entity.projection.UserView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,6 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findUsersByRoleAndCustomer(Role role, Customer customer);
 
     List<User> findUsersByCustomerId(Long id);
+
+    Page<User> findUsersByCustomerId(Long id, Pageable pageable);
 
     List<UserView> findUserViewsByCustomerId(Long id);
 

@@ -3,6 +3,7 @@ package com.itechart.retailers.service.impl;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.response.UserPageResp;
 import com.itechart.retailers.repository.CustomerRepository;
 import com.itechart.retailers.repository.RoleRepository;
 import com.itechart.retailers.repository.UserRepository;
@@ -12,6 +13,9 @@ import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
 import com.itechart.retailers.service.exception.RoleNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,9 @@ public class UserServiceImpl implements UserService {
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final SecurityContextService securityService;
+
+    @Value("${pagination.pageSize}")
+    private Integer pageSize;
 
 	@Override
 	public List<User> findAll() {
@@ -83,45 +90,35 @@ public class UserServiceImpl implements UserService {
 		return userRepository.existsByEmail(email);
 	}
 
-	@Override
-	public List<User> findUsersByCustomerId(Long customerId) {
-		return userRepository.findUsersByCustomerId(customerId);
-	}
+    @Override
+    public User getByRoleAndCustomerId(Role role, Long customerId) {
+        return userRepository.getByRoleAndCustomerId(role, customerId);
+    }
 
-	@Override
-	public User getByRoleAndCustomerId(Role role, Long customerId) {
-		return userRepository.getByRoleAndCustomerId(role, customerId);
-	}
+    @Override
+    public void changeUserStatus(Long customerId, boolean status) {
+        Customer customer = customerRepository.getById(customerId);
+        customer.setActive(status);
+        customerRepository.save(customer);
 
-	@Override
-	public void changeUserStatus(Long customerId, boolean status) {
-		Customer customer = customerRepository.getById(customerId);
-		customer.setActive(status);
-		customerRepository.save(customer);
-		if (status) {
-			Role role = roleRepository.getByRole("ADMIN");
-			User user = userRepository.getByRoleAndCustomerId(role, customerId);
-			user.setActive(true);
-			userRepository.save(user);
-		} else {
-			List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
-			customerUsers.forEach(user -> user.setActive(false));
-			userRepository.saveAll(customerUsers);
-		}
-	}
+        if (status) {
+            Role role = roleRepository.getByRole("ADMIN");
+            User user = userRepository.getByRoleAndCustomerId(role, customerId);
+            user.setActive(true);
+            userRepository.save(user);
+        } else {
+            List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
+            customerUsers.forEach(user -> user.setActive(false));
+            userRepository.saveAll(customerUsers);
+        }
+    }
 
-	@Override
-	public List<User> getUsers(String roleName) throws RoleNotFoundException {
-		if (roleName == null) {
-			return userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId());
-		}
-		Optional<Role> optionalRole = roleRepository.findByRole(roleName);
-		if (optionalRole.isPresent()) {
-			Role role = optionalRole.get();
-			return userRepository.findUsersByRoleAndCustomer(role, securityService.getCurrentCustomer());
-
-		} else {
-			throw new RoleNotFoundException();
-		}
-	}
+    @Override
+    public UserPageResp getUsers(String roleName, Integer page) {
+        if (roleName == null) {
+            Page<User> users = userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+            return new UserPageResp(users.getContent(), users.getTotalPages());
+        }
+        return new UserPageResp(userRepository.findUsersByRoleAndCustomer(roleRepository.findByRole(roleName).get(), securityService.getCurrentCustomer()), null);
+    }
 }

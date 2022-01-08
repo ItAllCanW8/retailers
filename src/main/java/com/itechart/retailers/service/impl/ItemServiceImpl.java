@@ -4,11 +4,15 @@ package com.itechart.retailers.service.impl;
 import com.itechart.retailers.model.entity.Category;
 import com.itechart.retailers.model.entity.Customer;
 import com.itechart.retailers.model.entity.Item;
+import com.itechart.retailers.model.payload.response.ItemPageResp;
 import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,9 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CategoryService categoryService;
     private final SecurityContextService securityService;
+
+    @Value("${pagination.pageSize}")
+    private Integer pageSize;
 
     @Override
     public List<Item> findAll() {
@@ -48,8 +55,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findItemsByCustomerId() {
-        return itemRepository.findItemsByCustomerId(securityService.getCurrentCustomerId());
+    public ItemPageResp findItemsByCustomerId(Integer page) {
+        Page<Item> items = itemRepository.findItemsByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+        return new ItemPageResp(items.getContent(), items.getTotalPages());
     }
 
     @Override

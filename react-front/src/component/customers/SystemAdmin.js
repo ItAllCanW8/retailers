@@ -92,15 +92,6 @@ class SystemAdmin extends Component {
     }, () => this.updateCustomers());
   };
 
-  toPage = (page) => {
-    this.setState({
-      params: {
-        ...this.state.params,
-        page: page
-      }
-    }, () => this.updateCustomers());
-  };
-
   render() {
     if (!AuthService.currentUserHasRole('ROLE_SYSTEM_ADMIN')) {
       return <Redirect to={"/"} />;
@@ -129,7 +120,7 @@ class SystemAdmin extends Component {
         <Pagination
           currentPage={this.state.params.page}
           totalPages={this.state.content && this.state.content.totalPages}
-          toPage={this.toPage}
+          toPage={(page) => Util.toPage(this, this.updateCustomers, page)}
         />
       </div>
     );

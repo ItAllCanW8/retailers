@@ -1,6 +1,7 @@
 package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.payload.response.LocationPageResp;
 import com.itechart.retailers.model.payload.response.LocationResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 import static com.itechart.retailers.controller.constant.Message.LOCATION_ADDED_MSG;
@@ -35,11 +35,14 @@ public class LocationController {
 	private final SecurityContextService securityService;
 	private final LocationService locationService;
 
-	@GetMapping(GET_LOCATIONS_MAPPING)
-	@PreAuthorize(GET_LOCATION_AUTHORITY)
-	public List<Location> getLocations(@RequestParam(required = false) Boolean exceptCurrent) {
-		return locationService.getLocations(exceptCurrent);
-	}
+    @GetMapping(GET_LOCATIONS_MAPPING)
+    @PreAuthorize(GET_LOCATION_AUTHORITY)
+    public LocationPageResp getLocations(
+            @RequestParam(required = false) Boolean exceptCurrent,
+            @RequestParam(required = false) Integer page
+    ) {
+        return locationService.getLocations(exceptCurrent, page);
+    }
 
 	@GetMapping(GET_CURRENT_LOCATION_MAPPING)
 	@PreAuthorize(GET_LOCATION_AUTHORITY)
