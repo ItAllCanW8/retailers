@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
@@ -55,6 +56,7 @@ class CategoryServiceImplTest {
         ArgumentCaptor<CustomerCategory> customerCategoryArgumentCaptor =
                 ArgumentCaptor.forClass(CustomerCategory.class);
         verify(customerCategoryRepository).save(customerCategoryArgumentCaptor.capture());
+        verifyNoMoreInteractions(customerCategoryRepository, categoryRepository);
     }
 
     @Test
@@ -74,6 +76,7 @@ class CategoryServiceImplTest {
         ArgumentCaptor<CustomerCategory> customerCategoryArgumentCaptor =
                 ArgumentCaptor.forClass(CustomerCategory.class);
         verify(customerCategoryRepository).save(customerCategoryArgumentCaptor.capture());
+        verifyNoMoreInteractions(customerCategoryRepository, categoryRepository);
     }
 
     @Test
@@ -86,5 +89,6 @@ class CategoryServiceImplTest {
         ArgumentCaptor<Long> idArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(customerCategoryRepository).findAllByCustomerId(idArgumentCaptor.capture());
         assertThat(idArgumentCaptor.getValue()).isEqualTo(customerId);
+        verifyNoMoreInteractions(customerCategoryRepository);
     }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -55,4 +56,33 @@ public class Application extends Identity {
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<ApplicationItem> itemAssoc;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Application that = (Application) o;
+
+        if (!Objects.equals(applicationNumber, that.applicationNumber))
+            return false;
+        if (!Objects.equals(status, that.status)) return false;
+        if (!Objects.equals(srcLocation, that.srcLocation)) return false;
+        if (!Objects.equals(destLocation, that.destLocation)) return false;
+        if (!Objects.equals(createdBy, that.createdBy)) return false;
+        if (!Objects.equals(lastUpdBy, that.lastUpdBy)) return false;
+        return Objects.equals(customer, that.customer);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = applicationNumber != null ? applicationNumber.hashCode() : 0;
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (srcLocation != null ? srcLocation.hashCode() : 0);
+        result = 31 * result + (destLocation != null ? destLocation.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (lastUpdBy != null ? lastUpdBy.hashCode() : 0);
+        result = 31 * result + (customer != null ? customer.hashCode() : 0);
+        return result;
+    }
 }
