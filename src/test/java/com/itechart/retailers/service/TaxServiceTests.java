@@ -1,6 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.enumeration.StateCode;
+import com.itechart.retailers.service.exception.CustomerCategoryNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,7 @@ public class TaxServiceTests {
     }
 
     @Test
-    void loadCategoryTax() {
+    void loadCategoryTax() throws CustomerCategoryNotFoundException {
         System.out.println(taxService.loadItemCategoryTax(1L, 1L).get());
     }
 

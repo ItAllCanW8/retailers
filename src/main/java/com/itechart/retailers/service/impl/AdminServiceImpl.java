@@ -33,14 +33,14 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	@Transactional
-	public boolean createLocation(Location location) throws LocationIdentifierAlreadyExists {
+	public Location createLocation(Location location) throws LocationIdentifierAlreadyExists {
 		addressRepo.save(location.getAddress());
 		Customer customer = new Customer(securityService.getCurrentCustomerId());
 		if (locationRepo.findLocationByIdentifierAndCustomerId(location.getIdentifier(), customer.getId()).isPresent()) {
 			throw new LocationIdentifierAlreadyExists();
 		}
 		location.setCustomer(customer);
-		return locationRepo.save(location).getId() != null;
+		return locationRepo.save(location);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public User createUser(User user) throws LocationNotFoundException {
+    public User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse {
         // TODO: Password generation
 	    Customer customer = new Customer(securityService.getCurrentCustomerId());
 	    user.setCustomer(customer);

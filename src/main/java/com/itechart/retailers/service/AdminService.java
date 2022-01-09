@@ -13,7 +13,7 @@ import java.util.Set;
 
 public interface AdminService {
 
-    Location createLocation(Location location);
+    Location createLocation(Location location) throws LocationIdentifierAlreadyExists;
 
     void deleteLocation(Long id);
 
@@ -21,11 +21,11 @@ public interface AdminService {
 
     List<UserView> getUsers();
 
-    User createUser(User user) throws LocationNotFoundException;
+    User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse;
 
     void updateUserStatus(Long id, boolean isActive);
 
-    boolean createSupplier(Supplier supplier);
+    Supplier createSupplier(Supplier supplier);
 
     List<Supplier> findSuppliers();
 
