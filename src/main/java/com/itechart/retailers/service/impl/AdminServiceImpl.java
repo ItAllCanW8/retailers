@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
+
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -32,14 +34,14 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	@Transactional
-	public boolean createLocation(Location location) throws LocationIdentifierAlreadyExists {
+	public Location createLocation(Location location) throws LocationIdentifierAlreadyExists {
 		addressRepo.save(location.getAddress());
 		Customer customer = new Customer(securityService.getCurrentCustomerId());
 		if (locationRepo.findLocationByIdentifierAndCustomerId(location.getIdentifier(), customer.getId()).isPresent()) {
 			throw new LocationIdentifierAlreadyExists();
 		}
 		location.setCustomer(customer);
-		return locationRepo.save(location).getId() != null;
+		return locationRepo.save(location);
 	}
 
 	@Override
@@ -70,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
         user.setAddress(new Address(addressId));
         String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
-        if (roleStr.equals("DIRECTOR")) {
+        if (DIRECTOR_ROLE.equals(roleStr)) {
             user.setLocation(null);
         } else {
             String locationIdentifier = user.getLocation().getIdentifier();

@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface AdminService {
 
-    boolean createLocation(Location location) throws LocationIdentifierAlreadyExists;
+    Location createLocation(Location location) throws LocationIdentifierAlreadyExists;
 
     void deleteLocation(Long id);
 

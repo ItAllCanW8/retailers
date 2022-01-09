@@ -5,7 +5,7 @@ import com.itechart.retailers.model.payload.request.ApplicationItemReq;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
-import com.itechart.retailers.service.exception.UndefinedItemException;
+import com.itechart.retailers.service.exception.ItemNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.itechart.retailers.controller.constant.Message.ITEM_NOT_FOUND_MSG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -42,7 +43,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    void shouldSaveApplication() throws UndefinedItemException {
+    void shouldSaveApplication() throws ItemNotFoundException {
         //given
         ApplicationReq applicationReq = new ApplicationReq();
         applicationReq.setApplicationNumber("app");
@@ -93,7 +94,7 @@ class ApplicationServiceImplTest {
         underTest.save(applicationReq);
         //then
         for (ApplicationItemReq applicationItemReq : applicationReq.getItems()) {
-            verify(itemRepository, times(2)).findItemByUpc(applicationItemReq.getUpc());
+            verify(itemRepository, times(3)).findItemByUpc(applicationItemReq.getUpc());
         }
         verify(securityService, times(2)).getCurrentLocation();
         verify(securityService).getCurrentCustomerId();
@@ -111,7 +112,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    void shouldThrowUndefinedItemException() throws UndefinedItemException{
+    void shouldItemNotFoundException(){
         //given
         ApplicationReq applicationReq = new ApplicationReq();
         applicationReq.setApplicationNumber("app");
@@ -126,7 +127,8 @@ class ApplicationServiceImplTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.save(applicationReq))
-                .isInstanceOf(UndefinedItemException.class);
+                .isInstanceOf(ItemNotFoundException.class)
+                .hasMessageContaining(ITEM_NOT_FOUND_MSG);
     }
 
     @Test
