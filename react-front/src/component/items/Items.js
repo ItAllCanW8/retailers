@@ -30,6 +30,7 @@ class Items extends Component {
 
 
   componentDidMount() {
+    document.title = "Items";
     this.updateItems();
   }
 
@@ -104,7 +105,7 @@ class Items extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('item:get')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
 
     return (

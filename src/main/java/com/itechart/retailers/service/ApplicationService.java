@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.model.payload.request.DispatchItemReq;
+import com.itechart.retailers.model.payload.response.ApplicationPageResp;
 import com.itechart.retailers.service.exception.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface ApplicationService {
 
-    List<Application> getCurrentApplications();
+    ApplicationPageResp getCurrentApplications(Integer page);
 
     @Transactional
     void save(ApplicationReq applicationDto) throws ItemNotFoundException, ApplicationAlreadyExists;
@@ -24,7 +25,7 @@ public interface ApplicationService {
 
     List<Application> findApplicationsByDestLocation(Location destLocation);
 
-    Integer getOccupiedCapacity(Long id);
+    Integer getOccupiedCapacity(Long id) throws ApplicationNotFoundException;
 
     void forwardApplication(Long id, String locationIdentifier) throws LocationNotFoundException;
 

@@ -16,6 +16,7 @@ class ShopItems extends Component {
   }
 
   componentDidMount() {
+    document.title = "Shop";
     axios.get('current-location').then(
       (response) => {
         this.setState({
@@ -45,7 +46,7 @@ class ShopItems extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_SHOP_MANAGER')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
     return (
       <div>

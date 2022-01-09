@@ -9,6 +9,7 @@ import NoAvailableSpaceInnerModal from './NoAvailableSpaceInnerModal';
 import ManagerContactsInnerModal from './ManagerContactsInnerModal';
 import ForwardInnerModal from './ForwardInnerModal';
 import AuthService from '../../service/AuthService';
+import Pagination from '../common/Pagination';
 
 class Applications extends Component {
   constructor(props) {
@@ -19,6 +20,9 @@ class Applications extends Component {
     this.noAvailableSpaceModalRef = createRef();
     this.forwardModalRef = createRef();
     this.state = {
+      params: {
+        page: 0
+      },
       currentLocation: {
         location: {},
         availableAmount: 0
@@ -40,6 +44,7 @@ class Applications extends Component {
   }
 
   componentDidMount() {
+    document.title = "Applications";
     axios.get('locations', {
       params: {
         exceptCurrent: true
@@ -47,7 +52,7 @@ class Applications extends Component {
     }).then(
       (response) => {
         this.setState({
-          locationIds: response.data.map(location => location.identifier)
+          locationIds: response.data.locations.map(location => location.identifier)
         });
       }
     );
@@ -58,7 +63,7 @@ class Applications extends Component {
     }).then(
       (response) => {
         this.setState({
-          managers: response.data
+          managers: response.data.users
         });
       }
     );
@@ -73,10 +78,10 @@ class Applications extends Component {
         });
       }
     );
-    axios.get('applications').then(
+    axios.get('applications', { params: this.state.params }).then(
       (response) => {
         this.setState({
-          applications: response.data
+          content: response.data
         });
       }
     );
@@ -169,7 +174,7 @@ class Applications extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('application:get')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
 
     return (
@@ -237,7 +242,7 @@ class Applications extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.state.applications && this.state.applications.map((application) => (
+          {this.state.content && this.state.content.applications && this.state.content.applications.map((application) => (
             <tr key={application.id}>
               <th scope='row'>
                 {application.status === 'STARTED_PROCESSING'
@@ -261,6 +266,11 @@ class Applications extends Component {
           ))}
           </tbody>
         </table>
+        <Pagination
+          currentPage={this.state.params.page}
+          totalPages={this.state.content && this.state.content.totalPages}
+          toPage={(page) => Util.toPage(this, this.updateApplications, page)}
+        />
       </div>
     );
   }

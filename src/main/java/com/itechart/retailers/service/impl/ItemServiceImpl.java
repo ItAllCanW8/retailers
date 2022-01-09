@@ -59,11 +59,13 @@ public class ItemServiceImpl implements ItemService {
 		itemRepository.deleteById(id);
 	}
 
-	@Override
-	public ItemPageResp findItemsByCustomerId(Integer page) {
-		Page<Item> items = itemRepository.findItemsByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
-		return new ItemPageResp(items.getContent(), items.getTotalPages());
-	}
+    @Override
+    public ItemPageResp findItemsByCustomerId(Integer page) {
+        Page<Item> items = itemRepository.findItemsByCustomerId(
+                securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize)
+        );
+        return new ItemPageResp(items.getContent(), items.getTotalPages());
+    }
 
 	@Override
 	public Optional<Item> findItemByUpc(String upc) {

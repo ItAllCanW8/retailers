@@ -30,44 +30,46 @@ public class BillServiceImpl implements BillService {
 	private final BillItemRepository billItemRepo;
 	private final LocationItemRepository locationItemRepo;
 
-	@Override
-	@Transactional(rollbackFor = {ItemAmountException.class, ItemNotFoundException.class})
-	public Bill createBill(Bill bill, Long locationId, Long shopManagerId) throws ItemAmountException, ItemNotFoundException, BillAlreadyExistsException {
-		bill.setRegDateTime(LocalDateTime.now());
-		bill.setLocation(new Location(locationId));
-		bill.setShopManager(new User(shopManagerId));
-		bill = billRepo.save(bill);
+    @Override
+    @Transactional(rollbackFor = {ItemAmountException.class, ItemNotFoundException.class})
+    public Bill createBill(Bill bill, Long locationId, Long shopManagerId)
+            throws ItemAmountException, ItemNotFoundException {
 
-		Optional<Bill> optionalBill = billRepo.findBillByNumber(bill.getNumber());
-		if (optionalBill.isPresent()){
-            throw new BillAlreadyExistsException();
-		}
+        bill.setRegDateTime(LocalDateTime.now());
+        bill.setLocation(new Location(locationId));
+        bill.setShopManager(new User(shopManagerId));
+        bill = billRepo.save(bill);
 
-		List<BillItem> billItems = bill.getItemAssoc();
-		List<String> itemUpcs = new ArrayList<>();
-		billItems.forEach(billItem -> itemUpcs.add(billItem.getItem().getUpc()));
+        List<BillItem> billItems = bill.getItemAssoc();
+        List<String> itemUpcs = new ArrayList<>();
+        billItems.forEach(billItem -> itemUpcs.add(billItem.getItem().getUpc()));
 
-		List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
-		for (BillItem billItem : billItems) {
-			String itemUpc = billItem.getItem().getUpc();
-			LocationItem locationItem = locationItems.stream()
-					.filter(li -> itemUpc.equals(li.getItem().getUpc()))
-					.findAny()
-					.orElseThrow(ItemNotFoundException::new);
-			int locationItemAmount = locationItem.getAmount();
-			int billItemAmount = billItem.getAmount();
-			if (locationItemAmount < billItemAmount) {
-				throw new ItemAmountException(BILL_ITEM_AMOUNT_EXCEPTION_MSG);
-			}
-			locationItem.setAmount(locationItemAmount - billItemAmount);
-			locationItemRepo.save(locationItem);
-			billItem.setPrice(locationItem.getPrice());
-			billItem.setBill(bill);
-			billItem.setItem(new Item(locationItem.getItem().getId()));
-		}
-		billItemRepo.saveAll(billItems);
-		return bill;
-	}
+        List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
+        createBillItems(bill, billItems, locationItems);
+        billItemRepo.saveAll(billItems);
+        return bill;
+    }
+
+    private void createBillItems(Bill bill, List<BillItem> billItems, List<LocationItem> locationItems)
+            throws ItemNotFoundException, ItemAmountException {
+        for (BillItem billItem : billItems) {
+            String itemUpc = billItem.getItem().getUpc();
+            LocationItem locationItem = locationItems.stream()
+                    .filter(li -> itemUpc.equals(li.getItem().getUpc()))
+                    .findAny()
+                    .orElseThrow(ItemNotFoundException::new);
+            int locationItemAmount = locationItem.getAmount();
+            int billItemAmount = billItem.getAmount();
+            if (locationItemAmount < billItemAmount) {
+                throw new ItemAmountException(BILL_ITEM_AMOUNT_EXCEPTION_MSG);
+            }
+            locationItem.setAmount(locationItemAmount - billItemAmount);
+            locationItemRepo.save(locationItem);
+            billItem.setPrice(locationItem.getPrice());
+            billItem.setBill(bill);
+            billItem.setItem(new Item(locationItem.getItem().getId()));
+        }
+    }
 
 	@Override
 	public List<BillDto> loadShopBills(Long shopId) {

@@ -22,6 +22,7 @@ public class Message {
 	public static final String CUSTOMER_REGISTERED_MSG = "Customer registered successfully!";
 	public static final String TAXES_UPDATED_MSG = "Taxes updated.";
 	public static final String NEGATIVE_TAX_MSG = "Tax must not be negative";
+	public static final String USER_ROLE_NOT_APPLICABLE_TO_LOCATION_MSG = "Selected user role can not be applied to selected location.";
 	public static final String USER_CREATED_MSG = "User created.";
 	public static final String STATUSES_UPDATED_MSG = "Statuses updated.";
 	public static final String WRITE_OFF_ACT_CREATED_MSG = "Write-off act created.";

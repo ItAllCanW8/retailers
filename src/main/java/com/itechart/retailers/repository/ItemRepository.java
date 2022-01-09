@@ -17,9 +17,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findItemByUpc(String upc);
 
-//    @Query("select i.id from Item i where i.upc in :upcs")
-//    List<Long> findItemIdsByUpc(@Param("upcs") Iterable<String> upcs);
-
     @Query("select i from Item i where i.upc in :upcs")
     List<Item> findAllByUpc(Iterable<String> upcs);
 }

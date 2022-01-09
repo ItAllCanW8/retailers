@@ -30,6 +30,7 @@ class SystemAdmin extends Component {
   }
 
   componentDidMount() {
+    document.title = "Customers";
     Util.redirectIfDoesntHaveRole(this, 'ROLE_SYSTEM_ADMIN');
 
     this.setState({ ...this.state, isFetching: true });
@@ -94,7 +95,7 @@ class SystemAdmin extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_SYSTEM_ADMIN')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
 
     return (

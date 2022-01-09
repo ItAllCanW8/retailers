@@ -37,8 +37,8 @@ public class ApplicationController {
 
 	@GetMapping(GET_APPLICATIONS_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public List<Application> getCurrentApplications() {
-		return applicationService.getCurrentApplications();
+	public ApplicationPageResp getCurrentApplications(@RequestParam(required = false) Integer page) {
+		return applicationService.getCurrentApplications(page);
 	}
 
 	@GetMapping(GET_APPLICATION_BY_ID_MAPPING)
@@ -63,14 +63,16 @@ public class ApplicationController {
 
 	@PutMapping(PUT_ACCEPT_APPLICATION_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> acceptApplication(@PathVariable Long id) throws CustomerCategoryNotFoundException, ApplicationNotFoundException, ItemAmountException, TaxesNotDefinedException {
+	public ResponseEntity<?> acceptApplication(@PathVariable Long id)
+			throws CustomerCategoryNotFoundException, ApplicationNotFoundException, ItemAmountException, TaxesNotDefinedException {
 		locationService.acceptApplication(id);
 		return ResponseEntity.ok(new MessageResp(APPLICATION_ACCEPTED_MSG));
 	}
 
 	@PutMapping(PUT_FORWARD_APPLICATION_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> forwardApplication(@PathVariable Long id, @RequestBody String locationIdentifier) throws LocationNotFoundException {
+	public ResponseEntity<?> forwardApplication(@PathVariable Long id, @RequestBody String locationIdentifier)
+			throws LocationNotFoundException {
 		applicationService.forwardApplication(id, locationIdentifier);
 		return ResponseEntity.ok(new MessageResp(SUCCESS_FORWARD_MSG));
 	}

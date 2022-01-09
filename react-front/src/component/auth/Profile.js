@@ -38,6 +38,7 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    document.title = "Profile";
     const currentUser = AuthService.getCurrentUser();
     if (!currentUser) {
       this.setState({ redirect: '/' });

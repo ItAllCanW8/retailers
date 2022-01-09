@@ -19,6 +19,7 @@ class RentalTaxes extends Component {
   }
 
   componentDidMount() {
+    document.title = "Rental taxes";
     this.updateTaxes();
   }
 
@@ -26,7 +27,7 @@ class RentalTaxes extends Component {
     axios.get('/locations').then(
       (response) => {
         this.setState({
-          locations: response.data.filter(location => location.type === 'OFFLINE_SHOP')
+          locations: response.data.locations.filter(location => location.type === 'OFFLINE_SHOP')
         }, () => console.log(this.state));
       }
     );
@@ -46,7 +47,7 @@ class RentalTaxes extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_DIRECTOR')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
     return (
       <div>

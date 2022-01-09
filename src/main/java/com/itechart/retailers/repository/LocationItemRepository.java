@@ -36,5 +36,4 @@ public interface LocationItemRepository extends JpaRepository<LocationItem, Long
 	List<LocationItem> findAllByLocationIdAndItemId(@Param("locId") Long locId, @Param("itemIds") Iterable<Long> itemIds);
 
 	Optional<LocationItem> findByLocationAndItemUpc(Location location, String itemUpc);
-
 }

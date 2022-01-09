@@ -39,6 +39,7 @@ class Bills extends Component {
   }
 
   componentDidMount() {
+    document.title = "Bills";
     this.updateBills();
   }
 
@@ -127,7 +128,7 @@ class Bills extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_SHOP_MANAGER')) {
-      return <Redirect to={'/'} />;
+      return <Redirect to={'/profile'} />;
     }
     return (
       <div>
@@ -182,7 +183,7 @@ class Bills extends Component {
                 </th>
                 <td>{bill.number}</td>
                 <td>{bill.totalItemAmount}</td>
-                <td>{bill.totalItemSum}</td>
+                <td>{Number((bill.totalItemSum).toFixed(2))}</td>
               </tr>
             );
           })}

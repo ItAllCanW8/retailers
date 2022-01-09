@@ -34,6 +34,7 @@ class WriteOffActs extends Component {
   }
 
   componentDidMount() {
+    document.title = "Write off acts";
     this.updateWriteOffActs();
   }
 

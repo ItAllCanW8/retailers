@@ -1,6 +1,6 @@
 package com.itechart.retailers.security.config;
 
-import com.itechart.retailers.security.jwt.JwtAuthenticationFilter;
+import com.itechart.retailers.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 

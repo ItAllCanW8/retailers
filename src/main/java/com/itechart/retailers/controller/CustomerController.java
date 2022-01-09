@@ -23,7 +23,7 @@ import static com.itechart.retailers.security.constant.Authority.SYSTEM_ADMIN_RO
 @RestController
 @RequestMapping("/api/system-admin")
 @RequiredArgsConstructor
-public class SystemAdminController {
+public class CustomerController {
 
     private static final String AUTHORITIES = "hasRole('" + SYSTEM_ADMIN_ROLE + "')";
 
