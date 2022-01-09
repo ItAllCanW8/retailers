@@ -3,6 +3,7 @@ package com.itechart.retailers.controller;
 import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.model.payload.request.DispatchItemReq;
+import com.itechart.retailers.model.payload.response.ApplicationPageResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.LocationService;

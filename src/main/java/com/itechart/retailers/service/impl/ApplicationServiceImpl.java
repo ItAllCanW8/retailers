@@ -129,14 +129,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	@Transactional
 	public void dispatchItems(DispatchItemReq dispatchItemReq)
-			throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException {
+			throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException, ApplicationAlreadyExists {
 
 		validateDispatchRequest(dispatchItemReq);
 		removeItemsFromLocation(dispatchItemReq);
 		createApplication(dispatchItemReq);
 	}
 
-	private void createApplication(DispatchItemReq dispatchItemReq) throws LocationNotFoundException {
+	private void createApplication(DispatchItemReq dispatchItemReq) throws LocationNotFoundException, ApplicationAlreadyExists, ItemAmountException, DispatchItemException, ItemNotFoundException {
 		Location location = locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation())
 				.orElseThrow(LocationNotFoundException::new);
 		Application application = createApplication(dispatchItemReq.getApplicationNumber(), location);

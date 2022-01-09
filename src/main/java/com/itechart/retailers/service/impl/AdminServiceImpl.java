@@ -64,11 +64,6 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<UserView> getUsers() {
-		return null;
-	}
-
-	@Override
     @Transactional
     public User createUser(User user)
             throws LocationNotFoundException, MailIsAlreadyInUse, UserRoleNotApplicableToLocation {
