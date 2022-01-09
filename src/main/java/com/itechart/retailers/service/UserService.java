@@ -2,16 +2,14 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Role;
 import com.itechart.retailers.model.entity.User;
+import com.itechart.retailers.model.payload.response.UserPageResp;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
 import com.itechart.retailers.service.exception.RoleNotFoundException;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-
-    List<User> findAll();
 
     User save(User user);
 
@@ -27,12 +25,10 @@ public interface UserService {
 
     Boolean existsByEmail(String email);
 
-    List<User> findUsersByCustomerId(Long customerId);
-
     User getByRoleAndCustomerId(Role role, Long customerId);
 
     void changeUserStatus(Long customerId, boolean status);
 
-    List<User> getUsers(String roleName) throws RoleNotFoundException;
+    UserPageResp getUsers(String roleName, Integer page) throws RoleNotFoundException;
 
 }

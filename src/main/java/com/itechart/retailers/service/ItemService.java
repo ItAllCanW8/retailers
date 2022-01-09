@@ -1,6 +1,7 @@
 package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Item;
+import com.itechart.retailers.model.payload.response.ItemPageResp;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public interface ItemService {
 
     void deleteById(Long id);
 
-    List<Item> findItemsByCustomerId();
+    ItemPageResp findItemsByCustomerId(Integer page);
 
     Optional<Item> findItemByUpc(String upc);
 

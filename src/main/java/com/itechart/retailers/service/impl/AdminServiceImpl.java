@@ -1,7 +1,6 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
-import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
@@ -16,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+
+import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
 
 @Service
 @RequiredArgsConstructor
@@ -55,11 +56,6 @@ public class AdminServiceImpl implements AdminService {
 		locationRepo.deleteAllByIdInBatch(ids);
 	}
 
-	@Override
-	public List<UserView> getUsers() {
-		return userRepo.findUserViewsByCustomerId(securityService.getCurrentCustomerId());
-	}
-
     @Override
     @Transactional
     public User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse {
@@ -76,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
         user.setAddress(new Address(addressId));
         String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
-        if (roleStr.equals("DIRECTOR")) {
+        if (DIRECTOR_ROLE.equals(roleStr)) {
             user.setLocation(null);
         } else {
             String locationIdentifier = user.getLocation().getIdentifier();

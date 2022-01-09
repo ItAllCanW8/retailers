@@ -6,6 +6,7 @@ import Toast from '../common/Toast';
 import Modal from '../common/Modal';
 import ItemsInnerModal from './ItemsInnerModal';
 import AuthService from '../../service/AuthService';
+import Pagination from '../common/Pagination';
 
 class Items extends Component {
   constructor(props) {
@@ -13,6 +14,9 @@ class Items extends Component {
     this.modalRef = createRef();
     this.toastRef = createRef();
     this.state = {
+      params: {
+        page: 0
+      },
       items: [],
       ids: [],
       upc: '',
@@ -30,10 +34,10 @@ class Items extends Component {
   }
 
   updateItems = () => {
-    axios.get('/items').then(
+    axios.get('/items', { params: this.state.params }).then(
       (response) => {
         this.setState({
-          items: response.data
+          content: response.data
         });
       }
     );
@@ -91,6 +95,13 @@ class Items extends Component {
     );
   };
 
+  toPage = (page) => {
+    this.setState({
+      ids: []
+    });
+    Util.toPage(this, this.updateItems, page);
+  };
+
   render() {
     if (!AuthService.currentUserHasRole('item:get')) {
       return <Redirect to={"/"} />;
@@ -144,7 +155,7 @@ class Items extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.state.items && this.state.items.map((item) => (
+          {this.state.content && this.state.content.items && this.state.content.items.map((item) => (
             <tr key={item.id}>
               <th scope='row'>
                 <input className='form-check-input' type='checkbox' value={item.id}
@@ -158,6 +169,11 @@ class Items extends Component {
           ))}
           </tbody>
         </table>
+        <Pagination
+          currentPage={this.state.params.page}
+          totalPages={this.state.content && this.state.content.totalPages}
+          toPage={this.toPage}
+        />
       </div>
     );
   }

@@ -38,4 +38,19 @@ public class Customer extends Identity {
     public Customer(Long customerId) {
         this.setId(customerId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Customer customer = (Customer) o;
+
+        return ((Customer) o).getId().equals(customer.getId());
+    }
+
+    @Override
+    public int hashCode(){
+        return this.getId().hashCode();
+    }
 }

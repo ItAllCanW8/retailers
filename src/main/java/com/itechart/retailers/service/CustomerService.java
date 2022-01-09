@@ -7,7 +7,7 @@ public interface CustomerService {
 
     Customer save(Customer customer);
 
-    CustomerPageResp findByParams(Boolean isOnlyActive, Integer page);
+    CustomerPageResp findByParams(Boolean onlyActive, Integer page);
 
     Customer getById(Long id);
 

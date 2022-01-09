@@ -65,10 +65,10 @@ public class SystemAdminController {
     @GetMapping
     @PreAuthorize(AUTHORITIES)
     public CustomerPageResp getCustomers(
-            @RequestParam(required = false) Boolean isOnlyActive,
+            @RequestParam(required = false) Boolean onlyActive,
             @RequestParam(required = false) Integer page
     ) {
-        return customerService.findByParams(isOnlyActive, page);
+        return customerService.findByParams(onlyActive, page);
     }
 /*
 	@PostMapping

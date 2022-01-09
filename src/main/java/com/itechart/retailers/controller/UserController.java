@@ -2,6 +2,7 @@ package com.itechart.retailers.controller;
 
 import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.model.payload.response.MessageResp;
+import com.itechart.retailers.model.payload.response.UserPageResp;
 import com.itechart.retailers.service.AdminService;
 import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.LocationNotFoundException;
@@ -33,8 +34,11 @@ public class UserController {
 
     @GetMapping(GET_USERS_MAPPING)
     @PreAuthorize(GET_AUTHORITIES)
-    public List<User> getUsers(@RequestParam(required = false) String role) throws RoleNotFoundException {
-        return userService.getUsers(role);
+    public UserPageResp getUsers(
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Integer page
+    ) throws RoleNotFoundException {
+        return userService.getUsers(role, page);
     }
 
     @PostMapping(POST_USERS_MAPPING)

@@ -6,6 +6,7 @@ import axios from 'axios';
 import Toast from '../common/Toast';
 import Util from '../../service/Util';
 import AuthService from '../../service/AuthService';
+import Pagination from '../common/Pagination';
 
 class Locations extends Component {
   constructor(props) {
@@ -13,6 +14,9 @@ class Locations extends Component {
     this.modalRef = createRef();
     this.toastRef = createRef();
     this.state = {
+      params: {
+        page: 0
+      },
       locations: [],
       ids: [],
       identifier: '',
@@ -33,10 +37,10 @@ class Locations extends Component {
   }
 
   updateLocations = () => {
-    axios.get('/locations').then(
+    axios.get('/locations', { params: this.state.params }).then(
       (response) => {
         this.setState({
-          locations: response.data
+          content: response.data
         });
       }
     );
@@ -70,7 +74,6 @@ class Locations extends Component {
         ids: array
       });
     }
-
   };
 
   deleteLocations = () => {
@@ -84,6 +87,13 @@ class Locations extends Component {
         this.updateLocations();
       }
     );
+  };
+
+  toPage = (page) => {
+    this.setState({
+      ids: []
+    });
+    Util.toPage(this, this.updateLocations, page);
   };
 
   render() {
@@ -143,7 +153,7 @@ class Locations extends Component {
           </tr>
           </thead>
           <tbody>
-          {this.state.locations && this.state.locations.map((location) => (
+          {this.state.content && this.state.content.locations && this.state.content.locations.map((location) => (
             <tr key={location.id}>
               <th scope='row'>
                 <input className='form-check-input' type='checkbox' value={location.id}
@@ -164,6 +174,11 @@ class Locations extends Component {
           ))}
           </tbody>
         </table>
+        <Pagination
+          currentPage={this.state.params.page}
+          totalPages={this.state.content && this.state.content.totalPages}
+          toPage={this.toPage}
+        />
       </div>
     );
   }

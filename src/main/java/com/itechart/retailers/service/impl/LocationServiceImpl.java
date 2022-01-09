@@ -1,7 +1,8 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.enumeration.StateCode;
 import com.itechart.retailers.model.entity.*;
+import com.itechart.retailers.model.enumeration.StateCode;
+import com.itechart.retailers.model.payload.response.LocationPageResp;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
@@ -11,11 +12,13 @@ import com.itechart.retailers.service.exception.CustomerCategoryNotFoundExceptio
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.TaxesNotDefinedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,15 +38,19 @@ public class LocationServiceImpl implements LocationService {
 
 	private final SecurityContextService securityService;
 
-	@Override
-	public List<Location> getLocations(Boolean exceptCurrent) {
-		if (exceptCurrent == null) {
-			return locationRepository.findLocationsByCustomerId(securityService.getCurrentCustomerId());
-		}
-		Long currentCustomerId = securityService.getCurrentCustomer().getId();
-		Long currentLocationId = securityService.getCurrentLocation().getId();
-		return locationRepository.findLocationsByCustomerIdAndIdNot(currentCustomerId, currentLocationId);
-	}
+    @Value("${pagination.pageSize}")
+    private Integer pageSize;
+
+    @Override
+    public LocationPageResp getLocations(Boolean exceptCurrent, Integer page) {
+        if (exceptCurrent == null) {
+            Page<Location> locations = locationRepository.findLocationsByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+            return new LocationPageResp(locations.getContent(), locations.getTotalPages());
+        }
+        Long currentCustomerId = securityService.getCurrentCustomer().getId();
+        Long currentLocationId = securityService.getCurrentLocation().getId();
+        return new LocationPageResp(locationRepository.findLocationsByCustomerIdAndIdNot(currentCustomerId, currentLocationId), null);
+    }
 
 	@Override
 	public Integer getCurrentAvailableCapacity() {
