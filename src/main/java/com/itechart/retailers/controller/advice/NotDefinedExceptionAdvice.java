@@ -15,6 +15,4 @@ public class NotDefinedExceptionAdvice {
 	public ResponseEntity<?> handleTaxesNotDefinedException(TaxesNotDefinedException e){
 		return ResponseEntity.badRequest().body(new MessageResp(TAXES_NOT_DEFINED_MSG));
 	}
-
-
 }

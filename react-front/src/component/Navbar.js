@@ -67,11 +67,6 @@ export default class Navbar extends Component {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to={'/'}>
-                  Home
-                </Link>
-              </li>
               {showSystemAdminBoard && (
                 <li className="nav-item">
                   <Link to={'/system-admin'} className="nav-link" tabIndex="-1">
@@ -154,7 +149,7 @@ export default class Navbar extends Component {
               {currentUser ? (
                 <div className="navbar-nav ml-auto align-items-center">
                   <li className="nav-item">
-                    <a href="" className="nav-link" onClick={this.logOut}>
+                    <a href="" className="nav-link" onClick={this.logOut} style={{paddingBottom: 13}}>
                       Log Out
                     </a>
                   </li>
@@ -165,8 +160,8 @@ export default class Navbar extends Component {
                       <img
                         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
                         alt="profile-img"
-                        className="rounded-circle pl-1"
-                        width="30"
+                        className="rounded-circle ps-1"
+                        width="33"
                       />
                     </Link>
                   </li>
@@ -176,12 +171,6 @@ export default class Navbar extends Component {
                   <li className="nav-item">
                     <Link to={'/login'} className="nav-link">
                       Login
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link to={'/signup'} className="nav-link">
-                      Sign Up
                     </Link>
                   </li>
                 </div>

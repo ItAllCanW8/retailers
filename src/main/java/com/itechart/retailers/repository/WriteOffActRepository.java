@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface WriteOffActRepository extends JpaRepository<WriteOffAct, Long> {
+
     List<WriteOffActView> findAllByLocationId(Long locationId);
 
     @Query("select woa from WriteOffAct woa where woa.location.customer.id = :customerId")

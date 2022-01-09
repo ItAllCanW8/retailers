@@ -6,6 +6,7 @@ import com.itechart.retailers.model.entity.Role;
 import java.time.LocalDate;
 
 public interface UserView {
+
     Long getId();
 
     String getEmail();

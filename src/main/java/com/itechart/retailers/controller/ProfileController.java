@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.itechart.retailers.controller.constant.Message.*;
+import static com.itechart.retailers.controller.constant.Message.PROFILE_UPDATED_MSG;
 import static com.itechart.retailers.security.constant.Authority.DEFAULT_AUTHORITY;
 
 @RestController
@@ -33,7 +33,8 @@ public class ProfileController {
 
 	@PutMapping("/profile")
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> updateProfile(@RequestBody ProfileReq profileReq) throws EmptyPasswordException, IncorrectPasswordException {
+	public ResponseEntity<?> updateProfile(@RequestBody ProfileReq profileReq)
+			throws EmptyPasswordException, IncorrectPasswordException {
 		userService.update(profileReq.getUser(), profileReq.getCurrentPassword(), profileReq.getNewPassword());
 		return ResponseEntity.ok(new MessageResp(PROFILE_UPDATED_MSG));
 	}

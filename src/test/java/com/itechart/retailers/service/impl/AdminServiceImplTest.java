@@ -7,6 +7,7 @@ import com.itechart.retailers.service.RoleService;
 import com.itechart.retailers.service.exception.LocationIdentifierAlreadyExists;
 import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
+import com.itechart.retailers.service.exception.UserRoleNotApplicableToLocation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -96,7 +97,8 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void shouldCreateUserWithoutLocation() throws MailIsAlreadyInUse, LocationNotFoundException {
+    void shouldCreateUserWithoutLocation()
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
         //given
         String roleStr = "DIRECTOR";
         Role role = new Role(roleStr);
@@ -134,7 +136,8 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void shouldCreateUserWithLocation() throws MailIsAlreadyInUse, LocationNotFoundException {
+    void shouldCreateUserWithLocation()
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
         //given
         String roleStr = "SHOP_MANAGER";
         Role role = new Role(roleStr);

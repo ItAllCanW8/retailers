@@ -8,12 +8,11 @@ import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
 import com.itechart.retailers.service.exception.RoleNotFoundException;
+import com.itechart.retailers.service.exception.UserRoleNotApplicableToLocation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.itechart.retailers.controller.constant.Message.STATUSES_UPDATED_MSG;
 import static com.itechart.retailers.controller.constant.Message.USER_CREATED_MSG;
@@ -43,7 +42,8 @@ public class UserController {
 
     @PostMapping(POST_USERS_MAPPING)
     @PreAuthorize(POST_AUTHORITIES)
-    public ResponseEntity<?> createUser(@RequestBody User user) throws MailIsAlreadyInUse, LocationNotFoundException {
+    public ResponseEntity<?> createUser(@RequestBody User user)
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
         adminService.createUser(user);
         return ResponseEntity.ok(new MessageResp(USER_CREATED_MSG));
     }

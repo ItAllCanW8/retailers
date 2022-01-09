@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
+
     List<BillView> findAllByLocationId(Long shopId);
 }

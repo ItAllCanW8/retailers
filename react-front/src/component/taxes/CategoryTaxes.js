@@ -21,6 +21,7 @@ class CategoryTaxes extends Component {
   }
 
   componentDidMount() {
+    document.title = "Category taxes";
     this.updateTaxes();
   }
 
@@ -48,7 +49,7 @@ class CategoryTaxes extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_DIRECTOR')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
     return (
       <div>

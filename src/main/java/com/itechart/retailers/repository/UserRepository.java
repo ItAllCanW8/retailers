@@ -45,5 +45,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findUsersByCustomerIdAndActive(Long customerId, boolean status);
 
     Optional<User> findUserByEmailAndCustomerId(String email, Long customerId);
-
 }

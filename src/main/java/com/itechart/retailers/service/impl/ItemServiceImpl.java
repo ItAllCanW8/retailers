@@ -56,7 +56,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemPageResp findItemsByCustomerId(Integer page) {
-        Page<Item> items = itemRepository.findItemsByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+        Page<Item> items = itemRepository.findItemsByCustomerId(
+                securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize)
+        );
         return new ItemPageResp(items.getContent(), items.getTotalPages());
     }
 

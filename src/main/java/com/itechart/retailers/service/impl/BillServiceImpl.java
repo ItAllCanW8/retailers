@@ -30,7 +30,9 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional(rollbackFor = {ItemAmountException.class, ItemNotFoundException.class})
-    public Bill createBill(Bill bill, Long locationId, Long shopManagerId) throws ItemAmountException, ItemNotFoundException {
+    public Bill createBill(Bill bill, Long locationId, Long shopManagerId)
+            throws ItemAmountException, ItemNotFoundException {
+
         bill.setRegDateTime(LocalDateTime.now());
         bill.setLocation(new Location(locationId));
         bill.setShopManager(new User(shopManagerId));
@@ -41,6 +43,13 @@ public class BillServiceImpl implements BillService {
         billItems.forEach(billItem -> itemUpcs.add(billItem.getItem().getUpc()));
 
         List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
+        createBillItems(bill, billItems, locationItems);
+        billItemRepo.saveAll(billItems);
+        return bill;
+    }
+
+    private void createBillItems(Bill bill, List<BillItem> billItems, List<LocationItem> locationItems)
+            throws ItemNotFoundException, ItemAmountException {
         for (BillItem billItem : billItems) {
             String itemUpc = billItem.getItem().getUpc();
             LocationItem locationItem = locationItems.stream()
@@ -58,8 +67,6 @@ public class BillServiceImpl implements BillService {
             billItem.setBill(bill);
             billItem.setItem(new Item(locationItem.getItem().getId()));
         }
-        billItemRepo.saveAll(billItems);
-        return bill;
     }
 
     @Override

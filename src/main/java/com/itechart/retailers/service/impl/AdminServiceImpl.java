@@ -8,6 +8,7 @@ import com.itechart.retailers.service.RoleService;
 import com.itechart.retailers.service.exception.LocationIdentifierAlreadyExists;
 import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
+import com.itechart.retailers.service.exception.UserRoleNotApplicableToLocation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,11 @@ import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
+    public static final String DISPATCHER_LABEL = "DISPATCHER";
+    public static final String OFFLINE_SHOP_LABEL = "OFFLINE_SHOP";
+    public static final String WAREHOUSE_MANAGER_LABEL = "WAREHOUSE_MANAGER";
+    public static final String SHOP_MANAGER_LABEL = "SHOP_MANAGER";
+    public static final String WAREHOUSE_LABEL = "WAREHOUSE";
     private final SecurityContextService securityService;
     private final LocationRepository locationRepo;
     private final UserRepository userRepo;
@@ -58,32 +64,45 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse {
+    public User createUser(User user)
+            throws LocationNotFoundException, MailIsAlreadyInUse, UserRoleNotApplicableToLocation {
         // TODO: Password generation
 	    Customer customer = new Customer(securityService.getCurrentCustomerId());
 	    user.setCustomer(customer);
 	    if (userRepo.findUserByEmailAndCustomerId(user.getEmail(), user.getCustomer().getId()).isPresent()) {
 		    throw new MailIsAlreadyInUse();
 	    }
+        String roleStr = user.getRole().getRole();
+
         user.setPassword(passwordEncoder.encode("1111"));
         user.setActive(true);
         user.setCustomer(new Customer(securityService.getCurrentCustomerId()));
         Long addressId = addressRepo.save(user.getAddress()).getId();
         user.setAddress(new Address(addressId));
-        String roleStr = user.getRole().getRole();
         user.setRole(roleService.save(roleStr));
+
         if (DIRECTOR_ROLE.equals(roleStr)) {
             user.setLocation(null);
         } else {
-            String locationIdentifier = user.getLocation().getIdentifier();
-            Location location = locationRepo.findLocationByIdentifier(locationIdentifier)
+            Location location = locationRepo.findLocationByIdentifier(user.getLocation().getIdentifier())
                     .orElseThrow(LocationNotFoundException::new);
             user.setLocation(new Location(location.getId()));
+            checkIfUserCanBeAppliedToLocation(roleStr, location.getType());
         }
         return userRepo.save(user);
     }
 
-	@Override
+    private void checkIfUserCanBeAppliedToLocation(String roleStr, String locationType)
+            throws UserRoleNotApplicableToLocation {
+        if (DISPATCHER_LABEL.equals(roleStr) && OFFLINE_SHOP_LABEL.equals(locationType) ||
+                WAREHOUSE_MANAGER_LABEL.equals(roleStr) && OFFLINE_SHOP_LABEL.equals(locationType) ||
+                SHOP_MANAGER_LABEL.equals(roleStr) && WAREHOUSE_LABEL.equals(locationType)
+        ) {
+            throw new UserRoleNotApplicableToLocation();
+        }
+    }
+
+    @Override
 	@Transactional
 	public void updateUserStatus(Long id, boolean isActive) {
 		userRepo.changeUserStatus(id, isActive);

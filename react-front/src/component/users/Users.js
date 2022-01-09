@@ -39,10 +39,11 @@ class Users extends Component {
   }
 
   componentDidMount() {
+    document.title = "Employees";
     axios.get('/locations').then(
       (response) => {
         this.setState({
-          locationIds: response.data.map(location => location.identifier)
+          locationIds: response.data.locations.map(location => location.identifier)
         });
       }
     );
@@ -91,7 +92,7 @@ class Users extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_ADMIN')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
     return (
       <div>

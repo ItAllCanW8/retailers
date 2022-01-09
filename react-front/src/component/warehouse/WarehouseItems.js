@@ -40,6 +40,7 @@ class WarehouseItems extends Component {
   }
 
   componentDidMount() {
+    document.title = "Warehouse";
     axios.get('locations', {
       params: {
         exceptCurrent: true
@@ -47,7 +48,7 @@ class WarehouseItems extends Component {
     }).then(
       (response) => {
         this.setState({
-          locationIds: response.data.map(location => location.identifier)
+          locationIds: response.data.locations.map(location => location.identifier)
         });
       }
     );
@@ -132,7 +133,7 @@ class WarehouseItems extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('ROLE_WAREHOUSE_MANAGER')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
     return (
       <div>

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.itechart.retailers.controller.constant.Message.NEGATIVE_TAX_MSG;
 import static com.itechart.retailers.controller.constant.Message.TAXES_UPDATED_MSG;
 import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
 
@@ -32,19 +31,15 @@ public class TaxController {
 
 	@PutMapping(PUT_RENTAL_TAXES_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) {
-		try {
+	public ResponseEntity<?> updRentalTax(@RequestBody List<Location> locations) throws IncorrectTaxException {
 			taxService.updateRentalTax(locations);
 			return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
-		} catch (IncorrectTaxException incorrectTaxException) {
-			return ResponseEntity.badRequest().body(new MessageResp(NEGATIVE_TAX_MSG));
-		}
-
 	}
 
 	@PutMapping(PUT_CATEGORY_TAXES_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes) throws IncorrectTaxException {
+	public ResponseEntity<?> updCategoryTax(@RequestBody List<CustomerCategory> categoryTaxes)
+			throws IncorrectTaxException {
 		taxService.updateItemCategoryTaxes(categoryTaxes);
 		return ResponseEntity.ok(new MessageResp(TAXES_UPDATED_MSG));
 	}

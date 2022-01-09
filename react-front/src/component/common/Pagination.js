@@ -15,7 +15,7 @@ class Pagination extends Component {
                 <button className="page-link" onClick={() => this.props.toPage(i)}>{i+1}</button>
               </li>
           )}
-          {this.props.currentPage+1 !== this.props.totalPages && <li className='page-item'>
+          {this.props.currentPage+1 !== this.props.totalPages && this.props.totalPages !== 0 && <li className='page-item'>
             <button className='page-link' aria-label='Next' onClick={() => this.props.toPage(this.props.currentPage+1)}>
               <span aria-hidden='true'>&raquo;</span>
             </button>

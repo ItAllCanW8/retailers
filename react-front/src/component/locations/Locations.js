@@ -33,6 +33,7 @@ class Locations extends Component {
   }
 
   componentDidMount() {
+    document.title = "Locations";
     this.updateLocations();
   }
 
@@ -98,7 +99,7 @@ class Locations extends Component {
 
   render() {
     if (!AuthService.currentUserHasRole('location:get')) {
-      return <Redirect to={"/"} />;
+      return <Redirect to={"/profile"} />;
     }
 
     return (

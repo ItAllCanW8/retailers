@@ -18,7 +18,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     List<Location> findLocationsByCustomer(Customer customer);
 
-    Page<Location> findLocationsByCustomerId(Long customerId, Pageable pageable);
+    Page<Location> findLocationsByCustomer(Customer customer, Pageable pageable);
 
     List<Location> findLocationsByCustomerIdAndIdNot(Long customerId, Long id);
 

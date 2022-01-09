@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.itechart.retailers.security.constant.Authority.ADMIN_ROLE;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -36,16 +38,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerPageResp findByParams(Boolean onlyActive, Integer page) {
+    public CustomerPageResp findByParams(Boolean active, Integer page) {
         Page<Customer> customers;
-        if (onlyActive == null) {
+        if (active == null) {
             customers = customerRepository.findByOrderByIdDesc(PageRequest.of(page, pageSize));
         } else {
-            customers = customerRepository.findByIsActiveOrderByIdDesc(onlyActive, PageRequest.of(page, pageSize));
+            customers = customerRepository.findByIsActiveOrderByIdDesc(active, PageRequest.of(page, pageSize));
         }
         return new CustomerPageResp(customers.getContent().stream()
                 .map(customer -> new CustomerResp(customer,
-                        userService.getByRoleAndCustomerId(roleService.getByRole("ADMIN"),
+                        userService.getByRoleAndCustomerId(roleService.getByRole(ADMIN_ROLE),
                                 customer.getId()).getEmail()))
                 .toList(), customers.getTotalPages());
     }
@@ -61,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setActive(active);
         customerRepository.save(customer);
         if (active) {
-            User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole("ADMIN"), customerId);
+            User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole(ADMIN_ROLE), customerId);
             user.setActive(true);
             userRepository.save(user);
         } else {
