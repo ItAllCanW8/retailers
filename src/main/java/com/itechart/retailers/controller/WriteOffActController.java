@@ -5,6 +5,7 @@ import com.itechart.retailers.model.entity.WriteOffAct;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
+import com.itechart.retailers.service.exception.WriteOffActAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +31,7 @@ public class WriteOffActController {
 
 	@PostMapping(POST_WRITE_OFF_ACTS_MAPPING)
 	@PreAuthorize(POST_AUTHORITY)
-	public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct) throws ItemAmountException {
+	public ResponseEntity<?> createWriteOffAct(@RequestBody WriteOffAct writeOffAct) throws ItemAmountException, WriteOffActAlreadyExistsException {
 		writeOffActService.save(writeOffAct);
 		return ResponseEntity.ok(new MessageResp(WRITE_OFF_ACT_CREATED_MSG));
 	}

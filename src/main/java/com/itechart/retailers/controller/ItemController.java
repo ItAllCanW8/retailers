@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.ItemPageResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.ItemService;
+import com.itechart.retailers.service.impl.ItemAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +43,7 @@ public class ItemController {
 
     @PostMapping(POST_ITEMS_MAPPING)
     @PreAuthorize(AUTHORITIES)
-    public ResponseEntity<?> create(@RequestBody Item item) {
+    public ResponseEntity<?> create(@RequestBody Item item) throws ItemAlreadyExistsException {
         itemService.create(item);
         return ResponseEntity.ok(new MessageResp(ITEM_ADDED_MSG));
     }

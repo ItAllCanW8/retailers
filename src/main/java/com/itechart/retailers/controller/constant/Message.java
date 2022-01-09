@@ -33,4 +33,8 @@ public class Message {
 	public static final String BILL_ITEM_AMOUNT_EXCEPTION_MSG = "Item amount to sell cannot be greater than actual amount in shop!";
 	public static final String LOCATION_IDENTIFIER_EXISTS_MSG = "Location with this identified already exists.";
 	public static final String ROLE_NOT_FOUND_MSG = "Role is not found.";
+	public static final String ITEM_ALREADY_EXISTS_MSG = "Item with this UPC already exists";
+	public static final String APPLICATION_ALREADY_EXISTS_MSG = "Application with this number already exists.";
+	public static final String BILL_ALREADY_EXISTS_MSG = "Bill with this number already exists";
+	public static final String WRITE_OFF_ACT_ALREADY_EXISTS_MSG = "Write-off act with this identifier already exists";
 }

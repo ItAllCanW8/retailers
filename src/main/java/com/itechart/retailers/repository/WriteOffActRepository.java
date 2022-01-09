@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface WriteOffActRepository extends JpaRepository<WriteOffAct, Long> {
-    List<WriteOffActView> findAllByLocationId(Long locationId);
+	List<WriteOffActView> findAllByLocationId(Long locationId);
 
-    @Query("select woa from WriteOffAct woa where woa.location.customer.id = :customerId")
-    List<WriteOffActView> findAllByCustomerId(@Param("customerId") Long customerId);
+	@Query("select woa from WriteOffAct woa where woa.location.customer.id = :customerId")
+	List<WriteOffActView> findAllByCustomerId(@Param("customerId") Long customerId);
+
+	Optional<WriteOffAct> findWriteOffActByIdentifier(String identifier);
 }

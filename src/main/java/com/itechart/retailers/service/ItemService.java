@@ -2,6 +2,7 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.ItemPageResp;
+import com.itechart.retailers.service.impl.ItemAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ public interface ItemService {
 
     List<Item> findAll();
 
-    Item save(Item item);
+    Item save(Item item) throws ItemAlreadyExistsException;
 
     Item getById(Long itemId);
 
@@ -22,6 +23,6 @@ public interface ItemService {
 
     Optional<Item> findItemByUpc(String upc);
 
-    Item create(Item item);
+    Item create(Item item) throws ItemAlreadyExistsException;
 
 }

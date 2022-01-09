@@ -49,14 +49,14 @@ public class ApplicationController {
 
 	@PostMapping(POST_APPLICATIONS_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> create(@RequestBody ApplicationReq applicationReq) throws ItemNotFoundException {
+	public ResponseEntity<?> create(@RequestBody ApplicationReq applicationReq) throws ItemNotFoundException, ApplicationAlreadyExists {
 		applicationService.save(applicationReq);
 		return ResponseEntity.ok(new MessageResp(APPLICATION_CREATED_MSG));
 	}
 
 	@PostMapping(POST_DISPATCH_ITEMS_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> dispatchItems(@RequestBody DispatchItemReq dispatchItemReq) throws DispatchItemException, ItemAmountException, LocationNotFoundException, ItemNotFoundException {
+	public ResponseEntity<?> dispatchItems(@RequestBody DispatchItemReq dispatchItemReq) throws DispatchItemException, ItemAmountException, LocationNotFoundException, ItemNotFoundException, ApplicationAlreadyExists {
 		applicationService.dispatchItems(dispatchItemReq);
 		return ResponseEntity.ok(new MessageResp(SUCCESS_DISPATCH_MSG));
 	}

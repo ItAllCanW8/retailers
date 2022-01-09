@@ -5,6 +5,7 @@ import com.itechart.retailers.model.payload.request.ApplicationItemReq;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
+import com.itechart.retailers.service.exception.ApplicationAlreadyExists;
 import com.itechart.retailers.service.exception.ItemNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    void shouldSaveApplication() throws ItemNotFoundException {
+    void shouldSaveApplication() throws ItemNotFoundException, ApplicationAlreadyExists {
         //given
         ApplicationReq applicationReq = new ApplicationReq();
         applicationReq.setApplicationNumber("app");

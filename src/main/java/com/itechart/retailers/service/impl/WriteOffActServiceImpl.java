@@ -9,6 +9,7 @@ import com.itechart.retailers.repository.WrittenOffItemRepository;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
+import com.itechart.retailers.service.exception.WriteOffActAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,8 +39,12 @@ public class WriteOffActServiceImpl implements WriteOffActService {
 
     @Transactional(rollbackFor = ItemAmountException.class)
     @Override
-    public WriteOffAct save(WriteOffAct writeOffAct) throws ItemAmountException {
+    public WriteOffAct save(WriteOffAct writeOffAct) throws ItemAmountException, WriteOffActAlreadyExistsException {
         Long locationId = securityService.getCurrentLocationId();
+        Optional<WriteOffAct> optionalWriteOffAct = writeOffActRepo.findWriteOffActByIdentifier(writeOffAct.getIdentifier());
+        if (optionalWriteOffAct.isPresent()){
+            throw new WriteOffActAlreadyExistsException();
+        }
         writeOffAct.setDateTime(LocalDateTime.now());
         writeOffAct.setLocation(new Location(locationId));
         writeOffAct = writeOffActRepo.save(writeOffAct);

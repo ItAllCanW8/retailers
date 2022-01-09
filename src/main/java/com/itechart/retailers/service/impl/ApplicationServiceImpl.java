@@ -37,7 +37,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public void save(ApplicationReq applicationReq) throws ItemNotFoundException {
+	public void save(ApplicationReq applicationReq) throws ItemNotFoundException, ApplicationAlreadyExists {
 		Set<Optional<Item>> optionalItems = applicationReq.getItems().stream()
 				.map(ai -> itemRepository.findItemByUpc(ai.getUpc())).collect(Collectors.toSet());
 		for (Optional<Item> item : optionalItems) {
@@ -108,7 +108,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException {
+	public void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException, ApplicationAlreadyExists {
 		Optional<Location> location = locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation());
 		if (location.isEmpty()) {
 			throw new LocationNotFoundException();
@@ -124,17 +124,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 				throw new ItemAmountException(INCORRECT_ITEM_AMOUNT_INPUT_MSG);
 			}
 		}
-
 		if (dispatchItemReq.getItemsToDispatch().stream().allMatch(item -> item.getAmount() == 0)) {
 			throw new DispatchItemException(DISPATCH_ITEM_EXCEPTION_MSG);
 		}
-
 		for (LocationItemResp locationItemResp : dispatchItemReq.getItemsToDispatch()) {
 			LocationItem locationItem = locationItemRepository.getByItemUpcAndLocation(locationItemResp.getUpc(), securityService.getCurrentLocation());
 			locationItem.setAmount(locationItem.getAmount() - locationItemResp.getAmount());
 			locationItemRepository.save(locationItem);
 		}
-
 		Set<ApplicationItem> itemsAssoc = dispatchItemReq.getItemsToDispatch().stream()
 				.map(ai -> ApplicationItem.builder()
 						.item(itemRepository.findItemByUpc(ai.getUpc()).get())
@@ -158,8 +155,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 	}
 
-	private Application createApplication(String applicationNumber, Location destLocation) {
+	private Application createApplication(String applicationNumber, Location destLocation) throws ApplicationAlreadyExists {
 		User currentUser = securityService.getCurrentUser();
+		Optional<Application> optionalApplication = applicationRepository.findApplicationByApplicationNumberAndCustomerId(applicationNumber, currentUser.getCustomer().getId());
+		if (optionalApplication.isPresent()) {
+			throw new ApplicationAlreadyExists();
+		}
 		return Application.builder()
 				.applicationNumber(applicationNumber)
 				.srcLocation(securityService.getCurrentLocation())

@@ -1,6 +1,7 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
+import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
@@ -56,7 +57,12 @@ public class AdminServiceImpl implements AdminService {
 		locationRepo.deleteAllByIdInBatch(ids);
 	}
 
-    @Override
+	@Override
+	public List<UserView> getUsers() {
+		return null;
+	}
+
+	@Override
     @Transactional
     public User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse {
         // TODO: Password generation
@@ -94,14 +100,12 @@ public class AdminServiceImpl implements AdminService {
     public Supplier createSupplier(Supplier supplier) {
         supplier = supplierRepo.save(supplier);
         Set<Warehouse> warehouses = supplier.getWarehouses();
-
         for (Warehouse wh : warehouses) {
             wh.setSupplier(supplier);
             addressRepo.save(wh.getAddress());
         }
         warehouseRepo.saveAll(warehouses);
         customerRepo.findById(securityService.getCurrentCustomerId()).get().getSuppliers().add(supplier);
-
         return supplier;
     }
 

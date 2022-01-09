@@ -4,10 +4,7 @@ import com.itechart.retailers.model.entity.Application;
 import com.itechart.retailers.model.entity.Location;
 import com.itechart.retailers.model.payload.request.ApplicationReq;
 import com.itechart.retailers.model.payload.request.DispatchItemReq;
-import com.itechart.retailers.service.exception.DispatchItemException;
-import com.itechart.retailers.service.exception.ItemAmountException;
-import com.itechart.retailers.service.exception.ItemNotFoundException;
-import com.itechart.retailers.service.exception.LocationNotFoundException;
+import com.itechart.retailers.service.exception.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,7 +14,7 @@ public interface ApplicationService {
     List<Application> getCurrentApplications();
 
     @Transactional
-    void save(ApplicationReq applicationDto) throws ItemNotFoundException;
+    void save(ApplicationReq applicationDto) throws ItemNotFoundException, ApplicationAlreadyExists;
 
     Application getById(Long id);
 
@@ -31,6 +28,6 @@ public interface ApplicationService {
 
     void forwardApplication(Long id, String locationIdentifier) throws LocationNotFoundException;
 
-    void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException, LocationNotFoundException, ItemNotFoundException, DispatchItemException;
+    void dispatchItems(DispatchItemReq dispatchItemReq) throws ItemAmountException, LocationNotFoundException, ItemNotFoundException, DispatchItemException, ApplicationAlreadyExists;
 
 }

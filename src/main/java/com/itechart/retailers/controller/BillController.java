@@ -5,6 +5,7 @@ import com.itechart.retailers.model.entity.Bill;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.BillService;
+import com.itechart.retailers.service.exception.BillAlreadyExistsException;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class BillController {
 
 	@PostMapping(POST_BILLS_MAPPING)
 	@PreAuthorize(AUTHORITIES)
-	public ResponseEntity<?> createBill(@RequestBody Bill bill) throws ItemAmountException, ItemNotFoundException {
+	public ResponseEntity<?> createBill(@RequestBody Bill bill) throws ItemAmountException, ItemNotFoundException, BillAlreadyExistsException {
 		Long shopManagerId = securityService.getCurrentUserId();
 		Long locationId = securityService.getCurrentLocationId();
 		billService.createBill(bill, locationId, shopManagerId);

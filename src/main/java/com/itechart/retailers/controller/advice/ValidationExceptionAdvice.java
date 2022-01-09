@@ -2,6 +2,7 @@ package com.itechart.retailers.controller.advice;
 
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.exception.*;
+import com.itechart.retailers.service.impl.ItemAlreadyExistsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,5 +45,25 @@ public class ValidationExceptionAdvice {
 	@ExceptionHandler(IncorrectTaxException.class)
 	public ResponseEntity<?> handleIncorrectTaxException(IncorrectTaxException e) {
 		return ResponseEntity.badRequest().body(NEGATIVE_TAX_MSG);
+	}
+
+	@ExceptionHandler(ItemAlreadyExistsException.class)
+	public ResponseEntity<?> handleItemAlreadyExists(ItemAlreadyExistsException e) {
+		return ResponseEntity.badRequest().body(new MessageResp(ITEM_ALREADY_EXISTS_MSG));
+	}
+
+	@ExceptionHandler(ApplicationAlreadyExists.class)
+	public ResponseEntity<?> handleApplicationAlreadyExists(ApplicationAlreadyExists e) {
+		return ResponseEntity.badRequest().body(new MessageResp(APPLICATION_ALREADY_EXISTS_MSG));
+	}
+
+	@ExceptionHandler(BillAlreadyExistsException.class)
+	public ResponseEntity<?> handleBillAlreadyExists(BillAlreadyExistsException e) {
+		return ResponseEntity.badRequest().body(new MessageResp(BILL_ALREADY_EXISTS_MSG));
+	}
+
+	@ExceptionHandler(WriteOffActAlreadyExistsException.class)
+	public ResponseEntity<?> handleWriteOffActAlreadyExists(WriteOffActAlreadyExistsException e) {
+		return ResponseEntity.badRequest().body(new MessageResp(WRITE_OFF_ACT_ALREADY_EXISTS_MSG));
 	}
 }
