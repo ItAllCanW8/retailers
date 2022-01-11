@@ -22,7 +22,7 @@ class Locations extends Component {
       identifier: '',
       type: 'WAREHOUSE',
       address: {
-        stateCode: '',
+        stateCode: 'AK',
         city: '',
         firstLine: '',
         secondLine: ''

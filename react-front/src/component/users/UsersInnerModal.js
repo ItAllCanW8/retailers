@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
+import StateCodes from '../common/StateCodes';
 
 export class UsersInnerModal extends Component {
   render() {
@@ -179,29 +180,7 @@ export class UsersInnerModal extends Component {
 
           <div className='row'>
             <div className='col-6 mb-2'>
-              <label
-                htmlFor='stateCode'
-                className='form-label'
-              >
-                State code
-              </label>
-              <div className='input-group has-validation'>
-                <input
-                  type='text'
-                  className='form-control'
-                  name='stateCode'
-                  id='stateCode'
-                  aria-describedby='inputGroupPrepend'
-                  required
-                  pattern='.{2}'
-                  autoComplete='off'
-                  value={this.props.stateCode}
-                  onChange={this.props.onAddressChange}
-                />
-                <div className='invalid-feedback'>
-                  Input should contain two symbols of the USA state code
-                </div>
-              </div>
+              <StateCodes/>
             </div>
             <div className='col mb-2'>
               <label
