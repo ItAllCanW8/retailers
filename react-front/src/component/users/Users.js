@@ -27,7 +27,7 @@ class Users extends Component {
       login: '',
       birthday: '',
       address: {
-        stateCode: '',
+        stateCode: 'AK',
         city: '',
         firstLine: '',
         secondLine: ''

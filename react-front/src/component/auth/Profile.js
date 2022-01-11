@@ -20,7 +20,7 @@ export default class Profile extends Component {
         surname: '',
         birthday: '',
         address: {
-          stateCode: '',
+          stateCode: 'AK',
           city: '',
           firstLine: '',
           secondLine: ''
@@ -213,9 +213,49 @@ export default class Profile extends Component {
               State code
             </label>
             <div className='col-md-4'>
-              <input type='text' id='stateCode' name='stateCode' className='form-control'
-                     onChange={this.handleAddressChange}
-                     value={user.address && user.address.stateCode} />
+              <select
+                className='form-select'
+                aria-label='Default select example'
+                name='stateCode'
+                id='stateCode'
+                aria-describedby='inputGroupPrepend'
+                required
+                autoComplete='off'
+                value={user.address && user.address.stateCode}
+                onChange={this.handleAddressChange}
+              >
+                <option value="AK">AK</option>
+                <option value="AZ">AZ</option>
+                <option value="AR">AR</option>
+                <option value="CA">CA</option>
+                <option value="CO">CO</option>
+                <option value="CT">CT</option>
+                <option value="DE">DE</option>
+                <option value="FL">FL</option>
+                <option value="GA">GA</option>
+                <option value="HI">HI</option>
+                <option value="ID">ID</option>
+                <option value="IL">IL</option>
+                <option value="IN">IN</option>
+                <option value="IA">IA</option>
+                <option value="KS">KS</option>
+                <option value="KY">KY</option>
+                <option value="LA">LA</option>
+                <option value="ME">ME</option>
+                <option value="MD">MD</option>
+                <option value="MA">MA</option>
+                <option value="MI">MI</option>
+                <option value="MN">MN</option>
+                <option value="MS">MS</option>
+                <option value="MO">MO</option>
+                <option value="MT">MT</option>
+                <option value="NE">NE</option>
+                <option value="NV">NV</option>
+                <option value="NH">NH</option>
+                <option value="NJ">NJ</option>
+                <option value="NM">NM</option>
+                <option value="NY">NY</option>
+              </select>
             </div>
           </div>
           <div className='row mb-2 justify-content-center'>

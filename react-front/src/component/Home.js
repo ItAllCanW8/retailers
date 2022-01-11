@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import AuthService from '../service/AuthService';
 
 class Home extends Component {
   constructor(props) {
@@ -22,6 +23,9 @@ class Home extends Component {
 
 
   render() {
+    if (AuthService.currentUserHasRole('any')) {
+      return <Redirect to={"/profile"} />;
+    }
     return (
       <div className="container mh-100">
         <div className="row text-center">
