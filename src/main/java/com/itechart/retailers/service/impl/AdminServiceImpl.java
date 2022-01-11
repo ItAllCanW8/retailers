@@ -1,7 +1,6 @@
 package com.itechart.retailers.service.impl;
 
 import com.itechart.retailers.model.entity.*;
-import com.itechart.retailers.model.entity.projection.UserView;
 import com.itechart.retailers.repository.*;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.AdminService;
