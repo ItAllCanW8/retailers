@@ -6,14 +6,17 @@ import com.itechart.retailers.model.payload.request.SignUpReq;
 import com.itechart.retailers.model.payload.response.CustomerPageResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.CustomerService;
+import com.itechart.retailers.service.MailService;
 import com.itechart.retailers.service.RoleService;
 import com.itechart.retailers.service.UserService;
+import com.itechart.retailers.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static com.itechart.retailers.controller.constant.Message.CUSTOMER_REGISTERED_MSG;
@@ -31,9 +34,10 @@ public class CustomerController {
     private final RoleService roleService;
     private final CustomerService customerService;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody SignUpReq signUpReq) {
+    public ResponseEntity<?> registerUser(@RequestBody SignUpReq signUpReq) throws IOException {
         if (userService.existsByEmail(signUpReq.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResp(EMAIL_TAKEN_MSG));
         }
@@ -44,11 +48,14 @@ public class CustomerController {
                 .isActive(true)
                 .build());
 
+        String generatedPassword = PasswordGenerator.generatePassword();
+        mailService.sendPassword(signUpReq.getEmail(), generatedPassword);
+
         userService.save(User.builder()
                 .name(signUpReq.getName())
                 .email(signUpReq.getEmail())
                 .role(roleService.save("ADMIN"))
-                .password(passwordEncoder.encode("1111"))
+                .password(passwordEncoder.encode(generatedPassword))
                 .isActive(true)
                 .customer(customer)
                 .build());
@@ -70,42 +77,4 @@ public class CustomerController {
     ) {
         return customerService.findByParams(onlyActive, page);
     }
-/*
-	@PostMapping
-	public ResponseEntity<?> createCustomer(@RequestBody SignUpRequest signUpRequest) {
-		@Email
-		String email = signUpRequest.getEmail();
-
-		if (userService.existsByEmail(email)) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
-		}
-
-		int lengthOfThePassword = 15;
-		String generatedPassword = PasswordGenerator.generatePassword(lengthOfThePassword);
-
-		Role role = roleService.save(Role.builder()
-				.role("RETAIL_ADMIN")
-				.build());
-
-		User admin = User.builder()
-				.name(signUpRequest.getName())
-				.email(signUpRequest.getEmail())
-				.role(role)
-				.password(passwordEncoder.encode(generatedPassword))
-				.isActive(true)
-				.build();
-		admin = userService.save(admin);
-
-		Customer customer = Customer.builder()
-				.name(signUpRequest.getName())
-				.regDate(LocalDate.now())
-				.isActive(true)
-				.admin(admin)
-				.build();
- 		customerService.save(customer);
-
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-	}*/
 }

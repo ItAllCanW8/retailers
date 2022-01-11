@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -98,7 +99,7 @@ class AdminServiceImplTest {
 
     @Test
     void shouldCreateUserWithoutLocation()
-            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation, IOException {
         //given
         String roleStr = "DIRECTOR";
         Role role = new Role(roleStr);
@@ -137,7 +138,7 @@ class AdminServiceImplTest {
 
     @Test
     void shouldCreateUserWithLocation()
-            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation, IOException {
         //given
         String roleStr = "SHOP_MANAGER";
         Role role = new Role(roleStr);

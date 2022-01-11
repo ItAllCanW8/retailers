@@ -8,6 +8,7 @@ import com.itechart.retailers.service.exception.LocationNotFoundException;
 import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
 import com.itechart.retailers.service.exception.UserRoleNotApplicableToLocation;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public interface AdminService {
 
     void deleteLocations(Set<Long> ids);
 
-    User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse, UserRoleNotApplicableToLocation;
+    User createUser(User user) throws LocationNotFoundException, MailIsAlreadyInUse, UserRoleNotApplicableToLocation, IOException;
 
     void updateUserStatus(Long id, boolean isActive);
 

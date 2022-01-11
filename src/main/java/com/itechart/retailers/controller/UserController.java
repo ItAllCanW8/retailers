@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 import static com.itechart.retailers.controller.constant.Message.STATUSES_UPDATED_MSG;
 import static com.itechart.retailers.controller.constant.Message.USER_CREATED_MSG;
 import static com.itechart.retailers.security.constant.Authority.USER_GET_AUTHORITY;
@@ -43,7 +45,7 @@ public class UserController {
     @PostMapping(POST_USERS_MAPPING)
     @PreAuthorize(POST_AUTHORITIES)
     public ResponseEntity<?> createUser(@RequestBody User user)
-            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation {
+            throws MailIsAlreadyInUse, LocationNotFoundException, UserRoleNotApplicableToLocation, IOException {
         adminService.createUser(user);
         return ResponseEntity.ok(new MessageResp(USER_CREATED_MSG));
     }
