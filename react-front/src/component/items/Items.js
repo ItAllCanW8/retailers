@@ -37,6 +37,15 @@ class Items extends Component {
   updateItems = () => {
     axios.get('/items', { params: this.state.params }).then(
       (response) => {
+        if (response.data.items.length === 0 && this.state.params.page > 0) {
+          this.setState({
+            params: {
+              page: this.state.params.page - 1
+            }
+          });
+          this.updateItems();
+          return;
+        }
         this.setState({
           content: response.data
         });
