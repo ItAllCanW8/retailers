@@ -11,6 +11,8 @@ import com.itechart.retailers.service.WriteOffActService;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.WriteOffActAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.itechart.retailers.service.constant.LogMessage.LOG_CREATED_MSG;
+
 @Service
 @RequiredArgsConstructor
 public class WriteOffActServiceImpl implements WriteOffActService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     private final WriteOffActRepository writeOffActRepo;
     private final WrittenOffItemRepository writeOffItemRepo;
@@ -82,6 +87,7 @@ public class WriteOffActServiceImpl implements WriteOffActService {
             writtenOffItem.setItem(new Item(itemId));
         }
         writeOffItemRepo.saveAll(writtenOffItems);
+        LOGGER.warn(String.format(LOG_CREATED_MSG, "Write-off act", writeOffAct.getIdentifier()));
         return writeOffAct;
     }
 

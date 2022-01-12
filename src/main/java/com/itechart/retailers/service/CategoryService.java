@@ -26,4 +26,6 @@ public interface CategoryService {
      * @return the list
      */
     List<CustomerCategory> loadCustomerCategories(Long customerId);
+
+
 }

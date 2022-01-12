@@ -4,7 +4,7 @@ import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.ItemPageResp;
 import com.itechart.retailers.model.payload.response.MessageResp;
 import com.itechart.retailers.service.ItemService;
-import com.itechart.retailers.service.impl.ItemAlreadyExistsException;
+import com.itechart.retailers.service.exception.ItemAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

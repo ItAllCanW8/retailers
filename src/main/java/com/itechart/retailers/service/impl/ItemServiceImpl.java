@@ -9,7 +9,7 @@ import com.itechart.retailers.repository.ItemRepository;
 import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.CategoryService;
 import com.itechart.retailers.service.ItemService;
-import com.itechart.retailers.service.exception.ItemAlreadyExists;
+import com.itechart.retailers.service.exception.ItemAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

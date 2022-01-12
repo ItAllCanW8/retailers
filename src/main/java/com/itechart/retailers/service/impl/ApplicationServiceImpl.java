@@ -10,6 +10,8 @@ import com.itechart.retailers.security.service.SecurityContextService;
 import com.itechart.retailers.service.ApplicationService;
 import com.itechart.retailers.service.exception.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +25,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.itechart.retailers.controller.constant.Message.*;
+import static com.itechart.retailers.service.constant.LogMessage.LOG_CREATED_MSG;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServiceImpl.class);
+
 	private final ApplicationRepository applicationRepository;
 	private final LocationRepository locationRepository;
 	private final SecurityContextService securityService;
@@ -65,6 +70,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setCustomer(customer);
 		applicationRepository.save(application);
 		applicationItemRepository.saveAll(itemsAssoc);
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "Application", application.getApplicationNumber()));
 	}
 
 	private void checkIfItemsExist(ApplicationReq applicationReq) throws ItemNotFoundException {
@@ -166,6 +172,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setCustomer(customer);
 		applicationRepository.save(application);
 		applicationItemRepository.saveAll(itemsAssoc);
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "Application", application.getApplicationNumber()));
 	}
 
 	private void removeItemsFromLocation(DispatchItemReq dispatchItemReq) {

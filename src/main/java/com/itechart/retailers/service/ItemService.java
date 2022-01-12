@@ -2,7 +2,7 @@ package com.itechart.retailers.service;
 
 import com.itechart.retailers.model.entity.Item;
 import com.itechart.retailers.model.payload.response.ItemPageResp;
-import com.itechart.retailers.service.impl.ItemAlreadyExistsException;
+import com.itechart.retailers.service.exception.ItemAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;

@@ -12,6 +12,8 @@ import com.itechart.retailers.service.exception.MailIsAlreadyInUse;
 import com.itechart.retailers.service.exception.UserRoleNotApplicableToLocation;
 import com.itechart.retailers.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +23,19 @@ import java.util.List;
 import java.util.Set;
 
 import static com.itechart.retailers.security.constant.Authority.DIRECTOR_ROLE;
+import static com.itechart.retailers.service.constant.LogMessage.*;
 
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
-
 	public static final String DISPATCHER_LABEL = "DISPATCHER";
 	public static final String OFFLINE_SHOP_LABEL = "OFFLINE_SHOP";
 	public static final String WAREHOUSE_MANAGER_LABEL = "WAREHOUSE_MANAGER";
 	public static final String SHOP_MANAGER_LABEL = "SHOP_MANAGER";
 	public static final String WAREHOUSE_LABEL = "WAREHOUSE";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
+
 	private final SecurityContextService securityService;
 	private final LocationRepository locationRepo;
 	private final UserRepository userRepo;
@@ -51,6 +56,7 @@ public class AdminServiceImpl implements AdminService {
 			throw new LocationIdentifierAlreadyExists();
 		}
 		location.setCustomer(customer);
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "Location", location.getIdentifier()));
 		return locationRepo.save(location);
 	}
 
@@ -58,6 +64,7 @@ public class AdminServiceImpl implements AdminService {
 	@Transactional
 	public void deleteLocation(Long id) {
 		locationRepo.deleteById(id);
+		LOGGER.warn(String.format(LOG_DELETED_MSG, "Location", id));
 	}
 
 	@Override
@@ -94,6 +101,7 @@ public class AdminServiceImpl implements AdminService {
 			user.setLocation(new Location(location.getId()));
 			checkIfUserCanBeAppliedToLocation(roleStr, location.getType());
 		}
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "User", user.getName()));
 		return userRepo.save(user);
 	}
 
@@ -111,6 +119,7 @@ public class AdminServiceImpl implements AdminService {
 	@Transactional
 	public void updateUserStatus(Long id, boolean isActive) {
 		userRepo.changeUserStatus(id, isActive);
+		LOGGER.warn(String.format(LOG_UPDATED_MSG, "User", id));
 	}
 
 	@Override
@@ -124,6 +133,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 		warehouseRepo.saveAll(warehouses);
 		customerRepo.findById(securityService.getCurrentCustomerId()).get().getSuppliers().add(supplier);
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "Supplier", supplier.getIdentifier()));
 		return supplier;
 	}
 
@@ -136,5 +146,6 @@ public class AdminServiceImpl implements AdminService {
 	@Transactional
 	public void updateSupplierStatus(Long id, boolean isActive) {
 		supplierRepo.changeSupplierStatus(id, isActive);
+		LOGGER.warn(String.format(LOG_UPDATED_MSG, "Supplier", id));
 	}
 }

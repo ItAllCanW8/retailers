@@ -12,6 +12,8 @@ import com.itechart.retailers.service.exception.CustomerCategoryNotFoundExceptio
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.TaxesNotDefinedException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,6 @@ import static com.itechart.retailers.controller.constant.Message.NO_SPACE_IN_LOC
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
-
     public static final String FINISHED_PROCESSING_STATUS = "FINISHED_PROCESSING";
     public static final String OFFLINE_SHOP_LABEL = "OFFLINE_SHOP";
     private final ApplicationService applicationService;

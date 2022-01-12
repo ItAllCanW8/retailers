@@ -12,6 +12,8 @@ import com.itechart.retailers.service.UserService;
 import com.itechart.retailers.service.exception.EmptyPasswordException;
 import com.itechart.retailers.service.exception.IncorrectPasswordException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,20 +23,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.itechart.retailers.service.constant.LogMessage.*;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
 	private final UserRepository userRepository;
 	private final CustomerRepository customerRepository;
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final SecurityContextService securityService;
 
-    @Value("${pagination.pageSize}")
-    private Integer pageSize;
+	@Value("${pagination.pageSize}")
+	private Integer pageSize;
 
 	@Override
 	public User save(User user) {
+		LOGGER.warn(String.format(LOG_CREATED_MSG, "User", user.getName()));
 		return userRepository.save(user);
 	}
 
@@ -62,16 +69,19 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(actualPassword);
 		}
 		userRepository.save(user);
+		LOGGER.warn(String.format(LOG_UPDATED_MSG, "User", user.getName()));
 	}
 
 	@Override
 	public void delete(User user) {
 		userRepository.delete(user);
+		LOGGER.warn(String.format(LOG_DELETED_MSG, "User", user.getName()));
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		userRepository.deleteById(id);
+		LOGGER.warn(String.format(LOG_DELETED_MSG, "User", id));
 	}
 
 	@Override
@@ -84,35 +94,36 @@ public class UserServiceImpl implements UserService {
 		return userRepository.existsByEmail(email);
 	}
 
-    @Override
-    public User getByRoleAndCustomerId(Role role, Long customerId) {
-        return userRepository.getByRoleAndCustomerId(role, customerId);
-    }
+	@Override
+	public User getByRoleAndCustomerId(Role role, Long customerId) {
+		return userRepository.getByRoleAndCustomerId(role, customerId);
+	}
 
-    @Override
-    public void changeUserStatus(Long customerId, boolean status) {
-        Customer customer = customerRepository.getById(customerId);
-        customer.setActive(status);
-        customerRepository.save(customer);
+	@Override
+	public void changeUserStatus(Long customerId, boolean status) {
+		Customer customer = customerRepository.getById(customerId);
+		customer.setActive(status);
+		customerRepository.save(customer);
 
-        if (status) {
-            Role role = roleRepository.getByRole("ADMIN");
-            User user = userRepository.getByRoleAndCustomerId(role, customerId);
-            user.setActive(true);
-            userRepository.save(user);
-        } else {
-            List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
-            customerUsers.forEach(user -> user.setActive(false));
-            userRepository.saveAll(customerUsers);
-        }
-    }
+		if (status) {
+			Role role = roleRepository.getByRole("ADMIN");
+			User user = userRepository.getByRoleAndCustomerId(role, customerId);
+			user.setActive(true);
+			userRepository.save(user);
+		} else {
+			List<User> customerUsers = userRepository.findUsersByCustomerIdAndActive(customerId, true);
+			customerUsers.forEach(user -> user.setActive(false));
+			userRepository.saveAll(customerUsers);
+		}
+		LOGGER.warn(String.format(LOG_UPDATED_MSG, "User", customerId));
+	}
 
-    @Override
-    public UserPageResp getUsers(String roleName, Integer page) {
-        if (roleName == null) {
-            Page<User> users = userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
-            return new UserPageResp(users.getContent(), users.getTotalPages());
-        }
-        return new UserPageResp(userRepository.findUsersByRoleAndCustomer(roleRepository.findByRole(roleName).get(), securityService.getCurrentCustomer()), null);
-    }
+	@Override
+	public UserPageResp getUsers(String roleName, Integer page) {
+		if (roleName == null) {
+			Page<User> users = userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+			return new UserPageResp(users.getContent(), users.getTotalPages());
+		}
+		return new UserPageResp(userRepository.findUsersByRoleAndCustomer(roleRepository.findByRole(roleName).get(), securityService.getCurrentCustomer()), null);
+	}
 }

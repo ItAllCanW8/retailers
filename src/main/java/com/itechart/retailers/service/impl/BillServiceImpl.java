@@ -7,24 +7,25 @@ import com.itechart.retailers.repository.BillItemRepository;
 import com.itechart.retailers.repository.BillRepository;
 import com.itechart.retailers.repository.LocationItemRepository;
 import com.itechart.retailers.service.BillService;
-import com.itechart.retailers.service.exception.BillAlreadyExistsException;
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.itechart.retailers.controller.constant.Message.BILL_ITEM_AMOUNT_EXCEPTION_MSG;
-
+import static com.itechart.retailers.service.constant.LogMessage.LOG_CREATED_MSG;
 
 @Service
 @RequiredArgsConstructor
 public class BillServiceImpl implements BillService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(BillServiceImpl.class);
 
 	private final BillRepository billRepo;
 	private final BillItemRepository billItemRepo;
@@ -47,6 +48,7 @@ public class BillServiceImpl implements BillService {
         List<LocationItem> locationItems = locationItemRepo.findAllByLocationIdAndItemUpc(locationId, itemUpcs);
         createBillItems(bill, billItems, locationItems);
         billItemRepo.saveAll(billItems);
+	    LOGGER.warn(String.format(LOG_CREATED_MSG, "Bill", bill.getNumber()));
         return bill;
     }
 
