@@ -4,6 +4,7 @@ import com.itechart.retailers.model.entity.User;
 import com.itechart.retailers.repository.UserRepository;
 import com.itechart.retailers.service.MailService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

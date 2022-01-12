@@ -155,12 +155,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 			throw new DispatchItemException(DISPATCH_ITEM_EXCEPTION_MSG);
 		}
 
-		for (LocationItemResp locationItemResp : dispatchItemReq.getItemsToDispatch()) {
-			LocationItem locationItem = locationItemRepository.getByItemUpcAndLocation(locationItemResp.getUpc(), securityService.getCurrentLocation());
-			locationItem.setAmount(locationItem.getAmount() - locationItemResp.getAmount());
-			locationItemRepository.save(locationItem);
-		}
-
 		Set<ApplicationItem> itemsAssoc = dispatchItemReq.getItemsToDispatch().stream()
 				.map(ai -> ApplicationItem.builder()
 						.item(itemRepository.findItemByUpc(ai.getUpc()).get())
