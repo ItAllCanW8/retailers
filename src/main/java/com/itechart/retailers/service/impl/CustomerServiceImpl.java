@@ -22,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,86 +32,88 @@ import static com.itechart.retailers.service.constant.LogMessage.LOG_UPDATED_MSG
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
+    public static final String CUSTOMER_LABEL = "Customer";
+    public static final String ADMIN_LABEL = "ADMIN";
 
-	private final CustomerRepository customerRepository;
-	private final UserRepository userRepository;
-	private final RoleRepository roleRepository;
-	private final UserService userService;
-	private final RoleService roleService;
-	private final MailService mailService;
-	private final PasswordEncoder passwordEncoder;
+    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
-	@Value("${pagination.pageSize}")
-	private Integer pageSize;
+    @Value("${pagination.pageSize}")
+    private Integer pageSize;
 
-	@Override
-	public Customer save(Customer customer) {
-		return customerRepository.save(customer);
-	}
+    @Override
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
 
-	@Override
-	public CustomerPageResp findByParams(Boolean active, Integer page) {
-		Page<Customer> customers;
-		if (active == null) {
-			customers = customerRepository.findByOrderByIdDesc(PageRequest.of(page, pageSize));
-		} else {
-			customers = customerRepository.findByIsActiveOrderByIdDesc(active, PageRequest.of(page, pageSize));
-		}
-		return new CustomerPageResp(customers.getContent().stream()
-				.map(customer -> new CustomerResp(customer,
-						userService.getByRoleAndCustomerId(roleService.getByRole(ADMIN_ROLE),
-								customer.getId()).getEmail()))
-				.toList(), customers.getTotalPages());
-	}
+    @Override
+    public CustomerPageResp findByParams(Boolean active, Integer page) {
+        Page<Customer> customers;
+        if (active == null) {
+            customers = customerRepository.findByOrderByIdDesc(PageRequest.of(page, pageSize));
+        } else {
+            customers = customerRepository.findByIsActiveOrderByIdDesc(active, PageRequest.of(page, pageSize));
+        }
+        return new CustomerPageResp(customers.getContent().stream()
+                .map(customer -> new CustomerResp(customer,
+                        userService.getByRoleAndCustomerId(roleService.getByRole(ADMIN_ROLE),
+                                customer.getId()).getEmail()))
+                .toList(), customers.getTotalPages());
+    }
 
-	@Override
-	public Customer getById(Long id) {
-		return customerRepository.getById(id);
-	}
+    @Override
+    public Customer getById(Long id) {
+        return customerRepository.getById(id);
+    }
 
-	@Override
-	public void changeUserStatus(Long customerId, boolean active) {
-		Customer customer = customerRepository.getById(customerId);
-		customer.setActive(active);
-		customerRepository.save(customer);
-		if (active) {
-			User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole(ADMIN_ROLE), customerId);
-			user.setActive(true);
-			userRepository.save(user);
-		} else {
-			List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
-			customerUsers.forEach(user -> user.setActive(false));
-			userRepository.saveAll(customerUsers);
-		}
-		LOGGER.warn(String.format(LOG_UPDATED_MSG, "Customer", customerId));
-	}
+    @Override
+    public void changeUserStatus(Long customerId, boolean active) {
+        Customer customer = customerRepository.getById(customerId);
+        customer.setActive(active);
+        customerRepository.save(customer);
+        if (active) {
+            User user = userRepository.getByRoleAndCustomerId(roleRepository.getByRole(ADMIN_ROLE), customerId);
+            user.setActive(true);
+            userRepository.save(user);
+        } else {
+            List<User> customerUsers = userRepository.findUsersByCustomerId(customerId);
+            customerUsers.forEach(user -> user.setActive(false));
+            userRepository.saveAll(customerUsers);
+        }
+        LOGGER.warn(String.format(LOG_UPDATED_MSG, CUSTOMER_LABEL, customerId));
+    }
 
-	@Override
-	public Customer registerCustomer(String name, String email) throws IOException, MailIsAlreadyInUse {
-		if (userService.existsByEmail(email)) {
-			throw new MailIsAlreadyInUse();
-		}
+    @Override
+    public Customer registerCustomer(String name, String email) throws MailIsAlreadyInUse {
+        if (userService.existsByEmail(email)) {
+            throw new MailIsAlreadyInUse();
+        }
 
-		Customer customer = save(Customer.builder()
-				.name(name)
-				.regDate(LocalDate.now())
-				.isActive(true)
-				.build());
+        Customer customer = save(Customer.builder()
+                .name(name)
+                .regDate(LocalDate.now())
+                .isActive(true)
+                .build());
 
-		String generatedPassword = PasswordGenerator.generatePassword();
-		mailService.sendPassword(email, generatedPassword);
+        String generatedPassword = PasswordGenerator.generatePassword();
+        new PasswordEmailSender(email, generatedPassword, mailService).start();
 
-		userService.save(User.builder()
-				.name(name)
-				.email(email)
-				.role(roleService.save("ADMIN"))
-				.password(passwordEncoder.encode(generatedPassword))
-				.isActive(true)
-				.customer(customer)
-				.build());
+        userService.save(User.builder()
+                .name(name)
+                .email(email)
+                .role(roleService.save(ADMIN_LABEL))
+                .password(passwordEncoder.encode(generatedPassword))
+                .isActive(true)
+                .customer(customer)
+                .build());
 
-		LOGGER.warn(String.format(LOG_CREATED_MSG, "Customer", customer.getName()));
-		return customer;
-	}
+        LOGGER.warn(String.format(LOG_CREATED_MSG, CUSTOMER_LABEL, customer.getName()));
+        return customer;
+    }
 }

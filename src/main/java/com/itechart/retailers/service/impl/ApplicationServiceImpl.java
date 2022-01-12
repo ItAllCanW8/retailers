@@ -187,7 +187,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	private void validateDispatchRequest(DispatchItemReq dispatchItemReq)
 			throws ItemNotFoundException, ItemAmountException, DispatchItemException {
-		if (dispatchItemReq.getItemsToDispatch().stream().allMatch(item -> item.getAmount() == 0)) {
+		if (dispatchItemReq.getItemsToDispatch().stream().allMatch(item -> item.getAmount() == null || item.getAmount() == 0)) {
 			throw new DispatchItemException(DISPATCH_ITEM_EXCEPTION_MSG);
 		}
 		for (LocationItemResp enteredLocationItem : dispatchItemReq.getItemsToDispatch()) {
@@ -224,7 +224,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 		return Application.builder()
 				.applicationNumber(applicationNumber)
-				.srcLocation(securityService.getCurrentLocation())
+				.srcLocation(currentLocation)
 				.destLocation(destLocation)
 				.status("STARTED_PROCESSING")
 				.createdBy(currentUser)

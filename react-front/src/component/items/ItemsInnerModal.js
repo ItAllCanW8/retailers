@@ -76,7 +76,7 @@ class ItemsInnerModal extends Component {
                   aria-describedby='inputGroupPrepend'
                   autoComplete='off'
                   required
-                  min='0'
+                  min='1'
                   value={this.props.units}
                   onChange={this.props.onChange}
                 />

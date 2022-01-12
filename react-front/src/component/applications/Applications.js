@@ -260,7 +260,9 @@ class Applications extends Component {
               <td>{application.destLocation.identifier}</td>
               <td>{application.lastUpdDateTime}</td>
               <td>{application.lastUpdBy.name}</td>
-              <td>{application.status}</td>
+              <td>{application.status === 'STARTED_PROCESSING' ?
+                'Started processing' :
+                'Finished processing'}</td>
 
             </tr>
           ))}
