@@ -85,7 +85,7 @@ export class LocationsInnerModal extends Component {
                                     onChange={this.props.onChange}
                                 />
                                 <div className='invalid-feedback'>
-                                    Input should contain a number
+                                    Input should contain a positive integer number
                                 </div>
                             </div>
                         </div>

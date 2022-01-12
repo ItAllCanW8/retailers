@@ -80,6 +80,9 @@ class ItemsInnerModal extends Component {
                   value={this.props.units}
                   onChange={this.props.onChange}
                 />
+                <div className='invalid-feedback'>
+                  Input should contain a positive integer number
+                </div>
               </div>
             </div>
           </div>

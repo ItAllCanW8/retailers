@@ -40,6 +40,15 @@ class Locations extends Component {
   updateLocations = () => {
     axios.get('/locations', { params: this.state.params }).then(
       (response) => {
+        if (response.data.locations.length === 0 && this.state.params.page > 0) {
+          this.setState({
+            params: {
+              page: this.state.params.page - 1
+            }
+          });
+          this.updateLocations();
+          return;
+        }
         this.setState({
           content: response.data
         });

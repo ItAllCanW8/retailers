@@ -73,10 +73,13 @@ class BillInnerModal extends Component {
                     aria-describedby='inputGroupPrepend'
                     autoComplete='off'
                     required
-                    min='0'
+                    min='1'
                     value={itemAssoc.amount}
                     onChange={() => this.props.onItemChange(window.event, index)}
                   />
+                  <div className='invalid-feedback'>
+                    Input should contain a positive integer number
+                  </div>
                 </div>
               </div>
             </div>
