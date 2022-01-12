@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Builder
@@ -36,12 +37,12 @@ public class Item extends Identity {
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private Set<ApplicationItem> applicationAssoc;
+    private Set<ApplicationItem> applicationAssoc = new HashSet<>();
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
-    private Set<BillItem> itemAssoc;
+    private Set<BillItem> itemAssoc = new HashSet<>();
 
     public Item(Long id) {
         this.setId(id);

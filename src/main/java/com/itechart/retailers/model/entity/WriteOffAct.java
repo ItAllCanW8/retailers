@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Builder
@@ -29,5 +30,5 @@ public class WriteOffAct extends Identity {
     private Location location;
 
     @OneToMany(mappedBy = "writeOffAct", fetch = FetchType.EAGER)
-    private Set<WrittenOffItem> writtenOffItems;
+    private Set<WrittenOffItem> writtenOffItems = new HashSet<>();
 }

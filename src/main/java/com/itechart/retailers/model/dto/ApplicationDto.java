@@ -2,6 +2,7 @@ package com.itechart.retailers.model.dto;
 
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -16,5 +17,5 @@ public class ApplicationDto {
     private String srcLocation;
     private String destLocation;
     private UserDto createdBy;
-    private Set<ItemDto> items;
+    private Set<ItemDto> items = new HashSet<>();
 }

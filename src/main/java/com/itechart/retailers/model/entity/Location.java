@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class Location extends Identity {
 
     @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<LocationItem> itemAssoc;
+    private Set<LocationItem> itemAssoc = new HashSet<>();
 
     public Location(Long id) {
         this.setId(id);

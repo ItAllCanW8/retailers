@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class Application extends Identity {
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<ApplicationItem> itemAssoc;
+    private Set<ApplicationItem> itemAssoc = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

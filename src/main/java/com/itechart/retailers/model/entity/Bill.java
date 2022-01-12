@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,5 +35,5 @@ public class Bill extends Identity {
 
     @OneToMany(mappedBy = "bill", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<BillItem> itemAssoc;
+    private List<BillItem> itemAssoc = new ArrayList<>();
 }
