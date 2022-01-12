@@ -51,7 +51,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void update(User user, String enteredCurrentPassword, String newPassword) throws IncorrectPasswordException, EmptyPasswordException {
+	public void update(User user, String enteredCurrentPassword, String newPassword)
+			throws IncorrectPasswordException, EmptyPasswordException {
+
 		String actualPassword = userRepository.getById(user.getId()).getPassword();
 
 		if (enteredCurrentPassword != null && !enteredCurrentPassword.equals("")) {
@@ -121,9 +123,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserPageResp getUsers(String roleName, Integer page) {
 		if (roleName == null) {
-			Page<User> users = userRepository.findUsersByCustomerId(securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize));
+			Page<User> users = userRepository.findUsersByCustomerId(
+					securityService.getCurrentCustomerId(), PageRequest.of(page, pageSize)
+			);
 			return new UserPageResp(users.getContent(), users.getTotalPages());
 		}
-		return new UserPageResp(userRepository.findUsersByRoleAndCustomer(roleRepository.findByRole(roleName).get(), securityService.getCurrentCustomer()), null);
+		return new UserPageResp(userRepository.findUsersByRoleAndCustomer(
+				roleRepository.findByRole(roleName).get(), securityService.getCurrentCustomer()), null
+		);
 	}
 }

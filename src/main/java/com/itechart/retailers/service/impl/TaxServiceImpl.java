@@ -1,8 +1,8 @@
 package com.itechart.retailers.service.impl;
 
-import com.itechart.retailers.model.enumeration.StateCode;
 import com.itechart.retailers.model.entity.CustomerCategory;
 import com.itechart.retailers.model.entity.Location;
+import com.itechart.retailers.model.enumeration.StateCode;
 import com.itechart.retailers.repository.CustomerCategoryRepository;
 import com.itechart.retailers.repository.LocationRepository;
 import com.itechart.retailers.repository.StateTaxRepository;
@@ -35,11 +35,13 @@ public class TaxServiceImpl implements TaxService {
     }
 
     @Override
-    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId) throws CustomerCategoryNotFoundException {
-        Optional<CustomerCategory> optionalCustomerCategory = customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId);
+    public Optional<Float> loadItemCategoryTax(Long customerId, Long categoryId)
+            throws CustomerCategoryNotFoundException {
+
+        Optional<CustomerCategory> optionalCustomerCategory =
+                customerCategoryRepo.findByCustomerIdAndCategoryId(customerId, categoryId);
         if (optionalCustomerCategory.isPresent()) {
-            return Optional.of(optionalCustomerCategory.get()
-                    .getCategoryTax());
+            return Optional.of(optionalCustomerCategory.get().getCategoryTax());
         } else {
             throw new CustomerCategoryNotFoundException();
         }

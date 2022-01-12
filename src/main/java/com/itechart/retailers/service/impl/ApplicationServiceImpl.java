@@ -135,24 +135,31 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	@Transactional
 	public void dispatchItems(DispatchItemReq dispatchItemReq)
-			throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException, ApplicationAlreadyExists {
+			throws ItemAmountException, DispatchItemException, ItemNotFoundException, LocationNotFoundException,
+			ApplicationAlreadyExists {
 
 		validateDispatchRequest(dispatchItemReq);
 		removeItemsFromLocation(dispatchItemReq);
 		createApplication(dispatchItemReq);
 	}
 
-	private void createApplication(DispatchItemReq dispatchItemReq) throws LocationNotFoundException, ApplicationAlreadyExists, ItemAmountException, DispatchItemException, ItemNotFoundException {
+	private void createApplication(DispatchItemReq dispatchItemReq)
+			throws LocationNotFoundException, ApplicationAlreadyExists, ItemAmountException, DispatchItemException,
+			ItemNotFoundException {
+
 		Location location = locationRepository.findLocationByIdentifier(dispatchItemReq.getDestLocation())
 				.orElseThrow(LocationNotFoundException::new);
 		Application application = createApplication(dispatchItemReq.getApplicationNumber(), location);
 		Customer customer = new Customer();
 		customer.setId(securityService.getCurrentCustomerId());
+
 		for (LocationItemResp enteredLocationItem : dispatchItemReq.getItemsToDispatch()) {
 			if (enteredLocationItem.getAmount() == null) {
 				enteredLocationItem.setAmount(0);
 			}
-			if (enteredLocationItem.getAmount() < 0 || enteredLocationItem.getAmount() > getActualLocationItem(enteredLocationItem.getUpc()).getAmount()) {
+			if (enteredLocationItem.getAmount() < 0 ||
+					enteredLocationItem.getAmount() >
+							getActualLocationItem(enteredLocationItem.getUpc()).getAmount()) {
 				throw new ItemAmountException(INCORRECT_ITEM_AMOUNT_INPUT_MSG);
 			}
 		}
@@ -187,7 +194,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	private void validateDispatchRequest(DispatchItemReq dispatchItemReq)
 			throws ItemNotFoundException, ItemAmountException, DispatchItemException {
-		if (dispatchItemReq.getItemsToDispatch().stream().allMatch(item -> item.getAmount() == null || item.getAmount() == 0)) {
+		if (dispatchItemReq.getItemsToDispatch().stream()
+				.allMatch(item -> item.getAmount() == null || item.getAmount() == 0)) {
 			throw new DispatchItemException(DISPATCH_ITEM_EXCEPTION_MSG);
 		}
 		for (LocationItemResp enteredLocationItem : dispatchItemReq.getItemsToDispatch()) {
@@ -212,9 +220,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 	}
 
-	private Application createApplication(String applicationNumber, Location destLocation) throws ApplicationAlreadyExists {
+	private Application createApplication(String applicationNumber, Location destLocation)
+			throws ApplicationAlreadyExists {
+
 		User currentUser = securityService.getCurrentUser();
-		Optional<Application> optionalApplication = applicationRepository.findApplicationByApplicationNumberAndCustomerId(applicationNumber, currentUser.getCustomer().getId());
+		Optional<Application> optionalApplication = applicationRepository
+				.findApplicationByApplicationNumberAndCustomerId(applicationNumber, currentUser.getCustomer().getId());
 		if (optionalApplication.isPresent()) {
 			throw new ApplicationAlreadyExists();
 		}

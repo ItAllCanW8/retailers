@@ -12,8 +12,6 @@ import com.itechart.retailers.service.exception.CustomerCategoryNotFoundExceptio
 import com.itechart.retailers.service.exception.ItemAmountException;
 import com.itechart.retailers.service.exception.TaxesNotDefinedException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -119,7 +117,9 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
-    private LocationItem createLocationItem(ApplicationItem applicationItem) throws TaxesNotDefinedException, CustomerCategoryNotFoundException {
+    private LocationItem createLocationItem(ApplicationItem applicationItem)
+            throws TaxesNotDefinedException, CustomerCategoryNotFoundException {
+
         if (applicationItem.getApplication() != null &&
                 applicationItem.getApplication().getDestLocation() != null &&
                 applicationItem.getApplication().getDestLocation().getType() != null &&
